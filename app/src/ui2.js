@@ -108,6 +108,7 @@
   }
   UI.gotText = gotText;
   UI.rewardChip = rewardChip;
+  UI.rewardChips = r => ['bee', 'skin', 'royal', 'core', 'part', 'egg', 'boost', 'warp'].filter(k => r[k]).map(k => rewardChip({ [k]: r[k] })).join('');
 
   function blessDesc(e) {
     const b = P.BLESS_BY_ID[e.id];
@@ -156,7 +157,7 @@
     const s = G.main;
     P.passRoll(s);
     const tier = P.passTier(s);
-    const inTier = tier >= P.PASS_TIERS ? 1 : (s.pass.xp - tier * P.PASS_XP) / P.PASS_XP;
+    const inTier = P.passInTier(s);
     let h = '<h2 class="page-title">' + t('pass_title') + '</h2>';
     h += '<div class="card pass-head"><div class="big-stat"><div class="pic">' + ic('ticket') + '</div><div><b class="num">' + t('pass_tier', { n: tier, m: P.PASS_TIERS }) + '</b><small>' + t('pass_season', { n: s.pass.season + 1 }) + '  ·  <span data-t="' + P.seasonEnd() + '" data-tfmt="pass_ends"></span></small></div></div>';
     h += '<div class="progress" style="margin-top:var(--sp-4)"><i style="width:' + (inTier * 100).toFixed(1) + '%"></i></div>';
@@ -166,7 +167,7 @@
       const reached = i <= tier;
       const done = s.pass.got[i];
       const can = reached && !done;
-      h += '<div class="pass-row' + (reached ? ' reached' : '') + '"><span class="tnum">' + i + '</span><div class="pcell' + (done ? ' done' : '') + (can ? ' can' : '') + (i % 10 === 0 ? ' big' : '') + '"' + (can ? ' data-act="passclaim" data-arg="' + i + '"' : '') + '>' + rewardChip(P.passReward(i)) + (done ? ic('check') : '') + '</div></div>';
+      h += '<div class="pass-row' + (reached ? ' reached' : '') + '"><span class="tnum">' + i + '</span><div class="pcell' + (done ? ' done' : '') + (can ? ' can' : '') + (i % 10 === 0 ? ' big' : '') + '"' + (can ? ' data-act="passclaim" data-arg="' + i + '"' : '') + '>' + UI.rewardChips(P.passReward(i)) + (done ? ic('check') : '') + '</div></div>';
     }
     h += '</div><div class="card"><p class="muted" style="font-size:var(--fs-sm)">' + t('pass_how') + '</p></div>';
     return h;
@@ -258,32 +259,6 @@
       h += '<div class="skin' + (on ? ' on' : '') + (own ? '' : ' notyet') + '"><div class="sw" style="background:linear-gradient(180deg,' + sk.sky[0] + ' 0%,' + sk.sky[1] + ' 55%,' + sk.hill[1] + ' 56%,' + sk.hill[2] + ' 100%)"><i style="background:' + sk.comb + '"></i>' + (own ? '' : '<span class="lockb">' + ic('lock') + '</span>') + '</div><div class="bottom"><b>' + n(sk.name) + '</b><small class="sb">' + esc(skinBonus(sk)) + '</small>' + btn + '</div></div>';
     }
     h += '</div><div class="card" style="margin-top:var(--sp-3)"><p class="muted" style="font-size:var(--fs-sm)">' + t('skin_how') + '</p></div></div>';
-    return h;
-  };
-
-  UI.ext.worlds = function () {
-    const s = G.main;
-    let h = '<h2 class="page-title">' + t('worlds_title') + '</h2>';
-    const es = s.essence || 0;
-    const sv = P.sellValue(s);
-    const earned = (s.crowns || 0) + (s.crownsSpent || 0);
-    h += '<div class="card ess-card"><div class="big-stat"><div class="pic ess">' + ic('sparkle') + '</div><div><b class="num">' + F.int(es) + '</b><small>' + t('essence') + '  ·  ' + t('essence_bonus', { h: F.pct(BZ.ESSENCE_BONUS * es), r: F.pct(0.03 * es) }) + '</small></div></div>';
-    h += '<div class="swarm-box"><small class="muted">' + (sv > 0 ? '' : t('sell_need', { v: BZ.SELL_MIN }) + '  ·  ' + t('world_crowns', { v: F.int(earned) })) + '</small><button class="btn btn-secondary btn-block' + (sv < 1 ? ' off' : '') + '" data-act="sell">' + ic('sparkle') + (sv > 0 ? t('sell_btn', { v: F.int(sv) }) : t('sell_btn', { v: 0 })) + '</button></div>';
-    h += '<div class="perks"><div class="sec-title"><h3>' + t('ess_perks') + '</h3></div>' + BZ.ESSENCE_PERKS.map(p => '<div class="perk' + (es >= p.at ? ' on' : '') + '">' + ic(es >= p.at ? 'check' : 'lock') + '<span>' + t('ep_' + p.id) + '</span><small>' + t('ess_at', { n: p.at }) + '</small></div>').join('') + '</div></div>';
-    h += '<div class="worlds">';
-    BZ.WORLDS.forEach((w, i) => {
-      const open = s.worldsOpen.includes(i);
-      const here = s.world === i;
-      const sk = BZ.SKIN_BY_ID[w.theme];
-      let foot;
-      if (here) foot = '<span class="badge b-orange">' + ic('check') + t('world_here') + '</span>';
-      else if (open) foot = '<button class="btn btn-primary btn-sm" data-act="travel" data-arg="' + i + '">' + ic('globe') + t('world_go') + '</button>';
-      else if (i !== s.worldsOpen.length) foot = '<small class="faint">' + t('world_prev') + '</small>';
-      else foot = '<button class="btn btn-outline btn-sm' + (P.canOpenWorld(s, i) ? '' : ' off') + '" data-act="openworld" data-arg="' + i + '">' + ic('crown') + t('world_open', { v: w.cost }) + '</button>' + (P.canOpenWorld(s, i) ? '' : '<small class="faint">' + t('world_need', { v: w.cost }) + '</small>');
-      const cr = open ? P.worldCrowns(s, i) : 0;
-      h += '<div class="world' + (here ? ' here' : '') + (open ? '' : ' closed') + '"><div class="sw" style="background:linear-gradient(180deg,' + sk.sky[0] + ' 0%,' + sk.sky[1] + ' 55%,' + sk.hill[1] + ' 56%,' + sk.hill[2] + ' 100%)"><i style="background:' + sk.comb + '"></i>' + (open ? '<span class="wcr">' + ic('crown') + F.int(cr) + '</span>' : '<span class="lockb">' + ic('lock') + '</span>') + '</div><div class="bottom"><b>' + n(w.name) + '</b><small>' + t('wd_' + w.id) + '</small><div class="wfoot">' + foot + '</div></div></div>';
-    });
-    h += '</div><div class="card" style="margin-top:var(--sp-3)"><p class="muted" style="font-size:var(--fs-sm)">' + t('worlds_how') + '</p></div>';
     return h;
   };
 

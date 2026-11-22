@@ -14,6 +14,7 @@
     { id: 'worlds', icon: 'globe' },
     { id: 'league', icon: 'league' },
     { id: 'trophies', icon: 'trophy' },
+    { id: 'stats', icon: 'chart' },
     { id: 'settings', icon: 'settings' },
     { id: 'about', icon: 'info' }
   ];
@@ -143,7 +144,7 @@
     pageDirty = false;
     const panel = $('panel');
     if (page === 'hive') { renderHive(); return; }
-    const html = ((UI.ext && UI.ext[page]) || ({ queen: pageQueen, bees: pageBees, daily: pageDaily, trophies: pageTrophies, settings: pageSettings, about: pageAbout })[page])();
+    const html = ((UI.ext && UI.ext[page]) || ({ queen: pageQueen, bees: pageBees, daily: pageDaily, trophies: pageTrophies, settings: pageSettings })[page])();
     const cur = panel.firstElementChild;
     if (cur && cur.dataset.page === page && panel.children.length === 1) morph(cur, html);
     else panel.innerHTML = '<div class="page on" data-page="' + page + '">' + html + '</div>';
@@ -376,7 +377,7 @@
       const cost = E.queenCost(s, q.id);
       const qlock = E.queenLocked(s, q.id);
       h += '<div class="skill' + (qlock ? ' qlock' : '') + '"><div class="top"><b>' + n(q.name) + '</b><span class="badge ' + (lvl ? 'b-orange' : 'b-grey') + '">' + (maxed ? t('maxed') : t('level', { n: lvl })) + '</span></div><small>' + n(q.desc) + '</small>' +
-        (qlock ? '<button class="btn btn-outline btn-sm off">' + ic('lock') + t('mind_locked') + '</button>' : maxed ? '' : '<button class="btn btn-outline btn-sm' + (s.rj < cost ? ' off' : '') + '" data-act="queen" data-arg="' + q.id + '" data-rj="' + cost + '">' + ic('jelly') + t('cost_rj', { v: F.num(cost, { int: true }) }) + '</button>') + '</div>';
+        (qlock ? '<button class="btn btn-outline btn-sm off">' + ic('lock') + t('mind_locked', { n: E.queenNeed(s, q.id) }) + '</button>' : maxed ? '' : '<button class="btn btn-outline btn-sm' + (s.rj < cost ? ' off' : '') + '" data-act="queen" data-arg="' + q.id + '" data-rj="' + cost + '">' + ic('jelly') + t('cost_rj', { v: F.num(cost, { int: true }) }) + '</button>') + '</div>';
     }
     h += '</div></div>';
     const pc = E.pendingCrowns(s);
@@ -390,7 +391,7 @@
       h += '<div class="sec card"><div class="big-stat"><div class="pic crown">' + ic('crown') + '</div><div><b>' + t('crown_title') + '</b><small>' + t('crown_locked', { v: F.num(BZ.CROWN_DIVISOR * 0.25) }) + '</small></div></div></div>';
     }
     const mind = E.qlvl(s, 'mind');
-    if (mind > 0 && !E.queenLocked(s, 'mind')) {
+    if (mind > 0) {
       h += '<div class="sec card"><div class="sec-title"><h3>' + t('auto') + '</h3></div>';
       h += settingSwitch('auto_upg', '', s.auto.upg, 'auto:upg');
       if (mind >= 2) h += settingSwitch('auto_prod', '', s.auto.prod, 'auto:prod');
@@ -506,12 +507,6 @@
       }
       h += '</div></div>';
     }
-    const stats = [
-      ['st_lifetime', F.num(s.lifetime)], ['st_run', F.num(s.runHoney)], ['st_hps', F.num(s.bestHps)], ['st_taps', F.int(s.taps)], ['st_combo', F.int(s.maxCombo)],
-      ['st_lucky', F.int(s.lucky)], ['st_swarms', F.int(s.swarms)], ['st_rj', F.num(s.rjEarned)], ['st_upg', F.int(s.upgCount)], ['st_ms', F.int(s.milestones)],
-      ['st_level', F.int(s.level || 1)], ['st_quests', F.int(s.quests || 0)], ['st_crowns', F.int(s.crowns || 0)], ['st_colony', F.int(E.colonyLevel(s))], ['st_played', F.time(s.played)], ['st_run_time', F.time(s.runTime)]
-    ];
-    h += '<div class="sec card"><div class="sec-title"><h3>' + t('stats') + '</h3></div>' + stats.map(x => '<div class="kv"><span>' + t(x[0]) + '</span><span>' + x[1] + '</span></div>').join('') + '</div>';
     return h;
   }
 
@@ -538,11 +533,6 @@
     h += '</div></div>';
     h += '<div class="card"><div class="setting"><div><b>' + t('set_reset') + '</b></div><button class="btn btn-danger btn-sm" data-act="reset">' + ic('trash') + t('reset_ok') + '</button></div></div>';
     return h;
-  }
-
-  function pageAbout() {
-    return '<h2 class="page-title">' + t('tab_about') + '</h2><div class="card about">' + BZ.appIconSvg(88) + '<h4><span>Buzz</span>works</h4><div class="v">' + t('about_version', { v: BZ.VERSION }) + '</div><p>' + t('about_text') + '</p><div class="by">Luka LAURENT</div></div>' +
-      '<div class="card"><div class="setting"><div><b>' + t('logs') + '</b></div><button class="btn btn-outline btn-sm" data-act="logs">' + ic('chart') + t('logs') + '</button></div></div>';
   }
 
   function onPanelClick(e) {

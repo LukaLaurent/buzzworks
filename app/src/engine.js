@@ -342,7 +342,6 @@
     s.ticketBees = (s.ticketBees || 0) + 1;
     const x = rnd();
     const out = x < 0.06 ? { core: 1 } : x < 0.22 ? { egg: 2 } : { egg: 1 };
-    if (BZ.P && BZ.P.essPerk && BZ.P.essPerk(s, 'tickets')) for (const k in out) out[k] *= 2;
     E.addTickets(s, out);
     E.emit(s, 'ticketBee', out);
     return out;
@@ -393,6 +392,8 @@
     s.upg = kept;
     P.forEach(p => { s.owned[p.id] = 0; });
     if (E.perk(s, 'start')) P.slice(0, 5).forEach(p => { s.owned[p.id] = 25; });
+    const st = BZ.P && BZ.P.essLvl ? BZ.P.essLvl(s, 'start') : 0;
+    if (st) { const n = BZ.ESS_BY_ID.start.v[st - 1]; P.slice(0, 10).forEach(p => { s.owned[p.id] = Math.max(s.owned[p.id], n); }); }
     s.buffs = [];
     s.combo = 0;
     s._dirty = true;
@@ -405,7 +406,8 @@
     if (gain < 1) return 0;
     const pend = E.pendingRJ(s);
     s.rjLife = (s.rjLife || 0) + pend;
-    if (BZ.P && BZ.P.essPerk && BZ.P.essPerk(s, 'crown')) { gain += 1; s.crownsBonus = (s.crownsBonus || 0) + 1; }
+    const extra = BZ.P && BZ.P.essLvl ? BZ.P.essLvl(s, 'crown') : 0;
+    if (extra) { gain += extra; s.crownsBonus = (s.crownsBonus || 0) + extra; }
     s.crowns = (s.crowns || 0) + gain;
     s.coronations = (s.coronations || 0) + 1;
     const mind = E.qlvl(s, 'mind');
@@ -420,7 +422,12 @@
     return gain;
   };
 
-  E.queenLocked = (s, id) => id === 'mind' && !E.perk(s, 'mind') && !(BZ.P && BZ.P.essPerk && BZ.P.essPerk(s, 'mind'));
+  E.queenNeed = function (s, id) {
+    const q = BZ.QUEEN_BY_ID[id];
+    if (!q.need) return 0;
+    return q.need[Math.min(q.need.length - 1, E.qlvl(s, id))];
+  };
+  E.queenLocked = (s, id) => !!BZ.QUEEN_BY_ID[id].need && !E.queenMaxed(s, id) && (s.crowns || 0) + (s.crownsSpent || 0) < E.queenNeed(s, id);
   E.queenCost = function (s, id) {
     const q = BZ.QUEEN_BY_ID[id];
     return Math.ceil(q.base * Math.pow(q.growth, E.qlvl(s, id)));
@@ -471,8 +478,8 @@
   };
 
   E.autoStep = function (s) {
-    if (E.queenLocked(s, 'mind')) return;
     const lvl = E.qlvl(s, 'mind');
+    if (!lvl) return;
     if (lvl >= 1 && s.auto.upg) {
       for (const u of E.availableUpgrades(s)) {
         if (u.cost <= s.honey) E.buyUpgrade(s, u.id); else break;

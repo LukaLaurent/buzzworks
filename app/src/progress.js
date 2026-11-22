@@ -12,24 +12,25 @@
   );
   BZ.BEES.forEach(b => { BZ.BEE_BY_ID[b.id] = b; });
 
-  P.SHARED = ['tickets', 'pity', 'bees', 'cores', 'coreSlots', 'parts', 'skins', 'skin', 'xp', 'level', 'pass', 'daily', 'quick', 'ads', 'essence', 'worldsOpen', 'otherWorlds', 'flags', 'seed', 'playerName', 'league', 'quests', 'ticketBees', 'created', 'danceReady', 'cloud'];
+  P.SHARED = ['tickets', 'pity', 'bees', 'cores', 'coreSlots', 'parts', 'skins', 'skin', 'xp', 'level', 'pass', 'daily', 'quick', 'ads', 'essence', 'essenceTotal', 'essShop', 'worldsOpen', 'otherWorlds', 'flags', 'seed', 'playerName', 'league', 'quests', 'ticketBees', 'created', 'danceReady', 'cloud'];
 
   P.XP = { buy: 1, upgrade: 4, milestone: 6, lucky: 10, quest: 50, quick: 15, swarm: 80, achievement: 8, hatch: 5, power: 5, coronation: 300, bless: 10, ticket: 6 };
   P.xpFor = L => Math.round(40 * Math.pow(L, 1.7));
   P.UNLOCKS = { daily: 2, bees: 3, workshop: 5, league: 5, pass: 6 };
 
-  P.PASS_TIERS = 30;
-  P.PASS_XP = 300;
-  P.SEASON_DAYS = 28;
+  P.PASS_TIERS = 50;
+  P.SEASON_DAYS = 7;
   P.SEASON_EPOCH = Date.UTC(2026, 0, 5);
+  P.passNeed = tier => 500 + 50 * (tier - 1);
+  P.passTotal = (() => { let t = 0; for (let i = 1; i <= 50; i++) t += 500 + 50 * (i - 1); return t; })();
   P.passReward = function (tier) {
-    if (tier === 30) return { bee: 'sunflare' };
-    if (tier === 20) return { skin: 'sunflower' };
-    if (tier % 10 === 0) return { royal: 2 };
-    if (tier % 5 === 0) return { core: 2 };
-    if (tier % 3 === 0) return { part: 1 };
-    if (tier % 2 === 0) return { egg: 2 };
-    return tier % 4 === 1 ? { boost: 'x2' } : { egg: 1 };
+    if (tier === 50) return { bee: 'sunflare', royal: 10 };
+    if (tier === 25) return { skin: 'sunflower', egg: 20 };
+    if (tier % 10 === 0) return { royal: 5, egg: 20 };
+    if (tier % 5 === 0) return { core: 10 };
+    if (tier % 4 === 0) return { part: 2, egg: 10 };
+    if (tier % 7 === 0) return { boost: 'x2', egg: 15 };
+    return tier % 2 ? { egg: 10 } : { egg: 15 };
   };
 
   P.FEATURED = ['phoenix', 'aurora', 'monarch', 'crystal'];
@@ -56,6 +57,24 @@
 
   P.AD_CAPS = { boost: 6, offline: 3, ticket: 3, reroll: 3 };
 
+  P.essLvl = (s, id) => (s.essShop && s.essShop[id]) || 0;
+  P.essCost = (s, id) => { const x = BZ.ESS_BY_ID[id]; return Math.ceil(x.base * Math.pow(x.growth, P.essLvl(s, id))); };
+  P.essMaxed = (s, id) => P.essLvl(s, id) >= BZ.ESS_BY_ID[id].max;
+  P.buyEss = function (s, id) {
+    if (P.essMaxed(s, id)) return false;
+    const c = P.essCost(s, id);
+    if ((s.essence || 0) < c) return false;
+    s.essence -= c;
+    s.essShop[id] = P.essLvl(s, id) + 1;
+    s._dirty = true;
+    return true;
+  };
+  P.mindAllowed = function (s) {
+    const need = BZ.QUEEN_BY_ID.mind.need;
+    const cr = (s.crowns || 0) + (s.crownsSpent || 0);
+    return need.filter(n => cr >= n).length;
+  };
+
   P.ensure = function (s) {
     s.tickets = Object.assign({ egg: 0, royal: 0, core: 0 }, s.tickets || {});
     if (s.gems) { s.tickets.egg += Math.floor(s.gems / 25); }
@@ -76,6 +95,9 @@
     s.ads = s.ads || { day: '', c: {} };
     delete s.purchases;
     s.essence = s.essence || 0;
+    s.essShop = s.essShop || {};
+    if (s.essenceTotal === undefined) s.essenceTotal = s.essence;
+    if (s.queen && s.queen.mind > P.mindAllowed(s)) { s.queen.mind = P.mindAllowed(s); if (!s.queen.mind) delete s.queen.mind; }
     s.worldsOpen = s.worldsOpen || [0];
     s.otherWorlds = s.otherWorlds || {};
     s.flags = s.flags || {};
@@ -88,17 +110,17 @@
     P.flagCheck(s);
   };
 
-  P.essPerk = (s, id) => { const p = BZ.ESSENCE_PERKS.find(x => x.id === id); return !!p && (s.essence || 0) >= p.at; };
-  P.coreSlotCount = s => 2 + ((s.level || 1) >= 20 ? 1 : 0) + (P.essPerk(s, 'slot') ? 1 : 0);
+  P.coreSlotCount = s => 2 + ((s.level || 1) >= 20 ? 1 : 0) + P.essLvl(s, 'slot');
   P.ownedSkins = s => BZ.SKINS.filter(x => !x.world && x.id !== 'meadow' && s.skins[x.id]).length;
 
   P.mods = function (s) {
     const m = { honey: 1, luckyFreq: 1, luckyDur: 1, tap: 1, cost: 1, rj: 1, combo: 0, offlineH: 0, offline: 1, ticketFreq: 1, prodX: {} };
     m.honey *= 1 + 0.01 * Math.max(0, (s.level || 1) - 1);
-    const es = s.essence || 0;
-    m.honey *= 1 + BZ.ESSENCE_BONUS * es;
-    m.rj *= 1 + 0.03 * es;
-    if (P.essPerk(s, 'lucky')) m.luckyFreq *= 1.2;
+    m.honey *= Math.pow(1 + BZ.ESS_BY_ID.honey.v, P.essLvl(s, 'honey'));
+    m.rj *= Math.pow(1 + BZ.ESS_BY_ID.jelly.v, P.essLvl(s, 'jelly'));
+    m.luckyFreq *= 1 + BZ.ESS_BY_ID.lucky.v * P.essLvl(s, 'lucky');
+    m.ticketFreq *= 1 + BZ.ESS_BY_ID.tickets.v * P.essLvl(s, 'tickets');
+    m.offlineH += BZ.ESS_BY_ID.nap.v * P.essLvl(s, 'nap');
     const w = E.world(s).mods;
     if (w.honey) m.honey *= w.honey;
     if (w.luckyFreq) m.luckyFreq *= w.luckyFreq;
@@ -214,7 +236,7 @@
     if (!base) return [];
     s.xp += base;
     P.passRoll(s);
-    s.pass.xp = Math.min(P.PASS_TIERS * P.PASS_XP, s.pass.xp + base);
+    s.pass.xp = Math.min(P.passTotal, s.pass.xp + base);
     const ups = [];
     while (s.xp >= P.xpFor(s.level)) {
       s.xp -= P.xpFor(s.level);
@@ -256,7 +278,16 @@
     const se = P.season();
     if (s.pass.season !== se) s.pass = { season: se, xp: 0, got: {} };
   };
-  P.passTier = s => Math.min(P.PASS_TIERS, Math.floor(s.pass.xp / P.PASS_XP));
+  P.passTier = function (s) {
+    let left = s.pass.xp, t = 0;
+    while (t < P.PASS_TIERS && left >= P.passNeed(t + 1)) { left -= P.passNeed(t + 1); t++; }
+    return t;
+  };
+  P.passInTier = function (s) {
+    let left = s.pass.xp, t = 0;
+    while (t < P.PASS_TIERS && left >= P.passNeed(t + 1)) { left -= P.passNeed(t + 1); t++; }
+    return t >= P.PASS_TIERS ? 1 : left / P.passNeed(t + 1);
+  };
   P.passClaim = function (s, tier) {
     if (tier > P.passTier(s) || s.pass.got[tier]) return null;
     s.pass.got[tier] = 1;
@@ -431,30 +462,49 @@
     return ns;
   };
   P.worldCrowns = (s, idx) => idx === s.world ? s.crowns || 0 : ((s.otherWorlds[idx] && s.otherWorlds[idx].crowns) || 0);
+  P.worldCost = (s, idx) => Math.max(1, Math.ceil(BZ.WORLDS[idx].cost * (1 - BZ.ESS_BY_ID.map.v * P.essLvl(s, 'map'))));
   P.canOpenWorld = function (s, idx) {
     const w = BZ.WORLDS[idx];
-    return !!w && !s.worldsOpen.includes(idx) && idx === s.worldsOpen.length && (s.crowns || 0) >= w.cost;
+    return !!w && !s.worldsOpen.includes(idx) && idx === s.worldsOpen.length && (s.crowns || 0) >= P.worldCost(s, idx);
   };
   P.openWorld = function (s, idx) {
     if (!P.canOpenWorld(s, idx)) return false;
-    const w = BZ.WORLDS[idx];
-    s.crowns -= w.cost;
-    s.crownsSpent = (s.crownsSpent || 0) + w.cost;
+    const cost = P.worldCost(s, idx);
+    s.crowns -= cost;
+    s.crownsSpent = (s.crownsSpent || 0) + cost;
     s.worldsOpen.push(idx);
     s._dirty = true;
     return true;
   };
-  P.sellValue = function (s) {
-    const earned = (s.crowns || 0) + (s.crownsSpent || 0);
+  P.worldState = (s, idx) => idx === s.world ? s : s.otherWorlds[idx] || null;
+  P.sellValue = function (s, idx) {
+    const w = P.worldState(s, idx === undefined ? s.world : idx);
+    if (!w) return 0;
+    const earned = (w.crowns || 0) + (w.crownsSpent || 0);
     if (earned < BZ.SELL_MIN) return 0;
-    return Math.floor(Math.pow(earned, 1.15) * (1 + 0.25 * (s.world || 0)));
+    return Math.floor(Math.pow(earned, 1.15) * (1 + 0.25 * (idx === undefined ? s.world : idx)));
   };
-  P.sellWorld = function (s) {
-    const gain = P.sellValue(s);
+  P.worldInfo = function (s, idx) {
+    const w = P.worldState(s, idx);
+    if (!w) return null;
+    if (idx === s.world) return { hps: E.hps(s), crowns: s.crowns || 0, earned: (s.crowns || 0) + (s.crownsSpent || 0), lifetime: s.lifetime, run: s.runHoney, rj: s.rj };
+    const tmp = P.attach(w, s);
+    tmp.world = idx;
+    tmp.buffs = []; tmp.boosts = [];
+    E.recalc(tmp);
+    return { hps: tmp._c.baseHps, crowns: w.crowns || 0, earned: (w.crowns || 0) + (w.crownsSpent || 0), lifetime: w.lifetime || 0, run: w.runHoney || 0, rj: w.rj || 0 };
+  };
+  P.sellWorld = function (s, idx) {
+    if (idx === undefined) idx = s.world;
+    const gain = P.sellValue(s, idx);
     if (gain < 1) return null;
     s.essence = (s.essence || 0) + gain;
-    const ns = P.freshWorld(s, s.world);
-    return { state: ns, gain };
+    s.essenceTotal = (s.essenceTotal || 0) + gain;
+    if (idx === s.world) return { state: P.freshWorld(s, s.world), gain };
+    const fresh = P.strip(E.newState(idx));
+    fresh.world = idx;
+    s.otherWorlds[idx] = fresh;
+    return { state: s, gain };
   };
 
 })(typeof window !== 'undefined' ? window : globalThis);

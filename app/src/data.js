@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '2.0.0';
+  BZ.VERSION = '2.1.0';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -145,7 +145,7 @@
     { id: 'combo', base: 5, growth: 2.6, max: 6, name: { en: 'Rhythm', fr: 'Rythme' }, desc: { en: '+0.5 max tap combo', fr: '+0,5 au combo maximum' } },
     { id: 'thrift', base: 8, growth: 3, max: 10, name: { en: 'Thrifty builders', fr: 'Bâtisseurs économes' }, desc: { en: 'Producers cost 3% less', fr: 'Producteurs 3 % moins chers' } },
     { id: 'wisdom', base: 10, growth: 2.8, max: 15, name: { en: 'Swarm wisdom', fr: 'Sagesse de l\'essaim' }, desc: { en: '+10% royal jelly from swarms', fr: '+10 % de gelée royale par essaim' } },
-    { id: 'mind', base: 15, growth: 8, max: 3, name: { en: 'Hive mind', fr: 'Esprit de ruche' }, desc: { en: 'Automation: upgrades, then producers, then swarms', fr: 'Automatisation : améliorations, producteurs, puis essaims' } }
+    { id: 'mind', base: 2e6, growth: 100, max: 3, need: [20, 100, 500], name: { en: 'Hive mind', fr: 'Esprit de ruche' }, desc: { en: 'Automation: upgrades, then producers, then swarms', fr: 'Automatisation : améliorations, producteurs, puis essaims' } }
   ];
   BZ.CROWN_DIVISOR = 2e4;
   BZ.CROWN_BONUS = 1;
@@ -154,7 +154,7 @@
     { at: 1, id: 'lucky', name: { en: 'Lucky bees 25% more often', fr: 'Abeilles dorées 25 % plus fréquentes' } },
     { at: 2, id: 'start', name: { en: 'Start each swarm with 25 of the first 5 producers', fr: 'Chaque essaim démarre avec 25 des 5 premiers producteurs' } },
     { at: 3, id: 'keep', name: { en: 'Swarms keep tap and lucky upgrades', fr: 'Les essaims gardent les améliorations de toucher et dorées' } },
-    { at: 5, id: 'mind', name: { en: 'Unlocks the Hive mind skill, kept after a coronation', fr: 'Débloque la compétence Esprit de ruche, gardée après un couronnement' } },
+    { at: 20, id: 'mind', name: { en: 'Unlocks the Hive mind skill (more levels at 100 and 500 crowns), kept after a coronation', fr: 'Débloque la compétence Esprit de ruche (niveaux suivants à 100 et 500 couronnes), gardée après un couronnement' } },
     { at: 8, id: 'nap', name: { en: '+4 h away earnings', fr: '+4 h de gains en absence' } },
     { at: 12, id: 'egg', name: { en: 'Each coronation gives 3 royal tickets', fr: 'Chaque couronnement donne 3 tickets royaux' } },
     { at: 20, id: 'decree', name: { en: 'Royal decree twice as strong', fr: 'Décret royal deux fois plus fort' } }
@@ -315,9 +315,9 @@
   BZ.RUN_ACH.forEach(a => { BZ.RUN_ACH_BY_ID[a.id] = a; });
 
   BZ.BANNERS = {
-    std: { ticket: 'egg', rates: [62, 27, 9, 2], hard: 60, soft: 45, epicEvery: 10 },
-    royal: { ticket: 'royal', rates: [0, 70, 24, 6], hard: 40, soft: 30, epicEvery: 10 },
-    core: { ticket: 'core', rates: [55, 30, 12, 3], hard: 50, soft: 38, epicEvery: 10 }
+    std: { ticket: 'egg', rates: [70, 24, 5.4, 0.6], hard: 120, soft: 95, epicEvery: 20 },
+    royal: { ticket: 'royal', rates: [0, 78, 19, 3], hard: 80, soft: 60, epicEvery: 12 },
+    core: { ticket: 'core', rates: [64, 27, 7.8, 1.2], hard: 100, soft: 80, epicEvery: 15 }
   };
 
   BZ.CORES = [
@@ -344,14 +344,19 @@
     { id: 'moon', theme: 'w_moon', cost: 20, mods: { luckyFreq: 2.2, tap: 0.3, honey: 0.8 }, name: { en: 'Moon garden', fr: 'Jardin lunaire' } },
     { id: 'ember', theme: 'w_ember', cost: 25, mods: { rj: 2, growth: 1.165 }, name: { en: 'Ember peaks', fr: 'Pics de braise' } }
   ];
-  BZ.ESSENCE_PERKS = [
-    { at: 5, id: 'slot' },
-    { at: 15, id: 'lucky' },
-    { at: 40, id: 'mind' },
-    { at: 80, id: 'crown' },
-    { at: 150, id: 'tickets' }
+  BZ.ESSENCE_SHOP = [
+    { id: 'honey', icon: 'drop', base: 2, growth: 1.5, max: 60, v: 0.25 },
+    { id: 'jelly', icon: 'jelly', base: 3, growth: 1.6, max: 40, v: 0.15 },
+    { id: 'lucky', icon: 'sparkle', base: 4, growth: 1.7, max: 10, v: 0.05 },
+    { id: 'tickets', icon: 'ticket', base: 5, growth: 1.8, max: 10, v: 0.1 },
+    { id: 'nap', icon: 'clock', base: 3, growth: 2, max: 6, v: 2 },
+    { id: 'start', icon: 'worker', base: 6, growth: 2.2, max: 5, v: [10, 25, 50, 100, 200] },
+    { id: 'map', icon: 'globe', base: 8, growth: 2, max: 5, v: 0.1 },
+    { id: 'slot', icon: 'hive', base: 25, growth: 4, max: 2, v: 1 },
+    { id: 'crown', icon: 'crown', base: 60, growth: 3, max: 3, v: 1 }
   ];
-  BZ.ESSENCE_BONUS = 0.12;
+  BZ.ESS_BY_ID = {};
+  BZ.ESSENCE_SHOP.forEach(x => { BZ.ESS_BY_ID[x.id] = x; });
   BZ.SELL_MIN = 5;
 
   BZ.ACH_BONUS = 0.02;

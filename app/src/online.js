@@ -32,7 +32,7 @@
     return {
       honey: ws.reduce((a, w) => a + (w.lifetime || 0), 0),
       crowns: ws.reduce((a, w) => a + (w.crowns || 0) + (w.crownsSpent || 0), 0),
-      essence: s.essence || 0,
+      essence: s.essenceTotal || s.essence || 0,
       bees: BZ.BEES.filter(b => s.bees && s.bees[b.id]).length,
       level: s.level || 1,
       trophies: ws.reduce((a, w) => a + Object.keys(w.ach || {}).length, 0)

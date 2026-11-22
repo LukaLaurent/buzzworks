@@ -133,26 +133,39 @@
       G.save();
     });
   };
-  G.askSell = function () {
+  G.askSell = function (idx) {
     const s = G.main;
-    const v = P.sellValue(s);
+    if (idx === undefined) idx = s.world;
+    const v = P.sellValue(s, idx);
     if (v < 1) { A.play('error'); return; }
-    UI.confirm(t('sell_title'), t('sell_text', { v: F.int(v) }), t('sell_done', { v: F.int(v) }), true, () => {
-      const r = P.sellWorld(G.main);
+    const w = BZ.WORLDS[idx];
+    UI.confirm(t('sell_title_w', { w: n(w.name) }), t('sell_text', { v: F.int(v) }), t('sell_done', { v: F.int(v) }), true, () => {
+      const r = P.sellWorld(G.main, idx);
       if (!r) return;
+      const cur = idx === G.main.world;
       G.main = r.state;
-      Scene.removeLucky(false);
-      Scene.removeLucky(false, 'ticket');
-      lastLifetime = 0;
-      G.refreshScene();
+      if (cur) {
+        Scene.removeLucky(false);
+        Scene.removeLucky(false, 'ticket');
+        lastLifetime = 0;
+        G.refreshScene();
+      }
       A.play('swarm');
       Scene.pulse(6);
       UI.toast('sparkle', t('sell_done', { v: F.int(r.gain) }), { ok: true, long: true });
-      Log.info('world sold for ' + r.gain + ' essence');
+      Log.info('world ' + idx + ' sold for ' + r.gain + ' essence');
       UI.structureChanged();
-      UI.show('hive');
+      UI.render();
       G.save();
     });
+  };
+  G.buyEss = function (id) {
+    if (!P.buyEss(G.main, id)) { A.play('error'); return; }
+    A.play('upgrade');
+    Scene.pulse(2);
+    if (id === 'slot') UI.dirty('workshop');
+    UI.render();
+    G.save();
   };
 
   function vibrate(ms) { if (G.settings.vibrate && navigator.vibrate) try { navigator.vibrate(ms); } catch (e) {} }

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#20252B">
+<meta name="description" content="Buzzworks, a cozy idle honey tycoon. Build your hive, hatch bees, open new worlds.">
+<title>Buzzworks</title>
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="splash" id="splash">
+  <span id="splashIcon"></span>
+  <b><span>Buzz</span>works</b>
+  <div class="bar"><i></i></div>
+  <small class="load-label" id="loadLabel">Loading</small>
+  <p class="tip" id="splashTip"></p>
+  <button class="btn btn-primary btn-lg play hidden" id="playBtn"></button>
+  <span class="powered" id="powered"></span>
+</div>
+<div id="app">
+  <header class="topbar">
+    <button class="icon-btn phone-only" id="menuBtn" aria-label="Menu"></button>
+    <div class="brand" id="brand"></div>
+    <nav class="tabs" id="tabs"></nav>
+    <div class="chips">
+      <button class="chip lvl" id="chipLevel"></button>
+      <span class="chip jelly" id="chipJelly"></span>
+      <button class="chip tickets" id="chipTickets"></button>
+    </div>
+  </header>
+  <aside class="drawer" id="drawer"></aside>
+  <div class="scrim" id="scrim"></div>
+  <main class="layout">
+    <section class="stage" id="stage">
+      <canvas id="scene"></canvas>
+      <div class="hud">
+        <div class="honey"><b id="honeyAmt" class="num">0</b><small id="hpsAmt" class="num"></small></div>
+        <div class="rushbar hidden" id="rushBar"></div>
+        <div class="buffs" id="buffs"></div>
+      </div>
+      <div class="combo" id="combo"><i></i><span></span></div>
+      <div class="hint hidden" id="hint"></div>
+      <div class="stage-btns" id="stageBtns"></div>
+    </section>
+    <section class="panel" id="panel"></section>
+  </main>
+  <div class="toasts" id="toasts"></div>
+  <div class="modal-wrap hidden" id="modal"></div>
+</div>
+<script src="src/config.js"></script>
+<script src="src/data.js"></script>
+<script src="src/i18n.js"></script>
+<script src="src/format.js"></script>
+<script src="src/engine.js"></script>
+<script src="src/storage.js"></script>
+<script src="src/meta.js"></script>
+<script src="src/progress.js"></script>
+<script src="src/cloud.js"></script>
+<script src="src/audio.js"></script>
+<script src="src/icons.js"></script>
+<script src="src/scene.js"></script>
+<script src="src/ui.js"></script>
+<script src="src/ui2.js"></script>
+<script src="src/main.js"></script>
+</body>
+</html>

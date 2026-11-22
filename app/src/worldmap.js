@@ -58,12 +58,12 @@
     const s = BZ.Game.main;
     tall = innerHeight > innerWidth * 1.1;
     const VW = tall ? 900 : 1600, VH = tall ? 1600 : 900;
-    svg.setAttribute('viewBox', '0 0 ' + VW + ' ' + VH);
+    svg.setAttribute('viewBox', tall ? '-20 -40 940 1760' : '-30 -40 1660 1060');
     let h = '<defs>';
     BZ.WORLDS.forEach((w, i) => { const sk = BZ.SKIN_BY_ID[w.theme]; h += '<linearGradient id="wml' + i + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + sk.hill[0] + '"/><stop offset="1" stop-color="' + sk.hill[2] + '"/></linearGradient>'; });
     h += '<radialGradient id="wmsea" cx="50%" cy="45%" r="75%"><stop offset="0" stop-color="#1F5A66"/><stop offset="1" stop-color="#0B2229"/></radialGradient><radialGradient id="wmglow"><stop offset="0" stop-color="#F28C28" stop-opacity="0.55"/><stop offset="1" stop-color="#F28C28" stop-opacity="0"/></radialGradient></defs>';
-    h += '<rect width="' + VW + '" height="' + VH + '" fill="url(#wmsea)"/><g class="wm-cam" id="wmCam">';
-    for (let r = 0; r < VH / 100; r++) for (let c = 0; c < VW / 280; c++) h += '<path class="wm-wave" style="animation-delay:-' + ((r * 6 + c) % 7) + 's" d="M' + (60 + c * 280 + (r % 2) * 140) + ',' + (60 + r * 100) + 'q20,-12 40,0t40,0"/>';
+    h += '<rect x="-3000" y="-3000" width="' + (VW + 6000) + '" height="' + (VH + 6000) + '" fill="#0B2229"/><rect x="-600" y="-600" width="' + (VW + 1200) + '" height="' + (VH + 1200) + '" fill="url(#wmsea)"/><g class="wm-cam" id="wmCam">';
+    for (let r = -6; r < VH / 100 + 6; r++) for (let c = -4; c < VW / 280 + 4; c++) h += '<path class="wm-wave" style="animation-delay:-' + ((r * 6 + c) % 7) + 's" d="M' + (60 + c * 280 + (r % 2) * 140) + ',' + (60 + r * 100) + 'q20,-12 40,0t40,0"/>';
     h += '<path class="wm-route" d="M' + BZ.WORLDS.map(w => X(w) + ',' + Y(w)).join(' L') + '"/>';
     const opened = BZ.WORLDS.filter((w, i) => s.worldsOpen.includes(i));
     if (opened.length > 1) h += '<path class="wm-route done" d="M' + opened.map(w => X(w) + ',' + Y(w)).join(' L') + '"/>';
@@ -229,7 +229,7 @@
     if (ov) return;
     ov = document.createElement('div');
     ov.className = 'wm-ov';
-    ov.innerHTML = '<svg class="wm-world" preserveAspectRatio="xMidYMid slice"></svg><div class="wm-top"><button class="wm-back" data-wm="back"><span class="arr"></span><span class="lbl"></span></button><h1></h1><button class="help-btn wm-help" data-wm="help">' + ic('info') + '</button><span class="sp"></span><span class="wm-chip">' + ic('sparkle') + '<span id="wmEss">0</span></span><button class="wm-treeb" data-wm="tree">' + ic('star') + '<span class="lbl"></span></button></div><div class="wm-hint"></div><div class="wm-card"></div><div class="wm-treep"></div><div class="wm-flash"><div><small></small><b></b></div></div>';
+    ov.innerHTML = '<svg class="wm-world" preserveAspectRatio="xMidYMid meet"></svg><div class="wm-top"><button class="wm-back" data-wm="back"><span class="arr"></span><span class="lbl"></span></button><h1></h1><button class="help-btn wm-help" data-wm="help">' + ic('info') + '</button><span class="sp"></span><span class="wm-chip">' + ic('sparkle') + '<span id="wmEss">0</span></span><button class="wm-treeb" data-wm="tree">' + ic('star') + '<span class="lbl"></span></button></div><div class="wm-hint"></div><div class="wm-card"></div><div class="wm-treep"></div><div class="wm-flash"><div><small></small><b></b></div></div>';
     document.getElementById('app').appendChild(ov);
     svg = ov.querySelector('.wm-world');
     ov.addEventListener('click', onClick);

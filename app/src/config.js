@@ -8,7 +8,7 @@
       appId: '1:12096577147:web:bd042e1df8c8b13d0dccde'
     },
     adsense: {
-      client: '',
+      client: 'ca-pub-1016489685314516',
       test: true
     }
   };

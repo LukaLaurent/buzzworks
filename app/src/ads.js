@@ -18,22 +18,25 @@
   root.BZ_ADS = {
     show(place) {
       return new Promise(resolve => {
-        let rewarded = false, done = false;
+        let rewarded = false, done = false, started = false;
         const finish = ok => { if (done) return; done = true; resolve(ok); };
         push({
           type: 'reward',
           name: 'bz_' + place,
-          beforeAd: () => { if (BZ.Audio) BZ.Audio.suspend(); },
+          beforeAd: () => { started = true; if (BZ.Audio) BZ.Audio.suspend(); },
           afterAd: () => { if (BZ.Audio) BZ.Audio.resume(); },
-          beforeReward: showAdFn => showAdFn(),
+          beforeReward: showAdFn => { started = true; showAdFn(); },
           adDismissed: () => finish(false),
           adViewed: () => { rewarded = true; finish(true); },
           adBreakDone: info => {
-            if (!rewarded && info && info.breakStatus !== 'viewed' && info.breakStatus !== 'dismissed' && BZ.UI) BZ.UI.toast('ad', BZ.t('ad_unavailable'));
-            finish(rewarded);
+            const st = info && info.breakStatus;
+            if (rewarded) finish(true);
+            else if (st === 'dismissed') finish(false);
+            else finish('none');
           }
         });
-        setTimeout(() => finish(rewarded), 120000);
+        setTimeout(() => { if (!started) finish('none'); }, 5000);
+        setTimeout(() => finish(rewarded ? true : 'none'), 120000);
       });
     }
   };

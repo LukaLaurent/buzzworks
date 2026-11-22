@@ -330,7 +330,11 @@
       const s = G.main;
       if (P.adLeft(s, place) <= 0) { UI.toast('ad', t('ad_none')); resolve(false); return; }
       if (P.adsFree(s)) { UI.toast('ad', t('ad_skip'), { ok: true }); resolve(true); return; }
-      if (root.BZ_ADS && root.BZ_ADS.show) { root.BZ_ADS.show(place).then(ok => resolve(!!ok)).catch(() => resolve(false)); return; }
+      if (root.BZ_ADS && root.BZ_ADS.show) { root.BZ_ADS.show(place).then(r => { if (r === 'none') placeholder(resolve); else resolve(!!r); }).catch(() => placeholder(resolve)); return; }
+      placeholder(resolve);
+    }).then(ok => { if (ok) P.adUse(G.main, place); return ok; });
+  };
+  function placeholder(resolve) {
       let tm = 0;
       UI.modal('<div class="hero"><div class="pic">' + ic('ad') + '</div><h4>' + t('ad_title') + '</h4><p>' + t('ad_text') + '</p></div><div class="progress"><i id="adBar" style="width:0%"></i></div><div class="row center"><button class="btn btn-ghost" id="adX">' + t('cancel') + '</button><button class="btn btn-primary off" id="adOk">' + t('ad_reward') + '</button></div>', false, {
         '#adX': () => { clearInterval(tm); UI.closeModal(); resolve(false); },
@@ -344,8 +348,7 @@
         bar.style.width = (k * 100).toFixed(0) + '%';
         if (k >= 1) { clearInterval(tm); const ok = $('adOk'); if (ok) ok.classList.remove('off'); }
       }, 100);
-    }).then(ok => { if (ok) P.adUse(G.main, place); return ok; });
-  };
+  }
 
   UI.levelModal = function () {
     const s = G.main;

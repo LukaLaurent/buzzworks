@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isNum(v) { return v is number && v >= 0; }
+
+    match /saves/{uid} {
+      allow read, delete: if signedIn() && request.auth.uid == uid;
+      allow write: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['data', 'at'])
+        && request.resource.data.data is string
+        && request.resource.data.data.size() < 900000;
+    }
+
+    match /players/{uid} {
+      allow read: if true;
+      allow delete: if signedIn() && request.auth.uid == uid;
+      allow write: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['name', 'tier', 'v', 'honey', 'crowns', 'essence', 'bees', 'level', 'trophies', 'at'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 18
+        && isNum(request.resource.data.honey)
+        && isNum(request.resource.data.crowns) && request.resource.data.crowns < 100000
+        && isNum(request.resource.data.essence) && request.resource.data.essence < 10000000
+        && isNum(request.resource.data.bees) && request.resource.data.bees <= 40
+        && isNum(request.resource.data.level) && request.resource.data.level < 100000
+        && isNum(request.resource.data.trophies) && request.resource.data.trophies <= 5000
+        && request.resource.data.tier is int && request.resource.data.tier >= 0 && request.resource.data.tier <= 7;
+    }
+
+    match /groups/{gid} {
+      function entryOk(e) {
+        return e.keys().hasOnly(['n', 'p', 'l'])
+          && e.n is string && e.n.size() > 0 && e.n.size() <= 18
+          && e.p is number && e.p >= 0 && e.p < 1000000
+          && e.l is number && e.l >= 1;
+      }
+      allow read: if true;
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['week', 'tier', 'scores'])
+        && request.resource.data.scores.keys().hasOnly([request.auth.uid])
+        && entryOk(request.resource.data.scores[request.auth.uid]);
+      allow update: if signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['scores'])
+        && request.resource.data.scores.diff(resource.data.scores).affectedKeys().hasOnly([request.auth.uid])
+        && request.resource.data.scores.size() <= 20
+        && entryOk(request.resource.data.scores[request.auth.uid])
+        && (!(request.auth.uid in resource.data.scores)
+            || request.resource.data.scores[request.auth.uid].p <= resource.data.scores[request.auth.uid].p + 20000);
+    }
+  }
+}

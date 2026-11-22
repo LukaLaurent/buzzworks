@@ -12,6 +12,7 @@
     { id: 'daily', icon: 'calendar' },
     { id: 'pass', icon: 'ticket' },
     { id: 'worlds', icon: 'globe' },
+    { id: 'league', icon: 'league' },
     { id: 'trophies', icon: 'trophy' },
     { id: 'settings', icon: 'settings' },
     { id: 'about', icon: 'info' }
@@ -70,7 +71,9 @@
     UI.buildChrome();
   };
 
+  const visibleTabs = () => TABS.filter(x => x.id !== 'league' || (BZ.Cloud && BZ.Cloud.configured()));
   UI.buildChrome = function () {
+    const TABS = visibleTabs();
     $('brand').innerHTML = BZ.appIconSvg(28) + '<div><span>Buzz</span><b>works</b></div>';
     $('tabs').innerHTML = TABS.map(x => '<button data-tab="' + x.id + '" title="' + t('tab_' + x.id) + '" class="' + (x.id === page ? 'on' : '') + '">' + ic(x.icon) + '<span class="tl">' + t('tab_' + x.id) + '</span></button>').join('');
     $('tabs').querySelectorAll('button').forEach(b => { b.onclick = () => UI.show(b.dataset.tab); });
@@ -492,6 +495,7 @@
     h += settingSwitch('set_music', '', st.music, 'set:music');
     h += settingSwitch('set_vibrate', '', st.vibrate, 'set:vibrate');
     h += settingSwitch('set_effects', t('set_effects_d'), st.reduced, 'set:reduced');
+    h += '<div class="setting"><div><b>' + t('set_name') + '</b><small>' + t('set_name_d') + '</small></div><input class="input" maxlength="18" data-inp="name" value="' + esc(s.playerName || '') + '" placeholder="' + esc(BZ.Online ? BZ.Online.name(s) : '') + '"></div>';
     h += '</div>';
     const C = BZ.Cloud;
     h += '<div class="card"><div class="setting"><div><b>' + t('cloud_title') + '</b><small>' + (C && C.configured() ? (C.signedIn() ? esc(C.who() || '') + '  ·  ' + (s.cloud.at ? t('cloud_last', { t: F.time((Date.now() - s.cloud.at) / 1000) }) : t('cloud_never')) : t('cloud_d')) : t('cloud_cfg')) + '</small></div>';
@@ -561,7 +565,8 @@
       return;
     }
     const idx = '1234567890'.indexOf(e.key);
-    if (idx >= 0) UI.show(TABS[idx].id);
+    const vt = visibleTabs();
+    if (idx >= 0 && vt[idx]) UI.show(vt[idx].id);
   }
 
   function liveUpdate() {
@@ -707,7 +712,6 @@
     btn.focus({ preventScroll: true });
     btn.onclick = () => {
       UI.splashDone();
-      if (BZ.Cloud && BZ.Cloud.wanted() && !BZ.Cloud.signedIn()) BZ.Cloud.resume().then(() => G.cloudSync(false, true)).catch(() => {});
       onPlay();
     };
   };

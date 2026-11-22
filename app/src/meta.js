@@ -26,7 +26,7 @@
 
   M.ensure = function (s) {
     s.daily = s.daily || { streak: 0, bestStreak: 0, lastClaim: '', questDay: '', quests: [] };
-    s.league = s.league || { week: '', tier: 0, points: 0, bestTier: 0, history: [], pending: null };
+    s.league = Object.assign({ week: '', tier: 0, points: 0, bestTier: 0, gid: '', prev: null, pending: null, history: [] }, s.league || {});
     s.quick = s.quick || { slot: -1, tasks: [], done: 0 };
     s.seed = s.seed || (Math.random() * 1e9) >>> 0;
     s.playerName = s.playerName || '';
@@ -120,98 +120,26 @@
     return BZ.P.grant(s, r);
   };
 
-  M.LEAGUE_ON = false;
   M.addPoints = function (s, kind, mult) {
-    if (!M.LEAGUE_ON) return;
     const v = (BZ.LEAGUE_POINTS[kind] || 0) * (mult || 1);
     if (!v) return;
     M.leagueRoll(s);
     s.league.points += v;
   };
-
-  const NAMES = ['Mellifera', 'Waxwing', 'Beeatrice', 'Nectarine', 'Sir Buzzalot', 'Queenie', 'Lavender', 'Stinger', 'Drizzle', 'Amberly', 'Bumble', 'Clover', 'Dandelion', 'Goldie', 'Hexa', 'Jellybean', 'Marigold', 'Saffron', 'Sunny', 'Tupelo', 'Wildflower', 'Zinnia', 'Apis', 'Honeydew', 'Maple', 'Melli', 'Pollen Pal', 'Comb Over', 'Buzzy', 'Fuzzball', 'Sweet Pea', 'Thistle', 'Acacia', 'Heather', 'Linden', 'Sage', 'Poppy', 'Juniper', 'Briar', 'Peony', 'Hive Five', 'Bee Kind', 'Mead Maker', 'Wax On', 'Royal Rae', 'Drone Ranger', 'Nectar Nick', 'Busy Bea', 'Golden Gus', 'Honey Hana', 'Petal', 'Tansy', 'Sorrel', 'Yarrow', 'Bramble', 'Fennel', 'Mimosa', 'Orchid', 'Rosemary', 'Willow'];
-
-  M.tierBase = t => 800 * Math.pow(1.4, t);
-
-  M.bots = function (s, week, tier) {
-    const rnd = E.rng(hash(week + ':' + tier + ':' + s.seed));
-    const hist = s.league.history.slice(-3);
-    const avg = hist.length ? hist.reduce((a, h) => a + h.points, 0) / hist.length : 0;
-    const base = avg > 0 ? M.tierBase(tier) * 0.6 + avg * 0.4 : M.tierBase(tier);
-    const bots = [];
-    const used = new Set();
-    for (let i = 0; i < 19; i++) {
-      let name;
-      do { name = NAMES[Math.floor(rnd() * NAMES.length)]; } while (used.has(name));
-      used.add(name);
-      if (rnd() < 0.3) name += ' ' + (1 + Math.floor(rnd() * 99));
-      const z = (rnd() + rnd() + rnd() - 1.5) * 1.15;
-      const skill = Math.exp(z * 0.55) * (0.55 + i / 19 * 0.9);
-      const days = [];
-      for (let d = 0; d < 7; d++) days.push(rnd() < 0.15 ? 0.05 : 0.4 + rnd());
-      const dsum = days.reduce((a, b) => a + b, 0);
-      const startH = 6 + rnd() * 6, endH = startH + 8 + rnd() * 8;
-      bots.push({ name, final: Math.round(base * skill), days: days.map(x => x / dsum), startH, endH, color: Math.floor(rnd() * 6) });
-    }
-    return bots;
-  };
-  M.botScore = function (b, frac) {
-    const dayF = frac * 7;
-    let sum = 0;
-    for (let d = 0; d < 7; d++) {
-      if (dayF >= d + 1) sum += b.days[d];
-      else if (dayF > d) {
-        const h = (dayF - d) * 24;
-        const p = Math.max(0, Math.min(1, (h - b.startH) / (b.endH - b.startH)));
-        sum += b.days[d] * p;
-        break;
-      }
-    }
-    return Math.round(b.final * sum);
-  };
   M.weekFrac = function (now) {
     now = now || new Date();
-    const s = M.weekStart(now).getTime(), e = M.weekEnd(now).getTime();
-    return Math.max(0, Math.min(1, (now.getTime() - s) / (e - s)));
+    const a = M.weekStart(now).getTime(), b = M.weekEnd(now).getTime();
+    return Math.max(0, Math.min(1, (now.getTime() - a) / (b - a)));
   };
-
-  M.standings = function (s, frac) {
-    const L = s.league;
-    const bots = M.bots(s, L.week, L.tier);
-    const sf = Math.min(0.95, L.startFrac || 0);
-    const eff = Math.max(0, (frac - sf) / (1 - sf));
-    const list = bots.map(b => ({ name: b.name, points: Math.round(M.botScore(b, eff) * (1 - sf)), bot: true, color: b.color }));
-    list.push({ name: s.playerName || BZ.t('league_you'), points: Math.round(L.points), you: true });
-    list.sort((a, b) => b.points - a.points || (a.you ? -1 : 1));
-    list.forEach((e, i) => { e.rank = i + 1; });
-    return list;
-  };
-
-  M.REWARDS = [120, 80, 60, 45, 35, 25, 22, 20, 18, 16, 15, 14, 13, 12, 11, 10, 10, 10, 10, 10];
-
   M.leagueRoll = function (s) {
     const L = s.league;
     const wk = M.weekKey();
-    if (!L.week) { L.week = wk; L.points = 0; L.startFrac = M.weekFrac(); return null; }
-    if (L.week === wk) return null;
-    const list = M.standings(s, 1);
-    const me = list.find(e => e.you);
-    const rank = me.rank;
-    const egg = Math.max(1, Math.round((M.REWARDS[rank - 1] || 10) / 20));
-    const fromTier = L.tier;
-    let move = 0;
-    if (rank <= 5 && L.tier < BZ.LEAGUE_TIERS.length - 1) move = 1;
-    else if (rank >= 16 && L.tier > 0) move = -1;
-    L.tier += move;
-    L.bestTier = Math.max(L.bestTier || 0, L.tier);
-    L.history.push({ week: L.week, tier: fromTier, rank, points: Math.round(L.points) });
-    if (L.history.length > 20) L.history.shift();
-    E.addTickets(s, { egg });
-    L.pending = { rank, egg, move, tier: L.tier, fromTier };
+    if (L.week === wk) return false;
+    if (L.week && L.gid) L.prev = { week: L.week, gid: L.gid, points: Math.round(L.points), tier: L.tier || 0 };
     L.week = wk;
     L.points = 0;
-    L.startFrac = 0;
-    return L.pending;
+    L.gid = '';
+    return true;
   };
 
   M.dropBee = function (s, minRarity, rnd) {

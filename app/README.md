@@ -6,7 +6,7 @@ An idle honey tycoon. Tap the comb, build a hive empire, catch lucky bees and ti
 
 | Platform | How |
 |---|---|
-| Website | Hosted on GitHub Pages (see Publishing). Saves stay in the browser, with optional Google Drive cloud save. |
+| Website | Hosted on GitHub Pages (see Publishing). Saves stay in the browser, with optional cloud save, leagues and rankings through Firebase. |
 | Windows | Double click `Buzzworks.cmd` in the project folder. It starts a small local server (port 5190, needs Node.js) and opens the game in an app window (Edge or Chrome) or in the default browser. The server stops by itself 5 minutes after the game is closed. |
 | Any static host | Serve the `app` folder as is. No build step. |
 | Android (later) | Wrap the `app` folder with Capacitor (see below). |
@@ -43,21 +43,27 @@ With the local server, saves go to `data/save.json` and `data/settings.json`, wi
 
 - **Essence**: sell a world (5 crowns or more earned in it) to restart it from zero for essence. Essence gives +12% honey and +3% royal jelly per point in every world, and perks at 5, 15, 40, 80 and 150.
 - **Ads**: optional rewarded ads for x2 honey for 30 min (6 a day), 2 egg tickets (3 a day), away earnings x2 (3 a day) and blessing rerolls (3 a day). The free Bee dance gives x2 for 20 min every 4 h.
+- **League and rankings** (level 5, needs Firebase and Google sign-in): weekly groups of up to 20 real players and top 50 rankings.
 - **No ads**: the only paid item (1.99), shown as coming soon until a payment provider is plugged in.
 
 Keyboard: `Space` or `Enter` taps the comb, `1` to `0` switch tabs, `Esc` closes dialogs.
 
-## Google cloud save
+## Online: cloud save, leagues and rankings (Firebase)
 
-The game can save to a private app folder in the player's own Google Drive. It needs a free OAuth client ID, which only the site owner can create:
+Sign in with Google, cloud saves, weekly leagues with real players and rankings all run on a free Firebase project (Spark plan, no card needed). Until `app/src/config.js` has a Firebase config, the League tab is hidden and saves stay in the browser.
 
-1. Open https://console.cloud.google.com, create a project (for example "Buzzworks").
-2. APIs and services, Library: enable **Google Drive API**.
-3. APIs and services, OAuth consent screen: choose External, fill the app name, support email and developer email. Add the scope `https://www.googleapis.com/auth/drive.appdata`. Publish the app (this scope does not need a review).
-4. APIs and services, Credentials, Create credentials, OAuth client ID, type **Web application**. Under Authorized JavaScript origins add `https://YOUR-GITHUB-NAME.github.io` and `http://localhost:5190`.
-5. Copy the client ID into `app/src/config.js` (`googleClientId: '...apps.googleusercontent.com'`) and publish again.
+1. Open https://console.firebase.google.com, Create a project (for example "buzzworks"). Google Analytics is not needed.
+2. Project overview, the web icon `</>`: register an app (any nickname, no Firebase Hosting). Copy `apiKey`, `authDomain`, `projectId` and `appId` into `app/src/config.js`. These values are public by design; the security rules protect the data.
+3. Build, Authentication, Get started, Sign-in method: enable **Google**. Then Settings, Authorized domains: add `lukalaurent.github.io` (localhost is already there).
+4. Build, Firestore Database, Create database, pick a location close to the players, start in **production mode**.
+5. Firestore, Rules: replace everything with the content of `app/firebase/firestore.rules` and Publish.
+6. Publish the game again.
 
-Until a client ID is set, the Settings tab says cloud save is not set up and the game saves in the browser only. When signed in, the game syncs every 3 minutes. Google tokens last one hour, and the game asks Google again (without a password) when the player presses Play on the loading screen.
+What is stored: `saves/{uid}` (the player's save, private), `players/{uid}` (public name, level and ranking stats), `groups/{week_tier_n}` (league groups of up to 20 players with their weekly points). The game syncs every 3 minutes while signed in.
+
+Leagues: points come from lucky bees, ticket bees, quests, quick tasks, swarms, milestones, upgrades, trophies and play time. Each week (Monday to Monday, local time) players join a group of up to 20 in their tier. When a new week starts, the top quarter moves up a tier and the bottom quarter moves down (groups of 4 or more). Rewards: egg tickets for everyone, royal tickets for the top 3, a core ticket on promotion. Rankings show the top 50 for honey made (all worlds), crowns, essence, bee species, level and trophies.
+
+The game runs in the browser, so a determined player could send fake numbers. The rules cap values and point gains per update; obvious cheaters can be deleted from the Firestore console.
 
 ## Publishing on GitHub Pages
 
@@ -73,12 +79,15 @@ powershell -ExecutionPolicy Bypass -File app/tools/publish.ps1 -Message "What ch
 Buzzworks.cmd        launcher (project root)
 app/index.html       page shell and loading screen
 app/css/style.css    styles, brand tokens at the top
-app/src/config.js    site settings (Google client ID)
+app/src/config.js    site settings (Firebase config)
 app/src/data.js      balance numbers: producers, upgrades, skills, lucky effects, skins, cores, worlds, trophies, banners
 app/src/engine.js    game rules: production, buying, taps, lucky and ticket bees, swarm, coronation, offline, automation, trophies
 app/src/meta.js      streak, daily quests, quick tasks, hidden league
 app/src/progress.js  tickets, hatching, cores, skin parts, level, pass, blessings, ads limits, worlds and essence
-app/src/cloud.js     Google Drive cloud save
+app/src/cloud.js     Firebase sign-in, cloud save, rankings and league groups
+app/src/online.js    profile, weekly league sync and rankings
+app/src/ui3.js       league and rankings screens
+app/firebase/        Firestore security rules
 app/src/ui.js        pages, HUD, dialogs, toasts
 app/src/ui2.js       pass, workshop, worlds, hatchery, blessing, level and ad screens, promo banners, extra text
 app/src/scene.js     animated hive (canvas)

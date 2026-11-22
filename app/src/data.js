@@ -214,7 +214,7 @@
   ];
 
   BZ.LEAGUE_POINTS = {
-    lucky: 6, quest: 30, swarm: 60, scout: 3, milestone: 3, upgrade: 1, achievement: 10, power: 8, minute: 1, rush: 20, streak: 10
+    lucky: 6, ticket: 4, quick: 10, quest: 30, swarm: 60, scout: 3, milestone: 3, upgrade: 1, achievement: 10, power: 8, minute: 1, rush: 20, streak: 10
   };
 
   BZ.QUEST_POOL = [

@@ -362,6 +362,7 @@
     const got = M.claimQuick(G.main, i);
     if (!got) return;
     xp('quick');
+    M.addPoints(G.main, 'quick');
     afterGot(got, 'clock');
   };
 
@@ -407,20 +408,22 @@
     if (s !== G.main) return;
     switch (type) {
       case 'buy': M.questProgress(s, 'buy', d.n); xp('buy', Math.min(10, d.n)); break;
-      case 'upgrade': M.questProgress(s, 'upgrade', 1); xp('upgrade'); break;
+      case 'upgrade': M.questProgress(s, 'upgrade', 1); M.addPoints(s, 'upgrade'); xp('upgrade'); break;
       case 'milestone':
         msQueue.push(d);
         if (msQueue.length === 1) setTimeout(flushMs, 60);
         M.questProgress(s, 'milestone', d.count);
+        M.addPoints(s, 'milestone', d.count);
         xp('milestone', d.count);
         break;
       case 'colony': A.play('milestone'); UI.toast('hive', t('colony_toast', { n: d.level }), { ok: true }); break;
-      case 'power': xp('power', Math.min(5, d.count)); break;
+      case 'power': M.addPoints(s, 'power', Math.min(5, d.count)); xp('power', Math.min(5, d.count)); break;
       case 'tap': M.questProgress(s, 'tap', 1); M.questProgress(s, 'combo', d.combo, true); break;
-      case 'lucky': M.questProgress(s, 'lucky', 1); xp('lucky'); break;
-      case 'ticketBee': M.questProgress(s, 'ticketbee', 1); xp('ticket'); break;
-      case 'swarm': M.questProgress(s, 'swarm', 1); xp('swarm'); break;
+      case 'lucky': M.questProgress(s, 'lucky', 1); M.addPoints(s, 'lucky'); xp('lucky'); break;
+      case 'ticketBee': M.questProgress(s, 'ticketbee', 1); M.addPoints(s, 'ticket'); xp('ticket'); break;
+      case 'swarm': M.questProgress(s, 'swarm', 1); M.addPoints(s, 'swarm'); xp('swarm'); break;
       case 'achievement':
+        M.addPoints(s, 'achievement');
         xp('achievement');
         UI.dirty('trophies');
         achQueue.push(d);
@@ -506,8 +509,9 @@
     }
   }
 
-  G.cloudSignIn = function () { if (BZ.Cloud) BZ.Cloud.signIn().then(() => { bootLastSave = 0; G.cloudSync(true, true); }).catch(e => { Log.error('cloud sign in: ' + (e && e.message || e)); UI.render(); }); };
-  G.cloudSignOut = function () { if (BZ.Cloud) { BZ.Cloud.signOut(); UI.render(); } };
+  G.cloudSignIn = function () { if (BZ.Cloud) BZ.Cloud.signIn().then(() => { bootLastSave = 0; G.cloudSync(true, true); UI.render(); }).catch(e => { Log.error('cloud sign in: ' + (e && e.message || e)); UI.toast('info', t('cloud_err'), { nova: 'oops' }); UI.render(); }); };
+  G.cloudSignOut = function () { if (BZ.Cloud) BZ.Cloud.signOut().then(() => UI.render()); };
+  G.online = function () { if (BZ.Online && BZ.Cloud.signedIn()) BZ.Online.sync(G.main).then(ok => { if (ok) { UI.dirty('league'); G.save(); } }); };
   let bootLastSave = 0;
   G.cloudSync = function (manual, firstPull) {
     const C = BZ.Cloud;
@@ -515,7 +519,7 @@
     const push = () => {
       G.main.lastSave = Date.now();
       G.main.cloud.at = Date.now();
-      C.push(BZ.Store.serialize(G.main)).then(() => { if (manual) UI.toast('upload', t('cloud_saved'), { ok: true }); UI.dirty('settings'); })
+      C.push(BZ.Store.serialize(G.main)).then(() => { if (manual) UI.toast('upload', t('cloud_saved'), { ok: true }); UI.dirty('settings'); G.online(); })
         .catch(e => { Log.error('cloud push: ' + (e && e.message || e)); if (manual) UI.toast('info', t('cloud_err'), { nova: 'oops' }); });
     };
     if (!firstPull) { push(); return; }
@@ -560,11 +564,13 @@
       if (M.quickGen(s)) UI.dirty('daily');
       const fl = P.flagCheck(s);
       if (fl) { A.play('milestone'); UI.toast('info', t('unlocked_tab', { p: t('tab_' + fl) }), { ok: true, long: true }); UI.buildChrome(); }
+      if (s.league.pending && !UI.modalOpen()) { const p = s.league.pending; s.league.pending = null; A.play(p.move > 0 ? 'milestone' : 'achievement'); UI.showLeagueResult(p); G.save(); }
       if (P.blessCheck(s)) { A.play('luckySpawn'); if (!UI.modalOpen()) UI.showBless(); else UI.toast('sparkle', t('bless_pending'), { ok: true }); }
     }
     minuteAcc += dt;
     if (minuteAcc >= 60) {
       minuteAcc = 0;
+      M.addPoints(s, 'minute');
       if (Math.random() < BZ.DROP.ticketMin) { E.addTickets(s, { egg: 1 }); UI.toast('ticket', t('found_ticket'), { ok: true }); }
     }
     saveTimer += dt;
@@ -632,7 +638,10 @@
       root.addEventListener('pagehide', () => G.save(true));
       if (BZ.Store.server) setInterval(() => { fetch('/api/ping').catch(() => {}); }, 60000);
       document.addEventListener('pointerdown', () => A.unlock(), { once: true });
-      if (BZ.Cloud) BZ.Cloud.init().then(ok => { if (ok && BZ.Cloud.signedIn()) G.cloudSync(false, true); UI.dirty('settings'); }).catch(() => {});
+      if (BZ.Cloud && BZ.Cloud.configured()) {
+        BZ.Cloud.onChange = () => { UI.dirty('settings'); UI.dirty('league'); };
+        BZ.Cloud.init().then(ok => { if (ok && BZ.Cloud.signedIn()) G.cloudSync(false, true); UI.dirty('settings'); UI.dirty('league'); }).catch(e => Log.error('cloud init: ' + (e && e.message || e)));
+      }
       await (document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 2500))]) : Promise.resolve());
       setLoad(1);
       lastFrame = performance.now();

@@ -16,7 +16,7 @@
 
   P.XP = { buy: 1, upgrade: 4, milestone: 6, lucky: 10, quest: 50, quick: 15, swarm: 80, achievement: 8, hatch: 5, power: 5, coronation: 300, bless: 10, ticket: 6 };
   P.xpFor = L => Math.round(40 * Math.pow(L, 1.7));
-  P.UNLOCKS = { daily: 2, bees: 3, workshop: 5, pass: 6 };
+  P.UNLOCKS = { daily: 2, bees: 3, workshop: 5, league: 5, pass: 6 };
 
   P.PASS_TIERS = 30;
   P.PASS_XP = 300;

@@ -154,7 +154,7 @@
     { at: 1, id: 'lucky', name: { en: 'Lucky bees 25% more often', fr: 'Abeilles dorées 25 % plus fréquentes' } },
     { at: 2, id: 'start', name: { en: 'Start each swarm with 25 of the first 5 producers', fr: 'Chaque essaim démarre avec 25 des 5 premiers producteurs' } },
     { at: 3, id: 'keep', name: { en: 'Swarms keep tap and lucky upgrades', fr: 'Les essaims gardent les améliorations de toucher et dorées' } },
-    { at: 20, id: 'mind', name: { en: 'Unlocks the Hive mind skill (more levels at 100 and 500 crowns), kept after a coronation', fr: 'Débloque la compétence Esprit de ruche (niveaux suivants à 100 et 500 couronnes), gardée après un couronnement' } },
+    { at: 20, id: 'mind', name: { en: 'Unlocks the Hive mind skill (more levels at 100 and 500 crowns)', fr: 'Débloque la compétence Esprit de ruche (niveaux suivants à 100 et 500 couronnes)' } },
     { at: 8, id: 'nap', name: { en: '+4 h away earnings', fr: '+4 h de gains en absence' } },
     { at: 12, id: 'egg', name: { en: 'Each coronation gives 3 royal tickets', fr: 'Chaque couronnement donne 3 tickets royaux' } },
     { at: 20, id: 'decree', name: { en: 'Royal decree twice as strong', fr: 'Décret royal deux fois plus fort' } }

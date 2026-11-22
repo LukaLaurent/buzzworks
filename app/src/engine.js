@@ -410,9 +410,7 @@
     if (extra) { gain += extra; s.crownsBonus = (s.crownsBonus || 0) + extra; }
     s.crowns = (s.crowns || 0) + gain;
     s.coronations = (s.coronations || 0) + 1;
-    const mind = E.qlvl(s, 'mind');
     s.queen = {};
-    if (E.perk(s, 'mind') && mind) s.queen.mind = mind;
     s.rj = 0;
     s.rjEarned = 0;
     s._dirty = true;

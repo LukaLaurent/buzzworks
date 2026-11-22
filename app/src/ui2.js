@@ -25,7 +25,7 @@
     bless_title: 'Choose a blessing', bless_sub: 'It lasts until your next swarm', bless_reroll: 'Reroll', bless_now: 'Blessings this swarm', bless_pending: 'Blessing ready', bless_none: 'Blessings appear at the start of each swarm and at big honey milestones.',
     bl_bloom: 'Blooming fields', bl_quick: 'Quick wings', bl_paws: 'Strong paws', bl_thrift: 'Bargain wax', bl_elixir: 'Long dance', bl_focus: 'Focus', bl_jelly: 'Jelly harvest', bl_rhythm: 'Rhythm', bl_nectar: 'Nectar flow', bl_ticket: 'Ticket wind', bl_crown: 'Crown blessing', bl_golden: 'Golden hour', bl_royal: 'Royal favor',
     bd_honey: '+{v} honey', bd_luckyFreq: 'Lucky bees {v} more often', bd_tap: 'Taps x{v}', bd_cost: 'Producers {v} cheaper', bd_luckyDur: 'Lucky effects {v} longer', bd_focus: '{p} x{v}', bd_rj: '+{v} royal jelly', bd_combo: '+{v} max combo', bd_ticketFreq: 'Ticket bees {v} more often',
-    ad_title: 'Advertisement', ad_text: 'A short ad plays here.', ad_reward: 'Get reward', ad_skip: 'No ads for you: reward granted', ad_left: '{n} left today', ad_none: 'No more ads today', watch_ad: 'Watch ad',
+    ad_skip: 'No ads for you: reward granted', ad_left: '{n} left today', ad_none: 'No more ads today', watch_ad: 'Watch ad',
     ad_boost: 'x2 honey for 30 min', collect_ad: 'Collect x2 (ad)', dance_wait: 'Bee dance ready in {t}',
     promo_featured: 'Featured: {b}', promo_featured_d: 'Royal egg rate up this week', promo_pass: 'Hive pass  ·  tier {n}', promo_pass_d: 'Rewards waiting to be claimed', promo_bless: 'Blessing ready', promo_bless_d: 'Pick one of three bonuses', promo_tickets: '{n} egg tickets', promo_tickets_d: 'Hatch them in the Bees tab', promo_quick: 'Quick task done', promo_quick_d: 'Claim it in the Daily tab', promo_world: 'A new world can open', promo_world_d: 'Spend crowns in the Worlds tab',
     st_level: 'Player level', tg_level: 'Reach player level {v}', got_items: 'You got',
@@ -61,7 +61,7 @@
     bless_title: 'Choisissez une bénédiction', bless_sub: 'Elle dure jusqu\'au prochain essaim', bless_reroll: 'Relancer', bless_now: 'Bénédictions de cet essaim', bless_pending: 'Bénédiction prête', bless_none: 'Les bénédictions arrivent au début de chaque essaim et aux grands paliers de miel.',
     bl_bloom: 'Champs en fleurs', bl_quick: 'Ailes rapides', bl_paws: 'Pattes fortes', bl_thrift: 'Cire bon marché', bl_elixir: 'Longue danse', bl_focus: 'Concentration', bl_jelly: 'Récolte de gelée', bl_rhythm: 'Rythme', bl_nectar: 'Flot de nectar', bl_ticket: 'Vent de tickets', bl_crown: 'Bénédiction de la couronne', bl_golden: 'Heure dorée', bl_royal: 'Faveur royale',
     bd_honey: '+{v} de miel', bd_luckyFreq: 'Abeilles dorées {v} plus fréquentes', bd_tap: 'Touchers x{v}', bd_cost: 'Producteurs {v} moins chers', bd_luckyDur: 'Effets dorés {v} plus longs', bd_focus: '{p} x{v}', bd_rj: '+{v} de gelée royale', bd_combo: '+{v} au combo maximum', bd_ticketFreq: 'Abeilles à ticket {v} plus fréquentes',
-    ad_title: 'Publicité', ad_text: 'Une courte publicité s\'affiche ici.', ad_reward: 'Récupérer', ad_skip: 'Pas de pub pour vous : récompense donnée', ad_left: 'encore {n} aujourd\'hui', ad_none: 'Plus de pub aujourd\'hui', watch_ad: 'Voir une pub',
+    ad_skip: 'Pas de pub pour vous : récompense donnée', ad_left: 'encore {n} aujourd\'hui', ad_none: 'Plus de pub aujourd\'hui', watch_ad: 'Voir une pub',
     ad_boost: 'Miel x2 pendant 30 min', collect_ad: 'Récupérer x2 (pub)', dance_wait: 'Danse des abeilles prête dans {t}',
     promo_featured: 'En vedette : {b}', promo_featured_d: 'Œuf royal boosté cette semaine', promo_pass: 'Pass de la ruche  ·  palier {n}', promo_pass_d: 'Des récompenses vous attendent', promo_bless: 'Bénédiction prête', promo_bless_d: 'Choisissez un bonus parmi trois', promo_tickets: '{n} tickets d\'œuf', promo_tickets_d: 'Faites-les éclore dans l\'onglet Abeilles', promo_quick: 'Tâche rapide terminée', promo_quick_d: 'Récupérez-la dans l\'onglet Jour', promo_world: 'Un nouveau monde peut s\'ouvrir', promo_world_d: 'Dépensez des couronnes dans l\'onglet Mondes',
     st_level: 'Niveau du joueur', tg_level: 'Atteindre le niveau {v}', got_items: 'Vous recevez',
@@ -203,7 +203,7 @@
       h += '<div class="banner std"><div class="bart">' + ic('gift') + '</div><div class="btxt"><b>' + t('hb_std') + '</b><small>' + t('std_d') + '</small></div></div>';
     }
     h += '<div class="pull-row">' + pullButtons(s, bn);
-    const adL = P.adLeft(s, 'ticket');
+    const adL = UI.adsOn('ticket');
     if (bn === 'std' && adL) h += '<button class="btn btn-secondary" data-act="adticket">' + ic('play') + t('ad_tickets') + '</button>';
     h += '</div>' + bannerFoot(s, bn) + '</div>';
     return h;
@@ -317,35 +317,24 @@
       const b = P.BLESS_BY_ID[e.id];
       h += '<button class="bless r' + b.r + '" style="--rc:' + RC[b.r] + '" data-bless="' + i + '"><span class="bpic">' + ic(BLESS_ICON[b.id]) + '</span><b>' + t('bl_' + b.id) + '</b><small>' + esc(blessDesc(e)) + '</small><span class="rar">' + n(BZ.RARITIES[b.r].name) + '</span></button>';
     });
-    const adL = P.adLeft(s, 'reroll');
+    const adL = UI.adsOn('reroll') ? P.adLeft(s, 'reroll') : 0;
     h += '</div>' + (adL ? '<div class="row center"><button class="btn btn-outline btn-sm" id="bReAd">' + ic('play') + t('bless_reroll') + '  ·  ' + t('ad_left', { n: adL }) + '</button></div>' : '');
     UI.modal(h, true, { '#bReAd': () => G.blessReroll() });
     document.querySelectorAll('#modal [data-bless]').forEach(el => { el.onclick = () => G.blessPick(+el.dataset.bless); });
   };
 
+  UI.adsOn = place => !!(root.BZ_ADS && root.BZ_ADS.available && root.BZ_ADS.available()) && P.adLeft(G.main, place) > 0;
   UI.showAd = function (place) {
-    return new Promise(resolve => {
-      const s = G.main;
-      if (P.adLeft(s, place) <= 0) { UI.toast('ad', t('ad_none')); resolve(false); return; }
-      if (root.BZ_ADS && root.BZ_ADS.show) { root.BZ_ADS.show(place).then(r => { if (r === 'none') placeholder(resolve); else resolve(!!r); }).catch(() => placeholder(resolve)); return; }
-      placeholder(resolve);
-    }).then(ok => { if (ok) P.adUse(G.main, place); return ok; });
+    const s = G.main;
+    if (P.adLeft(s, place) <= 0) { UI.toast('ad', t('ad_none')); return Promise.resolve(false); }
+    if (!UI.adsOn(place)) { UI.toast('ad', t('ad_unavailable')); return Promise.resolve(false); }
+    return root.BZ_ADS.show(place).then(ok => {
+      if (ok) P.adUse(s, place);
+      else if (!root.BZ_ADS.available()) UI.toast('ad', t('ad_unavailable'));
+      UI.dirty();
+      return !!ok;
+    }).catch(() => false);
   };
-  function placeholder(resolve) {
-      let tm = 0;
-      UI.modal('<div class="hero"><div class="pic">' + ic('ad') + '</div><h4>' + t('ad_title') + '</h4><p>' + t('ad_text') + '</p></div><div class="progress"><i id="adBar" style="width:0%"></i></div><div class="row center"><button class="btn btn-ghost" id="adX">' + t('cancel') + '</button><button class="btn btn-primary off" id="adOk">' + t('ad_reward') + '</button></div>', false, {
-        '#adX': () => { clearInterval(tm); UI.closeModal(); resolve(false); },
-        '#adOk': (el) => { if (el.classList.contains('off')) return; UI.closeModal(); resolve(true); }
-      });
-      const start = Date.now();
-      tm = setInterval(() => {
-        const k = Math.min(1, (Date.now() - start) / 4000);
-        const bar = $('adBar');
-        if (!bar) { clearInterval(tm); return; }
-        bar.style.width = (k * 100).toFixed(0) + '%';
-        if (k >= 1) { clearInterval(tm); const ok = $('adOk'); if (ok) ok.classList.remove('off'); }
-      }, 100);
-  }
 
   UI.levelModal = function () {
     const s = G.main;
@@ -399,7 +388,7 @@
     const bb = $('blessBtn');
     if (bb) bb.style.display = s.blessOffer ? '' : 'none';
     const ab = $('adBtn');
-    if (ab) ab.style.display = P.adLeft(s, 'boost') > 0 ? '' : 'none';
+    if (ab) ab.style.display = UI.adsOn('boost') ? '' : 'none';
     document.querySelectorAll('[data-tab]').forEach(b => {
       const lock = !P.unlocked(s, b.dataset.tab);
       if (b.classList.contains('locked') !== lock) b.classList.toggle('locked', lock);

@@ -483,7 +483,7 @@
     if (res.earned < 1 || res.secs < 60) return;
     const s = G.main;
     const html = UI.hero('drop', t('welcome'), '+' + F.num(res.earned), t('away', { t: F.time(res.secs) }) + '<br>' + t('away_earned') + (res.capped ? '<br><small class="faint">' + t('away_capped', { t: F.time(E.offlineCap(s)) }) + '</small>' : ''),
-      (P.adLeft(s, 'offline') ? '<button class="btn btn-secondary" id="mAd">' + BZ.icon('play') + t('collect_ad') + '</button>' : '') + '<button class="btn btn-primary" data-close>' + t('collect') + '</button>');
+      (UI.adsOn('offline') ? '<button class="btn btn-secondary" id="mAd">' + BZ.icon('play') + t('collect_ad') + '</button>' : '') + '<button class="btn btn-primary" data-close>' + t('collect') + '</button>');
     UI.modal(html, true, {
       '#mAd': () => {
         UI.closeModal();

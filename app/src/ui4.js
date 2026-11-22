@@ -86,7 +86,8 @@
     const feats = [['hive', 'ab_f1'], ['worker', 'ab_f2'], ['globe', 'ab_f3'], ['league', 'ab_f4'], ['calendar', 'ab_f5'], ['star', 'ab_f6']];
     h += '<div class="ab-feats">' + feats.map(x => '<div class="ab-feat"><span>' + ic(x[0]) + '</span><small>' + t(x[1]) + '</small></div>').join('') + '</div>';
     h += '<div class="card ab-made"><div class="ab-nova">' + UI.fox('happy') + '</div><div class="txt"><b>' + t('ab_made') + '</b><small class="by">Luka LAURENT</small></div></div>';
-    h += '<div class="ab-links"><a class="btn btn-primary" href="https://novafox.fr" target="_blank" rel="noopener">' + ic('globe') + t('ab_visit') + '</a><a class="btn btn-outline" href="https://github.com/LukaLaurent/buzzworks" target="_blank" rel="noopener">' + ic('copy') + t('ab_source') + '</a><button class="btn btn-ghost" data-act="logs">' + ic('chart') + t('logs') + '</button></div>';
+    const ext = (BZ.CONFIG && BZ.CONFIG.platform) !== 'crazygames';
+    h += '<div class="ab-links">' + (ext ? '<a class="btn btn-primary" href="https://novafox.fr" target="_blank" rel="noopener">' + ic('globe') + t('ab_visit') + '</a><a class="btn btn-outline" href="https://github.com/LukaLaurent/buzzworks" target="_blank" rel="noopener">' + ic('copy') + t('ab_source') + '</a>' : '') + '<button class="btn btn-ghost" data-act="logs">' + ic('chart') + t('logs') + '</button></div>';
     return h;
   };
 

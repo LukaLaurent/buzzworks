@@ -527,12 +527,14 @@
     h += settingSwitch('set_music', '', st.music, 'set:music');
     h += settingSwitch('set_vibrate', '', st.vibrate, 'set:vibrate');
     h += settingSwitch('set_effects', t('set_effects_d'), st.reduced, 'set:reduced');
-    h += '<div class="setting"><div><b>' + t('set_name') + '</b><small>' + t('set_name_d') + '</small></div><input class="input" maxlength="18" data-inp="name" value="' + esc(s.playerName || '') + '" placeholder="' + esc(BZ.Online ? BZ.Online.name(s) : '') + '"></div>';
+    if (BZ.Cloud && BZ.Cloud.configured()) h += '<div class="setting"><div><b>' + t('set_name') + '</b><small>' + t('set_name_d') + '</small></div><input class="input" maxlength="18" data-inp="name" value="' + esc(s.playerName || '') + '" placeholder="' + esc(BZ.Online ? BZ.Online.name(s) : '') + '"></div>';
     h += '</div>';
     const C = BZ.Cloud;
-    h += '<div class="card"><div class="setting"><div><b>' + t('cloud_title') + '</b><small>' + (C && C.configured() ? (C.signedIn() ? esc(C.who() || '') + '  ·  ' + (s.cloud.at ? t('cloud_last', { t: F.time((Date.now() - s.cloud.at) / 1000) }) : t('cloud_never')) : t('cloud_d')) : t('cloud_cfg')) + '</small></div>';
-    if (C && C.configured()) h += C.signedIn() ? '<div class="btns"><button class="btn btn-outline btn-sm" data-act="cloudsync">' + ic('upload') + t('cloud_sync') + '</button><button class="btn btn-ghost btn-sm" data-act="cloudout">' + t('cloud_signout') + '</button></div>' : '<button class="btn btn-primary btn-sm g-btn" data-act="cloudin">' + ic('user') + t('cloud_signin') + '</button>';
-    h += '</div></div>';
+    if (C && C.configured()) {
+      h += '<div class="card"><div class="setting"><div><b>' + t('cloud_title') + '</b><small>' + (C && C.configured() ? (C.signedIn() ? esc(C.who() || '') + '  ·  ' + (s.cloud.at ? t('cloud_last', { t: F.time((Date.now() - s.cloud.at) / 1000) }) : t('cloud_never')) : t('cloud_d')) : t('cloud_cfg')) + '</small></div>';
+      h += C.signedIn() ? '<div class="btns"><button class="btn btn-outline btn-sm" data-act="cloudsync">' + ic('upload') + t('cloud_sync') + '</button><button class="btn btn-ghost btn-sm" data-act="cloudout">' + t('cloud_signout') + '</button></div>' : '<button class="btn btn-primary btn-sm g-btn" data-act="cloudin">' + ic('user') + t('cloud_signin') + '</button>';
+      h += '</div></div>';
+    }
     h += '<div class="card"><div class="setting"><div><b>' + t('set_reset') + '</b></div><button class="btn btn-danger btn-sm" data-act="reset">' + ic('trash') + t('reset_ok') + '</button></div></div>';
     return h;
   }

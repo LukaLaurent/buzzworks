@@ -39,11 +39,13 @@
     return Store.server;
   };
 
+  Store.kv = null;
+  const kv = () => Store.kv || localStorage;
   function readLocal(name) {
-    try { const v = localStorage.getItem(KEY + name); return v ? JSON.parse(v) : null; } catch (e) { return null; }
+    try { const v = kv().getItem(KEY + name); return v ? JSON.parse(v) : null; } catch (e) { return null; }
   }
   function writeLocal(name, obj) {
-    try { localStorage.setItem(KEY + name, JSON.stringify(obj)); return true; } catch (e) { return false; }
+    try { kv().setItem(KEY + name, JSON.stringify(obj)); return true; } catch (e) { return false; }
   }
 
   Store.load = async function (name) {
@@ -79,7 +81,7 @@
   };
 
   Store.clear = async function () {
-    try { Object.keys(localStorage).filter(k => k.startsWith(KEY)).forEach(k => localStorage.removeItem(k)); } catch (e) {}
+    try { if (Store.kv) ['save', 'settings'].forEach(n => Store.kv.removeItem(KEY + n)); else Object.keys(localStorage).filter(k => k.startsWith(KEY)).forEach(k => localStorage.removeItem(k)); } catch (e) {}
     if (Store.server) {
       try { await fetch('/api/data/save', { method: 'POST', body: '' }); } catch (e) {}
     }

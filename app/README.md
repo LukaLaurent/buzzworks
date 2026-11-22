@@ -65,6 +65,26 @@ Leagues: points come from lucky bees, ticket bees, quests, quick tasks, swarms, 
 
 The game runs in the browser, so a determined player could send fake numbers. The rules cap values and point gains per update; obvious cheaters can be deleted from the Firestore console.
 
+## CrazyGames version
+
+`app/tools/build-crazygames.ps1` builds two zips in `dist/` (not committed) from the same code:
+
+```
+powershell -ExecutionPolicy Bypass -File app/tools/build-crazygames.ps1
+```
+
+- `buzzworks-crazygames-basic.zip`: for the first submission (Basic Launch). No ad buttons at all, since CrazyGames disables ads in Basic Launch.
+- `buzzworks-crazygames-full.zip`: for Full Launch. Rewarded ads go through the CrazyGames SDK.
+
+What the build changes: `src/config.js` gets `platform: 'crazygames'` with no Firebase and no AdSense, `index.html` loads the CrazyGames SDK v3 and `src/crazygames.js`, and `src/ads.js` and the AdSense tag are removed. In that mode the game:
+- saves progress through the CrazyGames Data module (tick "Progress Save" when submitting), copying an existing browser save once;
+- reports loading start and stop, gameplay start on Play, gameplay stop and start around ads, and a happy moment on coronations;
+- follows the CrazyGames mute setting;
+- hides Google sign-in, leagues, rankings and the player name (no outside logins allowed), and removes the NovaFox and GitHub links from About (no links to a playable copy elsewhere);
+- uses the CrazyGames language when the player has not picked one.
+
+Rewarded ads only grant their reward when the ad finishes, and their buttons disappear when ads are disabled or blocked.
+
 ## Publishing on GitHub Pages
 
 `app/tools/publish.ps1` signs in to GitHub if needed, creates the public repository `buzzworks`, commits, pushes and turns on GitHub Pages. The workflow in `.github/workflows/pages.yml` publishes the `app` folder on every push to `main`. The game lives at https://buzzworks.novafox.fr (DNS: CNAME `buzzworks` to `lukalaurent.github.io` at IONOS, custom domain set in the repository Pages settings). The old github.io address redirects there. Saves and logs (`data/`, `logs/`) are never committed.
@@ -102,6 +122,8 @@ app/src/icons.js     inline icons and the app icon
 app/tools/serve.js   local server with save and log endpoints
 app/tools/sim.js     balance simulator: node app/tools/sim.js hours=12 dt=1
 app/tools/publish.ps1  GitHub publishing
+app/tools/build-crazygames.ps1  CrazyGames zips
+app/src/crazygames.js  CrazyGames SDK adapter (CrazyGames build only)
 ```
 
 Plain JavaScript, no build step, no dependencies.

@@ -591,10 +591,11 @@
   async function boot() {
     try {
       setLoad(0.15);
+      if (BZ.Platform && BZ.Platform.init) await BZ.Platform.init();
       await BZ.Store.init();
       const st = await BZ.Store.load('settings');
       if (st) Object.assign(G.settings, st);
-      if (!G.settings.lang) G.settings.lang = (navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en';
+      if (!G.settings.lang) G.settings.lang = ((BZ.Platform && BZ.Platform.locale) || navigator.language || 'en').toLowerCase().startsWith('fr') ? 'fr' : 'en';
       applySettings();
       setLoad(0.35, t('loading'));
       UI.init(G);
@@ -649,7 +650,9 @@
       lastFrame = performance.now();
       requestAnimationFrame(loop);
       G.save();
+      if (BZ.Platform && BZ.Platform.loaded) BZ.Platform.loaded();
       UI.splashReady(() => {
+        if (BZ.Platform && BZ.Platform.play) BZ.Platform.play();
         A.unlock();
         if (offline) showOffline(offline);
       });

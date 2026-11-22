@@ -71,6 +71,7 @@
     return t;
   };
 
+  E.colonyMult = s => BZ.COLONY_MULT + (BZ.P && BZ.P.essLvl ? BZ.ESS_BY_ID.colony.v * BZ.P.essLvl(s, 'colony') : 0);
   E.achCount = s => Object.keys(s.ach).length;
   E.beeLevel = function (s, id) {
     const c = (s.bees && s.bees[id]) || 0;
@@ -134,7 +135,7 @@
     luckyFreq *= 1 + bb.luckyFreq;
     luckyDur *= 1 + bb.luckyDur;
     tapMult *= 1 + bb.tap;
-    g *= Math.pow(BZ.COLONY_MULT, E.colonyLevel(s));
+    g *= Math.pow(E.colonyMult(s), E.colonyLevel(s));
     const pm = E.mods(s);
     c.mods = pm;
     let ticketFreq = 1;
@@ -428,7 +429,8 @@
   E.queenLocked = (s, id) => !!BZ.QUEEN_BY_ID[id].need && !E.queenMaxed(s, id) && (s.crowns || 0) + (s.crownsSpent || 0) < E.queenNeed(s, id);
   E.queenCost = function (s, id) {
     const q = BZ.QUEEN_BY_ID[id];
-    return Math.ceil(q.base * Math.pow(q.growth, E.qlvl(s, id)));
+    const w = BZ.P && BZ.P.essLvl ? 1 - BZ.ESS_BY_ID.wisdom.v * BZ.P.essLvl(s, 'wisdom') : 1;
+    return Math.ceil(q.base * Math.pow(q.growth, E.qlvl(s, id)) * w);
   };
   E.queenMaxed = function (s, id) {
     const q = BZ.QUEEN_BY_ID[id];

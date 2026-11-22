@@ -59,9 +59,10 @@
 
   P.essLvl = (s, id) => (s.essShop && s.essShop[id]) || 0;
   P.essCost = (s, id) => { const x = BZ.ESS_BY_ID[id]; return Math.ceil(x.base * Math.pow(x.growth, P.essLvl(s, id))); };
-  P.essMaxed = (s, id) => P.essLvl(s, id) >= BZ.ESS_BY_ID[id].max;
+  P.essMaxed = (s, id) => BZ.ESS_BY_ID[id].max > 0 && P.essLvl(s, id) >= BZ.ESS_BY_ID[id].max;
+  P.essReqMet = (s, id) => { const r = BZ.ESS_BY_ID[id].req; return !r || P.essLvl(s, r[0]) >= r[1]; };
   P.buyEss = function (s, id) {
-    if (P.essMaxed(s, id)) return false;
+    if (P.essMaxed(s, id) || !P.essReqMet(s, id)) return false;
     const c = P.essCost(s, id);
     if ((s.essence || 0) < c) return false;
     s.essence -= c;
@@ -121,6 +122,8 @@
     m.luckyFreq *= 1 + BZ.ESS_BY_ID.lucky.v * P.essLvl(s, 'lucky');
     m.ticketFreq *= 1 + BZ.ESS_BY_ID.tickets.v * P.essLvl(s, 'tickets');
     m.offlineH += BZ.ESS_BY_ID.nap.v * P.essLvl(s, 'nap');
+    m.tap *= Math.pow(1 + BZ.ESS_BY_ID.tap.v, P.essLvl(s, 'tap'));
+    m.luckyDur *= 1 + BZ.ESS_BY_ID.fortune.v * P.essLvl(s, 'fortune');
     const w = E.world(s).mods;
     if (w.honey) m.honey *= w.honey;
     if (w.luckyFreq) m.luckyFreq *= w.luckyFreq;
@@ -247,10 +250,11 @@
     return ups;
   };
   P.levelReward = function (L) {
-    const r = { egg: 1 + Math.floor(L / 10) };
-    if (L % 3 === 0) r.core = 1;
+    const r = { egg: 5 + Math.floor(L / 5) };
+    if (L % 3 === 0) r.core = 3;
     if (L % 4 === 0) r.part = 1;
-    if (L % 5 === 0) r.royal = 1;
+    if (L % 5 === 0) r.royal = 2;
+    if (L % 10 === 0) { r.royal = 5; r.core = 5; }
     return r;
   };
 
@@ -361,8 +365,11 @@
     const after = E.beeLevel(s, id);
     return { id, isNew, levelUp: after > before && !isNew, level: after, r: rar };
   };
+  P.PULL_MAX = 500;
   P.pull = function (s, bn, count, free) {
     const key = BZ.BANNERS[bn].ticket;
+    if (count === 'all') count = Math.min(P.PULL_MAX, s.tickets[key] || 0);
+    if (!(count >= 1)) return null;
     if (!free) {
       if ((s.tickets[key] || 0) < count) return null;
       s.tickets[key] -= count;
@@ -465,13 +472,16 @@
   P.worldCost = (s, idx) => Math.max(1, Math.ceil(BZ.WORLDS[idx].cost * (1 - BZ.ESS_BY_ID.map.v * P.essLvl(s, 'map'))));
   P.canOpenWorld = function (s, idx) {
     const w = BZ.WORLDS[idx];
-    return !!w && !s.worldsOpen.includes(idx) && idx === s.worldsOpen.length && (s.crowns || 0) >= P.worldCost(s, idx);
+    if (!w || s.worldsOpen.includes(idx) || idx !== s.worldsOpen.length) return false;
+    const prev = P.worldState(s, idx - 1);
+    return !!prev && (prev.crowns || 0) >= P.worldCost(s, idx);
   };
   P.openWorld = function (s, idx) {
     if (!P.canOpenWorld(s, idx)) return false;
     const cost = P.worldCost(s, idx);
-    s.crowns -= cost;
-    s.crownsSpent = (s.crownsSpent || 0) + cost;
+    const prev = P.worldState(s, idx - 1);
+    prev.crowns -= cost;
+    prev.crownsSpent = (prev.crownsSpent || 0) + cost;
     s.worldsOpen.push(idx);
     s._dirty = true;
     return true;
@@ -486,7 +496,7 @@
   };
   P.worldInfo = function (s, idx) {
     const w = P.worldState(s, idx);
-    if (!w) return null;
+    if (!w) return s.worldsOpen.includes(idx) ? { hps: 0, crowns: 0, earned: 0, lifetime: 0, run: 0, rj: 0 } : null;
     if (idx === s.world) return { hps: E.hps(s), crowns: s.crowns || 0, earned: (s.crowns || 0) + (s.crownsSpent || 0), lifetime: s.lifetime, run: s.runHoney, rj: s.rj };
     const tmp = P.attach(w, s);
     tmp.world = idx;

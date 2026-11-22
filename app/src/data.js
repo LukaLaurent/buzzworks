@@ -199,7 +199,7 @@
   BZ.SKINS.forEach(s => { BZ.SKIN_BY_ID[s.id] = s; });
 
   BZ.STREAK_REWARDS = [
-    { egg: 2 }, { egg: 2 }, { core: 1 }, { egg: 3 }, { part: 1 }, { core: 1 }, { royal: 2 }
+    { egg: 10 }, { egg: 15 }, { core: 5 }, { egg: 20 }, { part: 2, egg: 10 }, { core: 8 }, { royal: 5, egg: 20 }
   ];
 
   BZ.LEAGUE_TIERS = [
@@ -228,7 +228,7 @@
     { id: 'ticketbee', w: 2, amounts: [1, 2, 3] },
     { id: 'swarm', w: 1, amounts: [1, 1, 1], needsSwarm: true }
   ];
-  BZ.QUEST_REWARDS = [{ egg: 1 }, { egg: 2 }, { core: 1 }];
+  BZ.QUEST_REWARDS = [{ egg: 3 }, { egg: 5 }, { core: 2 }];
   BZ.QUICK_POOL = [
     { id: 'tap', amounts: [60, 120] },
     { id: 'lucky', amounts: [1, 1] },
@@ -339,22 +339,27 @@
 
   BZ.WORLDS = [
     { id: 'meadow', theme: 'meadow', cost: 0, mods: {}, name: { en: 'Flower meadow', fr: 'Prairie fleurie' } },
-    { id: 'dunes', theme: 'w_dunes', cost: 10, mods: { growth: 1.13, luckyFreq: 0.6 }, name: { en: 'Sun dunes', fr: 'Dunes du soleil' } },
-    { id: 'glacier', theme: 'w_glacier', cost: 15, mods: { honey: 0.5, offline: 3, offlineH: 6, luckyDur: 1.5 }, name: { en: 'Glacier hive', fr: 'Ruche du glacier' } },
-    { id: 'moon', theme: 'w_moon', cost: 20, mods: { luckyFreq: 2.2, tap: 0.3, honey: 0.8 }, name: { en: 'Moon garden', fr: 'Jardin lunaire' } },
-    { id: 'ember', theme: 'w_ember', cost: 25, mods: { rj: 2, growth: 1.165 }, name: { en: 'Ember peaks', fr: 'Pics de braise' } }
+    { id: 'dunes', theme: 'w_dunes', cost: 100, mods: { growth: 1.13, luckyFreq: 0.6 }, name: { en: 'Sun dunes', fr: 'Dunes du soleil' } },
+    { id: 'glacier', theme: 'w_glacier', cost: 150, mods: { honey: 0.5, offline: 3, offlineH: 6, luckyDur: 1.5 }, name: { en: 'Glacier hive', fr: 'Ruche du glacier' } },
+    { id: 'moon', theme: 'w_moon', cost: 200, mods: { luckyFreq: 2.2, tap: 0.3, honey: 0.8 }, name: { en: 'Moon garden', fr: 'Jardin lunaire' } },
+    { id: 'ember', theme: 'w_ember', cost: 250, mods: { rj: 2, growth: 1.165 }, name: { en: 'Ember peaks', fr: 'Pics de braise' } }
   ];
   BZ.ESSENCE_SHOP = [
-    { id: 'honey', icon: 'drop', base: 2, growth: 1.5, max: 60, v: 0.25 },
-    { id: 'jelly', icon: 'jelly', base: 3, growth: 1.6, max: 40, v: 0.15 },
-    { id: 'lucky', icon: 'sparkle', base: 4, growth: 1.7, max: 10, v: 0.05 },
-    { id: 'tickets', icon: 'ticket', base: 5, growth: 1.8, max: 10, v: 0.1 },
-    { id: 'nap', icon: 'clock', base: 3, growth: 2, max: 6, v: 2 },
-    { id: 'start', icon: 'worker', base: 6, growth: 2.2, max: 5, v: [10, 25, 50, 100, 200] },
-    { id: 'map', icon: 'globe', base: 8, growth: 2, max: 5, v: 0.1 },
-    { id: 'slot', icon: 'hive', base: 25, growth: 4, max: 2, v: 1 },
-    { id: 'crown', icon: 'crown', base: 60, growth: 3, max: 3, v: 1 }
+    { id: 'honey', branch: 'honey', icon: 'drop', base: 2, growth: 1.45, max: 0, v: 0.25 },
+    { id: 'start', branch: 'honey', icon: 'worker', base: 6, growth: 2.2, max: 5, v: [10, 25, 50, 100, 200], req: ['honey', 3] },
+    { id: 'tap', branch: 'honey', icon: 'tap', base: 5, growth: 1.5, max: 0, v: 0.2, req: ['honey', 5] },
+    { id: 'colony', branch: 'honey', icon: 'hive', base: 40, growth: 2.5, max: 5, v: 0.1, req: ['start', 3] },
+    { id: 'jelly', branch: 'royal', icon: 'jelly', base: 3, growth: 1.5, max: 0, v: 0.15 },
+    { id: 'wisdom', branch: 'royal', icon: 'star', base: 10, growth: 2, max: 10, v: 0.05, req: ['jelly', 3] },
+    { id: 'crown', branch: 'royal', icon: 'crown', base: 60, growth: 3, max: 3, v: 1, req: ['jelly', 6] },
+    { id: 'map', branch: 'royal', icon: 'globe', base: 15, growth: 2.2, max: 5, v: 0.05, req: ['crown', 1] },
+    { id: 'lucky', branch: 'fortune', icon: 'sparkle', base: 4, growth: 1.7, max: 10, v: 0.05 },
+    { id: 'nap', branch: 'fortune', icon: 'clock', base: 3, growth: 2, max: 6, v: 2, req: ['lucky', 2] },
+    { id: 'tickets', branch: 'fortune', icon: 'ticket', base: 5, growth: 1.8, max: 10, v: 0.1, req: ['lucky', 3] },
+    { id: 'slot', branch: 'fortune', icon: 'palette', base: 25, growth: 4, max: 2, v: 1, req: ['tickets', 5] },
+    { id: 'fortune', branch: 'fortune', icon: 'fire', base: 20, growth: 1.6, max: 0, v: 0.05, req: ['lucky', 10] }
   ];
+  BZ.ESS_BRANCHES = ['honey', 'royal', 'fortune'];
   BZ.ESS_BY_ID = {};
   BZ.ESSENCE_SHOP.forEach(x => { BZ.ESS_BY_ID[x.id] = x; });
   BZ.SELL_MIN = 5;

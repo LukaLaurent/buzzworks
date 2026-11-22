@@ -65,7 +65,7 @@
       });
       h += '</div>';
     }
-    h += '</div><div class="card"><p class="muted" style="font-size:var(--fs-sm)">' + t('lg_how') + '</p></div>';
+    h += '</div>';
     return h;
   }
 
@@ -88,7 +88,7 @@
 
   UI.ext.league = function () {
     const s = BZ.Game.main;
-    let h = '<h2 class="page-title">' + t('lg_title') + '</h2>';
+    let h = UI.title(t('lg_title'), BZ.Cloud.signedIn() ? (view === 'league' ? 'lg_how' : 'rk_help') : '');
     if (!BZ.Cloud.signedIn()) {
       h += '<div class="card lg-cta"><div class="lg-cta-pic">' + ic('league') + '</div><p>' + t('lg_signin_d') + '</p><div class="lg-cta-list">' + [['league', 'lg_cta_1'], ['star', 'lg_cta_2'], ['ticket', 'lg_cta_3']].map(x => '<span>' + ic(x[0]) + t(x[1]) + '</span>').join('') + '</div><div class="lg-cta-tiers">' + BZ.LEAGUE_TIERS.map(x => '<i style="background:' + x.color + '" title="' + esc(n(x.name)) + '"></i>').join('') + '</div><button class="btn btn-primary btn-lg g-btn" data-act="cloudin">' + ic('user') + t('cloud_signin') + '</button></div>';
       return h;

@@ -158,7 +158,7 @@
     P.passRoll(s);
     const tier = P.passTier(s);
     const inTier = P.passInTier(s);
-    let h = '<h2 class="page-title">' + t('pass_title') + '</h2>';
+    let h = UI.title(t('pass_title'), 'pass_how');
     h += '<div class="card pass-head"><div class="big-stat"><div class="pic">' + ic('ticket') + '</div><div><b class="num">' + t('pass_tier', { n: tier, m: P.PASS_TIERS }) + '</b><small>' + t('pass_season', { n: s.pass.season + 1 }) + '  ·  <span data-t="' + P.seasonEnd() + '" data-tfmt="pass_ends"></span></small></div></div>';
     h += '<div class="progress" style="margin-top:var(--sp-4)"><i style="width:' + (inTier * 100).toFixed(1) + '%"></i></div>';
     h += P.passReady(s) ? '<div class="btn-row"><button class="btn btn-primary" data-act="passall">' + ic('gift') + t('pass_claim_all') + '</button></div>' : '';
@@ -169,7 +169,7 @@
       const can = reached && !done;
       h += '<div class="pass-row' + (reached ? ' reached' : '') + '"><span class="tnum">' + i + '</span><div class="pcell' + (done ? ' done' : '') + (can ? ' can' : '') + (i % 10 === 0 ? ' big' : '') + '"' + (can ? ' data-act="passclaim" data-arg="' + i + '"' : '') + '>' + UI.rewardChips(P.passReward(i)) + (done ? ic('check') : '') + '</div></div>';
     }
-    h += '</div><div class="card"><p class="muted" style="font-size:var(--fs-sm)">' + t('pass_how') + '</p></div>';
+    h += '</div>';
     return h;
   };
 
@@ -189,7 +189,8 @@
     const k = BZ.BANNERS[bn].ticket;
     const have = s.tickets[k] || 0;
     return '<button class="btn btn-outline' + (have < 1 ? ' off' : '') + '" data-act="pull" data-arg="' + bn + ':1">' + t('pull1') + '  ·  ' + ic('ticket') + '1</button>' +
-      '<button class="btn btn-primary' + (have < 10 ? ' off' : '') + '" data-act="pull" data-arg="' + bn + ':10">' + t('pull10') + '  ·  ' + ic('ticket') + '10</button>';
+      '<button class="btn btn-primary' + (have < 10 ? ' off' : '') + '" data-act="pull" data-arg="' + bn + ':10">' + t('pull10') + '  ·  ' + ic('ticket') + '10</button>' +
+      (have > 10 ? '<button class="btn btn-secondary" data-act="pull" data-arg="' + bn + ':all">' + t('pull_all') + '  ·  ' + ic('ticket') + F.int(Math.min(have, P.PULL_MAX)) + '</button>' : '');
   }
 
   UI.hatcheryHtml = function (s) {
@@ -213,7 +214,7 @@
   UI.ext.workshop = function () {
     const s = G.main;
     const slots = P.coreSlotCount(s);
-    let h = '<h2 class="page-title">' + t('tab_workshop') + '</h2>';
+    let h = UI.title(t('tab_workshop'), 'workshop_how');
     h += '<div class="card hatch"><div class="sec-title"><h3>' + t('core_hatch') + '</h3></div>' + ticketBar(s, ['core']);
     h += '<div class="banner core"><div class="bart">' + coreSvg(BZ.CORE_BY_ID.c_sun, 84) + '</div><div class="btxt"><b>' + t('cores_title') + '</b><small>' + t('core_d') + '</small></div></div>';
     h += '<div class="pull-row">' + pullButtons(s, 'core') + '</div>' + bannerFoot(s, 'core') + '</div>';
@@ -258,28 +259,50 @@
       }
       h += '<div class="skin' + (on ? ' on' : '') + (own ? '' : ' notyet') + '"><div class="sw" style="background:linear-gradient(180deg,' + sk.sky[0] + ' 0%,' + sk.sky[1] + ' 55%,' + sk.hill[1] + ' 56%,' + sk.hill[2] + ' 100%)"><i style="background:' + sk.comb + '"></i>' + (own ? '' : '<span class="lockb">' + ic('lock') + '</span>') + '</div><div class="bottom"><b>' + n(sk.name) + '</b><small class="sb">' + esc(skinBonus(sk)) + '</small>' + btn + '</div></div>';
     }
-    h += '</div><div class="card" style="margin-top:var(--sp-3)"><p class="muted" style="font-size:var(--fs-sm)">' + t('skin_how') + '</p></div></div>';
+    h += '</div></div>';
     return h;
   };
 
-  UI.coreModal = function (res) {
-    const c = BZ.CORE_BY_ID[res.id];
-    const rar = BZ.RARITIES[c.r];
-    const title = res.isNew ? t('core_new') : res.levelUp ? t('core_level') : t('core_copy');
-    UI.queueModal('<div class="hero"><div class="bee-hero" style="--rc:' + rar.color + '">' + coreSvg(c, 96) + '</div><h4>' + esc(title) + '</h4><b style="font-size:var(--fs-xl)">' + esc(n(c.name)) + '</b><p style="margin-top:var(--sp-3)"><span class="badge" style="background:color-mix(in srgb,' + rar.color + ' 18%,transparent);color:' + rar.color + '">' + n(rar.name) + '</span> <span class="badge b-orange">' + t('level', { n: res.level }) + '</span></p><p style="margin-top:var(--sp-3)">' + esc(coreText(c, res.level)) + '</p></div><div class="row center"><button class="btn btn-primary" data-close>' + t('ok') + '</button></div>');
-  };
-
-  UI.showPulls = function (res) {
-    if (res.length === 1) { if (res[0].core) UI.coreModal(res[0]); else UI.beeModal(res[0]); return; }
+  UI.showPulls = function (res, bn) {
     const best = Math.max(...res.map(r => r.r));
-    let h = '<h4 style="text-align:center">' + t('hatch_results') + '</h4><div class="pull-grid">';
-    res.forEach((r, i) => {
-      const b = r.core ? BZ.CORE_BY_ID[r.id] : BZ.BEE_BY_ID[r.id];
-      const rar = BZ.RARITIES[b.r];
-      h += '<div class="pr r' + b.r + '" style="--rc:' + rar.color + ';animation-delay:' + (i * 70) + 'ms">' + (r.core ? coreSvg(b, 46) : UI.beeSvg(b, 46)) + '<b>' + esc(n(b.name)) + '</b>' + (r.isNew ? '<span class="nw">' + t('new_tag') + '</span>' : '<small>' + t('level', { n: r.level }) + '</small>') + '</div>';
-    });
-    h += '</div><div class="row center"><button class="btn btn-primary" data-close>' + t('ok') + '</button></div>';
-    UI.queueModal(h);
+    const pic = (r, b, sz) => r.core ? coreSvg(b, sz) : UI.beeSvg(b, sz);
+    let h = '<h4 style="text-align:center">' + t('hatch_results') + (res.length > 1 ? '  ·  ' + F.int(res.length) : '') + '</h4>';
+    if (res.length === 1) {
+      const r = res[0], b = r.core ? BZ.CORE_BY_ID[r.id] : BZ.BEE_BY_ID[r.id], rar = BZ.RARITIES[b.r];
+      h += '<div class="hero"><div class="bee-hero" style="--rc:' + rar.color + '">' + pic(r, b, 96) + '</div><b style="font-size:var(--fs-xl)">' + esc(n(b.name)) + '</b><p style="margin-top:var(--sp-3)"><span class="badge" style="background:color-mix(in srgb,' + rar.color + ' 18%,transparent);color:' + rar.color + '">' + n(rar.name) + '</span> ' + (r.isNew ? '<span class="badge b-orange">' + t('new_tag') + '</span>' : '<span class="badge b-orange">' + t('level', { n: r.level }) + '</span>') + '</p><p style="margin-top:var(--sp-3)">' + esc(r.core ? coreText(b, r.level) : UI.bonusText(b.kind, b.v * r.level)) + '</p></div>';
+    } else if (res.length <= 10) {
+      h += '<div class="pull-grid">';
+      res.forEach((r, i) => {
+        const b = r.core ? BZ.CORE_BY_ID[r.id] : BZ.BEE_BY_ID[r.id];
+        const rar = BZ.RARITIES[b.r];
+        h += '<div class="pr r' + b.r + '" style="--rc:' + rar.color + ';animation-delay:' + (i * 70) + 'ms">' + pic(r, b, 46) + '<b>' + esc(n(b.name)) + '</b>' + (r.isNew ? '<span class="nw">' + t('new_tag') + '</span>' : '<small>' + t('level', { n: r.level }) + '</small>') + '</div>';
+      });
+      h += '</div>';
+    } else {
+      const agg = {};
+      res.forEach(r => { const a = agg[r.id] || (agg[r.id] = { r, n: 0, isNew: false, level: 0 }); a.n++; a.isNew = a.isNew || r.isNew; a.level = Math.max(a.level, r.level); });
+      const list = Object.values(agg).sort((a, b2) => b2.r.r - a.r.r || b2.n - a.n);
+      const counts = [0, 0, 0, 0];
+      res.forEach(r => { counts[r.r]++; });
+      h += '<p class="pull-sum">' + counts.map((c, i) => c ? '<span style="color:' + BZ.RARITIES[i].color + '">' + n(BZ.RARITIES[i].name) + ' ' + c + '</span>' : '').filter(Boolean).join('  ·  ') + '</p><div class="pull-grid">';
+      list.forEach((a, i) => {
+        const b = a.r.core ? BZ.CORE_BY_ID[a.r.id] : BZ.BEE_BY_ID[a.r.id];
+        const rar = BZ.RARITIES[b.r];
+        h += '<div class="pr r' + b.r + '" style="--rc:' + rar.color + ';animation-delay:' + Math.min(i * 50, 800) + 'ms"><span class="cnt">x' + a.n + '</span>' + pic(a.r, b, 46) + '<b>' + esc(n(b.name)) + '</b>' + (a.isNew ? '<span class="nw">' + t('new_tag') + '</span>' : '<small>' + t('level', { n: a.level }) + '</small>') + '</div>';
+      });
+      h += '</div>';
+    }
+    const have = bn ? (G.main.tickets[BZ.BANNERS[bn].ticket] || 0) : 0;
+    let btns = '';
+    if (bn && have >= 1) btns += '<button class="btn btn-outline" id="pAgain1">' + t('pull1') + '</button>';
+    if (bn && have >= 10) btns += '<button class="btn btn-outline" id="pAgain10">' + t('pull10') + '</button>';
+    if (bn && have > 10) btns += '<button class="btn btn-secondary" id="pAgainAll">' + t('pull_all') + '  ·  ' + F.int(Math.min(have, P.PULL_MAX)) + '</button>';
+    h += '<div class="row center pull-again">' + btns + '<button class="btn btn-primary" data-close>' + t('ok') + '</button></div>';
+    const again = c => () => { UI.closeModal(); setTimeout(() => G.pull(bn, c), 60); };
+    if (UI.modalOpen()) UI.closeModal();
+    setTimeout(() => {
+      UI.modal(h, true, { '#pAgain1': again(1), '#pAgain10': again(10), '#pAgainAll': again('all') });
+    }, UI.modalOpen() ? 140 : 0);
     BZ.Audio.play(best >= 3 ? 'swarm' : best >= 2 ? 'milestone' : 'achievement');
   };
 
@@ -385,7 +408,7 @@
       case 'passall': G.passAll(); break;
       case 'passclaim': G.passClaim(+arg); break;
       case 'hatchtab': hatchTab = arg; UI.render(); break;
-      case 'pull': { const [bn, c] = arg.split(':'); G.pull(bn, +c); break; }
+      case 'pull': { const [bn, c] = arg.split(':'); G.pull(bn, c === 'all' ? 'all' : +c); break; }
       case 'adticket': G.adTickets(); break;
       case 'core': G.equipCore(arg); break;
       case 'travel': G.travel(+arg); break;

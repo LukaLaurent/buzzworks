@@ -57,11 +57,12 @@
     const s = G.main;
     const res = P.pull(s, bn, count);
     if (!res) { A.play('error'); UI.toast('ticket', t('need_tickets')); return; }
+    count = res.length;
     xp('hatch', count);
-    UI.showPulls(res);
+    UI.showPulls(res, bn);
     UI.render();
     G.save();
-    Log.info('hatch ' + bn + ' x' + count + ': ' + res.map(r => r.id).join(','));
+    Log.info('hatch ' + bn + ' x' + count);
   };
   G.adTickets = function () {
     UI.showAd('ticket').then(ok => { if (ok) afterGot(P.grant(G.main, { egg: 2 }), 'ticket'); });

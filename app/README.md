@@ -25,24 +25,23 @@ With the local server, saves go to `data/save.json` and `data/settings.json`, wi
 - **Crowns**: a coronation resets jelly and skills for crowns. Perks at 1, 2, 3, 5, 8, 12 and 20 crowns. **Hive mind** (automation) is late game: level 1 needs 20 crowns, level 2 needs 100, level 3 needs 500, and they cost 2 M, 200 M and 20 B royal jelly. A coronation resets it like every other queen skill.
 - **Blessings**: at the start of each swarm and at 100 K, 1 B, 10 T and 100 Qa honey, pick 1 of 3 bonuses for the swarm. Reroll with an ad.
 - **Tickets**: egg tickets (standard eggs), royal tickets (royal eggs) and core tickets (hive cores). There is no paid currency.
-- **Bees tab**: the standard egg (egg tickets) and the royal egg (royal tickets, weekly featured limited bee, 50/50 with guarantee). Rates: standard 70 / 24 / 5.4 / 0.6 %, royal 78 / 19 / 3 % (rare, epic, legendary). Pity: legendary guaranteed within 120 standard or 80 royal hatches, an epic or better every 20 standard or 12 royal. The bee collection is never reset.
+- **Bees tab**: the standard egg (egg tickets) and the royal egg (royal tickets, weekly featured limited bee, 50/50 with guarantee). Rates: standard 70 / 24 / 5.4 / 0.6 %, royal 78 / 19 / 3 % (rare, epic, legendary). Pity: legendary guaranteed within 120 standard or 80 royal hatches, an epic or better every 20 standard or 12 royal. Hatch 1, 10 or all your tickets at once (up to 500), and hatch again straight from the results. The bee collection is never reset.
 - **Workshop tab**: core summoning (core tickets, rates 64 / 27 / 7.8 / 1.2 %, legendary within 100). 12 hive cores in 4 rarities, duplicates level them up. 2 core slots, a 3rd at level 20, a 4th with 5 essence. Hive skins: 8 skins built from parts (4 to 8 parts each) plus the pass skin. Parts drop from treasure chests, lucky bees (5%), level rewards, the streak and the pass. Each owned skin gives +3% honey and the skin in use gives its own bonus.
-- **Daily tab**: 7 day streak (tickets and skin parts, an epic bee on day 7), 3 daily quests (egg, egg, core tickets) and 2 quick tasks that renew every 15 minutes (4 minutes of honey and an egg ticket, a core ticket every 8 tasks).
+- **Daily tab**: 7 day streak (10 to 20 egg tickets, core tickets, skin parts, 5 royal tickets and an epic bee on day 7), 3 daily quests (3 egg, 5 egg, 2 core tickets) and 2 quick tasks that renew every 15 minutes.
 - **Hive pass**: free, resets every Monday, 50 tiers. Tier n needs 500 + 50 x (n - 1) XP (86,250 XP in total, about ten hours of active play). Rewards: 10 to 20 egg tickets on most tiers, 10 core tickets every 5 tiers, 5 royal tickets every 10, skin parts, boosts, the Sunflower field skin (tier 25) and the Sunflare bee (tier 50).
 - **Trophies**: two parts. **Swarm goals** reset at every swarm and give tickets again (they are the main source of royal tickets). The **Hall of fame** is permanent, gives +2% honey per trophy and tickets once.
-- **Player level**: every action gives XP. Each level gives tickets (core every 3, part every 4, royal every 5) and +1% honey. Tabs unlock step by step: Daily 2, Bees 3, Workshop 5, Pass 6.
-- **Worlds** (after the first crown): spend crowns to open the next world. Each world has its own twist and theme, and its own honey, queen and crowns. Bees, cores, skins, tickets and the level are shared.
+- **Player level**: every action gives XP. Each level gives 5 or more egg tickets, core tickets every 3 levels, a skin part every 4, royal tickets every 5 (5 royal and 5 core every 10) and +1% honey. Tabs unlock step by step: Daily 2, Bees 3, Workshop 5, League 5, Pass 6.
+- **Worlds** (after the first crown): the Worlds tab opens a full-screen world map. Tap an island to see its honey per second, crowns, honey made and royal jelly, then travel there (a bee flies along the route), open it or sell it. Each world has its own twist and theme, and its own honey, queen and crowns. Crowns earned in a world open the next one. Bees, cores, skins, tickets and the level are shared.
 
 | World | Cost | Twist |
 |---|---|---|
 | Flower meadow | | classic |
-| Sun dunes | 10 crowns | prices rise more slowly, lucky bees rarer |
-| Glacier hive | 15 crowns | half honey, triple away earnings, +6 h away, longer lucky effects |
-| Moon garden | 20 crowns | lucky bees x2.2, weak taps |
-| Ember peaks | 25 crowns | double royal jelly, steeper prices |
+| Sun dunes | 100 crowns of the Flower meadow | prices rise more slowly, lucky bees rarer |
+| Glacier hive | 150 crowns of the Sun dunes | half honey, triple away earnings, +6 h away, longer lucky effects |
+| Moon garden | 200 crowns of the Glacier hive | lucky bees x2.2, weak taps |
+| Ember peaks | 250 crowns of the Moon garden | double royal jelly, steeper prices |
 
-- **World map**: an interactive map of the 5 worlds. Tap one to see its honey per second, crowns, honey made and royal jelly, then travel, open it or sell it.
-- **Essence**: sell any open world with 5 crowns or more earned in it to restart it from zero for essence. Essence is spent in the **essence shop** on permanent upgrades for every world: Ancient honey (x1.25 honey per level), Royal roots (x1.15 royal jelly), Lucky aura, Ticket nest, Deep sleep (+2 h away), Quick colony (start swarms with the first 10 producers), Cartographer (worlds cost fewer crowns), Core socket (+1 core slot) and Crown memory (+1 crown per coronation). Costs grow with each level.
+- **Essence tree**: sell any open world with 5 crowns or more earned in it to restart it for essence, then spend essence in the essence tree (button on the world map). Three branches: Honey (Ancient honey and Sweet paws with no level limit, Quick colony, Thriving colony), Royal (Royal roots with no limit, Queen wisdom, Crown memory, Cartographer) and Fortune (Lucky aura, Deep sleep, Ticket nest, Core socket, Fortune with no limit). Each upgrade needs the one above it at a given level, and costs grow with each level.
 - **Stats tab**: every multiplier (honey, taps, lucky bees, royal jelly, prices, away time) broken down by source, plus general stats.
 - **Ads**: optional rewarded ads for x2 honey for 30 min (6 a day), 2 egg tickets (3 a day), away earnings x2 (3 a day) and blessing rerolls (3 a day). The free Bee dance gives x2 for 20 min every 4 h.
 - **League and rankings** (level 5, needs Firebase and Google sign-in): weekly groups of up to 20 real players and top 50 rankings.
@@ -88,6 +87,8 @@ app/src/progress.js  tickets, hatching, cores, skin parts, level, pass, blessing
 app/src/cloud.js     Firebase sign-in, cloud save, rankings and league groups
 app/src/online.js    profile, weekly league sync and rankings
 app/src/ui3.js       league and rankings screens
+app/src/ui4.js       stats tab and about page
+app/src/worldmap.js  full-screen world map and essence tree
 app/firebase/        Firestore security rules
 app/src/ui.js        pages, HUD, dialogs, toasts
 app/src/ui2.js       pass, workshop, worlds, hatchery, blessing, level and ad screens, promo banners, extra text

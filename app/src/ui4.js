@@ -2,7 +2,6 @@
   const BZ = root.BZ;
   const E = BZ.E, F = BZ.F, P = BZ.P, UI = BZ.UI, t = BZ.t, n = BZ.n, ic = BZ.icon;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  let selWorld = null;
 
   BZ.addStrings({
     tab_stats: 'Stats', pass_season: 'Weekly pass', pass_how: 'The pass is free and starts over every Monday. Every action fills it: buying, lucky bees, ticket bees, quests, swarms and hatching.',
@@ -14,7 +13,8 @@
     es_now: 'Now {a}', es_next: 'Next {a}',
     st_title: 'Stats', st_hpsT: 'Honey per second', st_total: 'Total', st_tap: 'Tap power', st_luckyF: 'Lucky bee frequency', st_luckyD: 'Lucky effect duration', st_luckyI: 'A lucky bee every {a} to {b}', st_rjgain: 'Royal jelly per swarm', st_away: 'Away earnings limit', st_cost: 'Producer prices', st_general: 'General', st_prod_note: 'Producers also get x2 at each milestone and from their own upgrades.',
     sr_upg: 'Upgrades', sr_rj: 'Royal jelly', sr_ach: 'Trophies', sr_decree: 'Royal decree', sr_crowns: 'Crowns', sr_bees: 'Bees', sr_colony: 'Colony level', sr_level: 'Player level', sr_ess: 'Essence shop', sr_world: 'World twist', sr_skins: 'Hive skins', sr_cores: 'Hive cores', sr_bless: 'Blessings', sr_boosts: 'Active boosts', sr_queen: 'Queen skills', sr_perk: 'Crown perks', sr_combo: 'Max combo', sr_base: 'Base',
-    ab_tag: 'A cozy idle honey tycoon', ab_f1: 'Build a hive empire with 20 producers', ab_f2: 'Hatch bees and hive cores', ab_f3: 'Open worlds with their own twist', ab_f4: 'Weekly leagues and rankings', ab_f5: 'Daily streak, quests and a free pass', ab_f6: 'Free, in your browser', ab_made: 'Made by NovaFox', ab_made_d: 'A small independent studio making cozy games and handy apps.', ab_visit: 'Visit NovaFox', ab_source: 'Source code'
+    help: 'How it works', pull_all: 'Hatch all', workshop_how: 'Core tickets summon hive cores. Equip them in your slots for lasting bonuses; copies level them up. Skin parts drop from treasure chests on lucky bees, level rewards, the streak and the pass. Every skin you own gives +3% honey, and the skin in use adds its own bonus everywhere. Skins show in the Flower meadow, other worlds keep their own look.', rk_help: 'Rankings count every world and refresh every minute. Every Monday you get tickets for your best rank in any ranking, once at least 5 players are ranked.',
+    ab_tag: 'A cozy idle honey tycoon', ab_f1: 'Build a hive empire with 20 producers', ab_f2: 'Hatch bees and hive cores', ab_f3: 'Open worlds with their own twist', ab_f4: 'Weekly leagues and rankings', ab_f5: 'Daily streak, quests and a free pass', ab_f6: 'Free, in your browser', ab_made: 'Made by NovaFox', ab_visit: 'Visit NovaFox', ab_source: 'Source code'
   }, {
     tab_stats: 'Stats', pass_season: 'Pass de la semaine', pass_how: 'Le pass est gratuit et recommence chaque lundi. Chaque action le remplit : achats, abeilles dorées, abeilles à ticket, quêtes, essaims et éclosions.',
     mind_locked: 'Il faut {n} couronnes',
@@ -25,106 +25,9 @@
     es_now: 'Actuel {a}', es_next: 'Suivant {a}',
     st_title: 'Statistiques', st_hpsT: 'Miel par seconde', st_total: 'Total', st_tap: 'Récolte par toucher', st_luckyF: 'Fréquence des abeilles dorées', st_luckyD: 'Durée des effets dorés', st_luckyI: 'Une abeille dorée toutes les {a} à {b}', st_rjgain: 'Gelée royale par essaim', st_away: 'Limite des gains en absence', st_cost: 'Prix des producteurs', st_general: 'Général', st_prod_note: 'Les producteurs gagnent aussi x2 à chaque palier et grâce à leurs propres améliorations.',
     sr_upg: 'Améliorations', sr_rj: 'Gelée royale', sr_ach: 'Trophées', sr_decree: 'Décret royal', sr_crowns: 'Couronnes', sr_bees: 'Abeilles', sr_colony: 'Niveau de colonie', sr_level: 'Niveau du joueur', sr_ess: 'Boutique d\'essence', sr_world: 'Particularité du monde', sr_skins: 'Décors', sr_cores: 'Noyaux', sr_bless: 'Bénédictions', sr_boosts: 'Bonus actifs', sr_queen: 'Compétences de la reine', sr_perk: 'Avantages de couronne', sr_combo: 'Combo maximum', sr_base: 'Base',
-    ab_tag: 'Un jeu idle de miel tout doux', ab_f1: 'Bâtissez un empire de 20 producteurs', ab_f2: 'Faites éclore abeilles et noyaux', ab_f3: 'Ouvrez des mondes uniques', ab_f4: 'Ligues et classements chaque semaine', ab_f5: 'Série, quêtes et pass gratuit', ab_f6: 'Gratuit, dans votre navigateur', ab_made: 'Fait par NovaFox', ab_made_d: 'Un petit studio indépendant qui fait des jeux douillets et des applis pratiques.', ab_visit: 'Visiter NovaFox', ab_source: 'Code source'
+    help: 'Comment ça marche', pull_all: 'Tout éclore', workshop_how: 'Les tickets de noyau invoquent des noyaux de ruche. Équipez-les pour des bonus durables ; les doublons les améliorent. Les pièces de décor tombent des coffres des abeilles dorées, des récompenses de niveau, de la série et du pass. Chaque décor possédé donne +3 % de miel, et le décor utilisé ajoute son propre bonus partout. Les décors s\'affichent dans la Prairie fleurie, les autres mondes gardent leur propre style.', rk_help: 'Les classements comptent tous les mondes et se mettent à jour chaque minute. Chaque lundi, vous recevez des tickets selon votre meilleur rang, dès que 5 joueurs sont classés.',
+    ab_tag: 'Un jeu idle de miel tout doux', ab_f1: 'Bâtissez un empire de 20 producteurs', ab_f2: 'Faites éclore abeilles et noyaux', ab_f3: 'Ouvrez des mondes uniques', ab_f4: 'Ligues et classements chaque semaine', ab_f5: 'Série, quêtes et pass gratuit', ab_f6: 'Gratuit, dans votre navigateur', ab_made: 'Fait par NovaFox', ab_visit: 'Visiter NovaFox', ab_source: 'Code source'
   });
-
-  const POS = [[140, 226], [318, 112], [464, 256], [616, 112], [690, 262]];
-  const BLOB = 'M-74,-8C-76,-48-36,-64 2,-60C42,-66 78,-42 74,-4C72,34 40,58 2,54C-34,60-72,36-74,-8Z';
-  const HILL = 'M-46,10C-44,-14-20,-26 4,-22C28,-26 50,-10 46,12C44,30 22,40 0,38C-22,42-48,30-46,10Z';
-  function hexPath(r) {
-    const p = [];
-    for (let i = 0; i < 6; i++) { const a = Math.PI / 3 * i + Math.PI / 6; p.push((Math.cos(a) * r).toFixed(1) + ',' + (Math.sin(a) * r).toFixed(1)); }
-    return 'M' + p.join('L') + 'Z';
-  }
-
-  function mapSvg(s) {
-    let h = '<svg class="wmap" viewBox="0 0 800 400" role="img" aria-label="' + esc(t('map_title')) + '"><defs>';
-    BZ.WORLDS.forEach((w, i) => { const sk = BZ.SKIN_BY_ID[w.theme]; h += '<linearGradient id="wg' + i + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + sk.sky[1] + '"/><stop offset="1" stop-color="' + sk.hill[1] + '"/></linearGradient>'; });
-    h += '</defs><rect class="ocean" x="0" y="0" width="800" height="400" rx="20"/>';
-    for (let k = 0; k < 7; k++) h += '<path class="wave" d="M' + (40 + k * 110) + ',' + (40 + (k % 3) * 120) + 'q12,-8 24,0t24,0"/>';
-    h += '<path class="route" d="M' + POS.map(p => p.join(',')).join('L') + '"/>';
-    BZ.WORLDS.forEach((w, i) => {
-      const open = s.worldsOpen.includes(i);
-      const next = !open && i === s.worldsOpen.length;
-      const sk = BZ.SKIN_BY_ID[w.theme];
-      const [x, y] = POS[i];
-      const rot = [-8, 12, -4, 18, -14][i];
-      const sc = [1, 0.92, 1.04, 0.9, 0.96][i];
-      const cls = 'isle' + (open ? ' open' : ' closed') + (next ? ' next' : '') + (s.world === i ? ' here' : '') + (selWorld === i ? ' sel' : '');
-      h += '<g class="' + cls + '" data-act="wsel" data-arg="' + i + '" transform="translate(' + x + ' ' + y + ')" tabindex="0">';
-      if (s.world === i) h += '<circle class="pulse" r="70"/>';
-      if (selWorld === i) h += '<circle class="selring" r="84"/>';
-      h += '<g transform="rotate(' + rot + ') scale(' + sc + ')"><path class="shore" d="' + BLOB + '"/><path d="' + BLOB + '" fill="url(#wg' + i + ')"/><path d="' + HILL + '" fill="' + sk.hill[2] + '" opacity="0.55"/></g>';
-      if (open) h += '<path d="' + hexPath(15) + '" fill="' + sk.comb + '" stroke="#20252B" stroke-opacity="0.35" stroke-width="2"/><path d="' + hexPath(6) + '" fill="#fff" opacity="0.5"/>';
-      else h += '<g class="lock" transform="translate(-12 -12)" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + BZ.ICONS.lock + '</g>';
-      h += '<text class="lbl" y="94" text-anchor="middle">' + esc(n(w.name)) + '</text>';
-      if (open) h += '<text class="sub" y="122" text-anchor="middle">' + F.int(P.worldCrowns(s, i)) + ' ' + esc(t('wd_crowns').toLowerCase()) + '</text>';
-      else if (next) h += '<text class="sub" y="122" text-anchor="middle">' + P.worldCost(s, i) + ' ' + esc(t('wd_crowns').toLowerCase()) + '</text>';
-      h += '</g>';
-    });
-    return h + '</svg>';
-  }
-
-  function worldDetail(s, i) {
-    const w = BZ.WORLDS[i];
-    const sk = BZ.SKIN_BY_ID[w.theme];
-    const open = s.worldsOpen.includes(i);
-    const here = s.world === i;
-    let h = '<div class="card wdetail"><div class="wd-head"><span class="wd-sw" style="background:linear-gradient(180deg,' + sk.sky[0] + ',' + sk.sky[1] + ' 55%,' + sk.hill[1] + ' 56%,' + sk.hill[2] + ')"><i style="background:' + sk.comb + '"></i></span><div><b>' + esc(n(w.name)) + '</b><small>' + t('wd_' + w.id) + '</small></div></div>';
-    if (open) {
-      const info = P.worldInfo(s, i);
-      h += '<div class="wd-stats"><div><small>' + t('wd_hps') + '</small><b class="num">' + F.num(info.hps) + '</b></div><div><small>' + t('wd_crowns') + '</small><b class="num">' + F.int(info.crowns) + '</b></div><div><small>' + t('wd_life') + '</small><b class="num">' + F.num(info.lifetime) + '</b></div><div><small>' + t('wd_rj') + '</small><b class="num">' + F.num(info.rj, { int: true }) + '</b></div></div>';
-      const sv = P.sellValue(s, i);
-      h += '<div class="btn-row">' + (here ? '<span class="badge b-orange">' + ic('check') + t('world_here') + '</span>' : '<button class="btn btn-primary" data-act="travel" data-arg="' + i + '">' + ic('globe') + t('world_go') + '</button>') +
-        '<button class="btn btn-outline' + (sv < 1 ? ' off' : '') + '" data-act="sellw" data-arg="' + i + '">' + ic('sparkle') + t('sell_other', { v: F.int(sv) }) + '</button></div>';
-      if (sv < 1) h += '<p class="faint" style="font-size:var(--fs-xs);margin-top:var(--sp-2)">' + t('sell_need', { v: BZ.SELL_MIN }) + '</p>';
-    } else {
-      const next = i === s.worldsOpen.length;
-      const cost = P.worldCost(s, i);
-      h += '<p class="muted" style="font-size:var(--fs-sm);margin-top:var(--sp-3)">' + t('wd_closed') + '</p><div class="btn-row">' +
-        (next ? '<button class="btn btn-primary' + (P.canOpenWorld(s, i) ? '' : ' off') + '" data-act="openworld" data-arg="' + i + '">' + ic('crown') + t('world_open', { v: cost }) + '</button>' : '<small class="faint">' + t('world_prev') + '</small>') + '</div>';
-      if (next && !P.canOpenWorld(s, i)) h += '<p class="faint" style="font-size:var(--fs-xs);margin-top:var(--sp-2)">' + t('world_need', { v: cost }) + '</p>';
-    }
-    return h + '</div>';
-  }
-
-  function essEffect(id, lvl) {
-    const x = BZ.ESS_BY_ID[id];
-    switch (id) {
-      case 'honey': return 'x' + F.num(Math.pow(1 + x.v, lvl), { small: true });
-      case 'jelly': return 'x' + F.num(Math.pow(1 + x.v, lvl), { small: true });
-      case 'lucky': case 'tickets': return '+' + F.pct(x.v * lvl);
-      case 'nap': return '+' + (x.v * lvl) + ' h';
-      case 'start': return F.int(lvl ? x.v[lvl - 1] : 0);
-      case 'map': return '-' + F.pct(x.v * lvl);
-      default: return '+' + (x.v * lvl);
-    }
-  }
-
-  function essShop(s) {
-    let h = '<div class="card ess-card"><div class="sec-title"><h3>' + t('ess_title') + '</h3></div><div class="big-stat"><div class="pic ess">' + ic('sparkle') + '</div><div><b class="num">' + t('ess_have', { v: F.int(s.essence || 0) }) + '</b><small>' + t('ess_total', { v: F.int(s.essenceTotal || 0) }) + '</small></div></div>';
-    h += '<div class="ess-grid">';
-    for (const x of BZ.ESSENCE_SHOP) {
-      const lvl = P.essLvl(s, x.id);
-      const max = P.essMaxed(s, x.id);
-      const cost = P.essCost(s, x.id);
-      h += '<div class="ess-item"><div class="top"><span class="epic">' + ic(x.icon) + '</span><div><b>' + t('es_' + x.id) + '</b><small>' + t('level', { n: lvl }) + ' / ' + x.max + '</small></div></div><p>' + t('es_' + x.id + '_d') + '</p><small class="eff">' + t('es_now', { a: essEffect(x.id, lvl) }) + (max ? '' : '  ·  ' + t('es_next', { a: essEffect(x.id, lvl + 1) })) + '</small>' +
-        (max ? '<button class="btn btn-outline btn-sm off">' + ic('check') + t('ess_max') + '</button>' : '<button class="btn btn-outline btn-sm' + ((s.essence || 0) < cost ? ' off' : '') + '" data-act="essbuy" data-arg="' + x.id + '">' + ic('sparkle') + F.int(cost) + '</button>') + '</div>';
-    }
-    h += '</div><p class="faint" style="font-size:var(--fs-xs);margin-top:var(--sp-4)">' + t('ess_how', { m: BZ.SELL_MIN }) + '</p></div>';
-    return h;
-  }
-
-  UI.ext.worlds = function () {
-    const s = BZ.Game.main;
-    if (selWorld === null || !BZ.WORLDS[selWorld]) selWorld = s.world;
-    let h = '<h2 class="page-title">' + t('worlds_title') + '</h2>';
-    h += '<div class="card wmap-card"><div class="sec-title"><h3>' + t('map_title') + '</h3><small>' + t('map_hint') + '</small></div>' + mapSvg(s) + '</div>';
-    h += worldDetail(s, selWorld);
-    h += essShop(s);
-    h += '<div class="card"><p class="muted" style="font-size:var(--fs-sm)">' + t('worlds_how') + '</p></div>';
-    return h;
-  };
 
   function factorRows(list, unit) {
     let tot = 1;
@@ -155,7 +58,7 @@
     let upgG = 1, upgTap = 1, upgLF = 1, upgLD = 1;
     for (const id in s.upg) { const u = BZ.UPGRADE_BY_ID[id]; if (!u) continue; if (u.kind === 'global') upgG *= u.mult; if (u.kind === 'tap') upgTap *= u.tmult; if (u.kind === 'lucky') { upgLF *= u.freq; upgLD *= u.dur; } }
     const ess = id => P.essLvl(s, id);
-    let h = '<h2 class="page-title">' + t('st_title') + '</h2>';
+    let h = UI.title(t('st_title'));
     h += block('st_hpsT', 'drop', [
       ['sr_upg', upgG], ['sr_rj', E.rjMult(s)], ['sr_ach', 1 + BZ.ACH_BONUS * E.achCount(s)], ['sr_decree', 1 + 0.25 * E.qlvl(s, 'decree') * (E.perk(s, 'decree') ? 2 : 1)], ['sr_crowns', E.crownMult(s)],
       ['sr_bees', 1 + bb.honey], ['sr_colony', Math.pow(BZ.COLONY_MULT, E.colonyLevel(s))], ['sr_level', 1 + 0.01 * Math.max(0, (s.level || 1) - 1)], ['sr_ess', Math.pow(1.25, ess('honey'))],
@@ -182,16 +85,14 @@
     let h = '<div class="ab-hero"><div class="ab-bees"><i></i><i></i><i></i></div><div class="ab-icon">' + BZ.appIconSvg(96) + '</div><h2><span>Buzz</span>works</h2><p>' + t('ab_tag') + '</p><span class="ab-ver">' + t('about_version', { v: BZ.VERSION }) + '</span></div>';
     const feats = [['hive', 'ab_f1'], ['worker', 'ab_f2'], ['globe', 'ab_f3'], ['league', 'ab_f4'], ['calendar', 'ab_f5'], ['star', 'ab_f6']];
     h += '<div class="ab-feats">' + feats.map(x => '<div class="ab-feat"><span>' + ic(x[0]) + '</span><small>' + t(x[1]) + '</small></div>').join('') + '</div>';
-    h += '<div class="card ab-made"><div class="ab-nova">' + UI.fox('happy') + '</div><div class="txt"><b>' + t('ab_made') + '</b><small>' + t('ab_made_d') + '</small><small class="by">Luka LAURENT</small></div></div>';
+    h += '<div class="card ab-made"><div class="ab-nova">' + UI.fox('happy') + '</div><div class="txt"><b>' + t('ab_made') + '</b><small class="by">Luka LAURENT</small></div></div>';
     h += '<div class="ab-links"><a class="btn btn-primary" href="https://novafox.fr" target="_blank" rel="noopener">' + ic('globe') + t('ab_visit') + '</a><a class="btn btn-outline" href="https://github.com/LukaLaurent/buzzworks" target="_blank" rel="noopener">' + ic('copy') + t('ab_source') + '</a><button class="btn btn-ghost" data-act="logs">' + ic('chart') + t('logs') + '</button></div>';
     return h;
   };
 
   const prevAct = UI.extAct;
   UI.extAct = function (act, arg, el) {
-    if (act === 'wsel') { selWorld = +arg; BZ.Audio.play('click'); UI.render(); return; }
-    if (act === 'essbuy') { BZ.Game.buyEss(arg); return; }
-    if (act === 'sellw') { BZ.Game.askSell(+arg); return; }
+    if (act === 'help') { UI.modal('<div class="hero"><div class="pic">' + ic('info') + '</div></div><p style="text-align:center;line-height:1.6">' + t(arg) + '</p><div class="row center"><button class="btn btn-primary" data-close>' + t('ok') + '</button></div>', true); BZ.Audio.play('click'); return; }
     prevAct(act, arg, el);
   };
 })(window);

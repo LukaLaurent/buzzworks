@@ -308,7 +308,7 @@
     const s = G.main;
     const found = BZ.BEES.filter(b => s.bees && s.bees[b.id]).length;
     const bb = E.beeBonus(s);
-    let h = '<h2 class="page-title">' + t('bees_title') + '</h2>';
+    let h = UI.title(t('bees_title'), 'bees_how');
     h += UI.hatcheryHtml(s);
     h += '<div class="card"><div class="big-stat"><div class="pic">' + ic('worker') + '</div><div><b class="num">' + found + ' / ' + BZ.BEES.length + '</b><small>' + t('bees_found', { n: found, t: BZ.BEES.length }) + '</small></div></div>';
     const lines = Object.keys(bb).filter(k => bb[k] > 0).map(k => '<span class="badge b-orange">' + bonusText(k, bb[k]) + '</span>');
@@ -328,9 +328,11 @@
       h += '<div class="bee" style="--rc:' + rar.color + '"><div class="art">' + beeSvg(b, 60) + '<span class="lv">' + lvl + '</span></div><b>' + n(b.name) + '</b><span class="rar" style="color:' + rar.color + '">' + n(rar.name) + '</span><small>' + bonusText(b.kind, b.v * lvl) + '</small>' +
         '<div class="progress"><i style="width:' + (prog * 100).toFixed(0) + '%"></i></div><small class="faint">' + (nextAt ? t('bee_next', { n: nextAt - cnt }) : t('maxed')) + '</small></div>';
     }
-    h += '</div></div><div class="card"><p class="muted" style="font-size:var(--fs-sm)">' + t('bees_how') + '</p></div>';
+    h += '</div></div>';
     return h;
   }
+
+  UI.title = (txt, help) => '<h2 class="page-title">' + txt + (help ? '<button class="help-btn" data-act="help" data-arg="' + help + '" title="' + t('help') + '">' + ic('info') + '</button>' : '') + '</h2>';
 
   UI.beeModal = function (res) {
     const b = BZ.BEE_BY_ID[res.id];

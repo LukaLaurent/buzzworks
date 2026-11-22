@@ -77,6 +77,10 @@
       const snap = await f.getCountFromServer(q);
       return snap.data().count + 1;
     },
+    async countPlayers() {
+      const snap = await fb.fs.getCountFromServer(fb.fs.collection(fb.D, 'players'));
+      return snap.data().count;
+    },
     async group(gid) {
       const snap = await fb.fs.getDoc(fb.fs.doc(fb.D, 'groups', gid));
       return snap.exists() ? snap.data() : null;

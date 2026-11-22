@@ -4,6 +4,15 @@
   const O = BZ.Online = { group: null, groupAt: 0, boards: {}, busy: false, error: '' };
 
   O.FIELDS = ['honey', 'crowns', 'essence', 'bees', 'level', 'trophies'];
+  O.MIN = 5;
+  O.RANK_REWARDS = [
+    { top: 1, r: { royal: 5, core: 3 } },
+    { top: 3, r: { royal: 3, core: 2 } },
+    { top: 10, r: { royal: 2, core: 1 } },
+    { top: 50, r: { royal: 1, egg: 5 } },
+    { top: 0, r: { egg: 3 } }
+  ];
+  O.rankReward = rank => (O.RANK_REWARDS.find(x => x.top && rank <= x.top) || O.RANK_REWARDS[O.RANK_REWARDS.length - 1]).r;
 
   function worlds(s) {
     const list = [s];
@@ -54,6 +63,7 @@
     L.prev = null;
     if (!me) return;
     const n = list.length;
+    if (n < O.MIN) return;
     const z = O.zones(n);
     let move = 0;
     if (me.rank <= z.up && L.tier < BZ.LEAGUE_TIERS.length - 1) move = 1;
@@ -69,6 +79,23 @@
     L.pending = { rank: me.rank, n, move, tier: L.tier, got };
   }
 
+  async function rankRewards(s) {
+    const L = s.league;
+    const was = L.rkWeek;
+    L.rkWeek = L.week;
+    if (!was) return;
+    const total = await BZ.Cloud.countPlayers();
+    if (total < O.MIN) return;
+    const st = O.stats(s);
+    let best = Infinity, bestField = 'honey';
+    for (const f of O.FIELDS) {
+      const r = await BZ.Cloud.rankOf(f, st[f]);
+      if (r < best) { best = r; bestField = f; }
+    }
+    const got = P.grant(s, O.rankReward(best));
+    L.rkPending = { rank: best, field: bestField, got };
+  }
+
   O.sync = async function (s) {
     const C = BZ.Cloud;
     if (!C.signedIn() || O.busy) return false;
@@ -77,6 +104,7 @@
       M.leagueRoll(s);
       const L = s.league;
       if (L.prev && L.prev.gid) await finalize(s);
+      if (L.rkWeek !== L.week) await rankRewards(s);
       if (!L.gid) L.gid = await C.joinGroup(L.week, L.tier || 0, O.entry(s));
       else await C.setScore(L.gid, O.entry(s));
       await C.publish(O.profile(s));

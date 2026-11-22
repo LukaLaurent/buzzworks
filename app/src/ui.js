@@ -55,7 +55,6 @@
 
   UI.init = function (game) {
     G = game;
-    $('splashIcon').innerHTML = BZ.appIconSvg(88).replace('<svg', '<svg class="appi"');
     $('powered').innerHTML = fox('default') + t('powered');
     $('loadLabel').textContent = t('loading');
     const tips = ['tip_1', 'tip_2', 'tip_3', 'tip_4', 'tip_5'];

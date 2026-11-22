@@ -564,6 +564,7 @@
       if (M.quickGen(s)) UI.dirty('daily');
       const fl = P.flagCheck(s);
       if (fl) { A.play('milestone'); UI.toast('info', t('unlocked_tab', { p: t('tab_' + fl) }), { ok: true, long: true }); UI.buildChrome(); }
+      if (s.league.rkPending && !UI.modalOpen()) { const p = s.league.rkPending; s.league.rkPending = null; A.play('achievement'); UI.showRankResult(p); G.save(); }
       if (s.league.pending && !UI.modalOpen()) { const p = s.league.pending; s.league.pending = null; A.play(p.move > 0 ? 'milestone' : 'achievement'); UI.showLeagueResult(p); G.save(); }
       if (P.blessCheck(s)) { A.play('luckySpawn'); if (!UI.modalOpen()) UI.showBless(); else UI.toast('sparkle', t('bless_pending'), { ok: true }); }
     }

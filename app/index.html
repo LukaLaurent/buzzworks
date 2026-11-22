@@ -15,8 +15,16 @@
 </head>
 <body>
 <div class="splash" id="splash">
-  <span id="splashIcon"></span>
-  <b><span>Buzz</span>works</b>
+  <div class="sp-bg"></div>
+  <div class="sp-stage">
+    <span class="sp-glow"></span>
+    <span class="sp-ring"></span>
+    <span class="sp-icon" id="splashIcon"><img src="assets/icon.svg" alt=""></span>
+    <span class="sp-orbit o1"><i><svg viewBox="0 0 40 32" width="30" height="24" aria-hidden="true"><g class="wg"><ellipse cx="15" cy="9" rx="6" ry="8" transform="rotate(-25 15 9)" fill="#F5F3EF" opacity="0.85"/><ellipse cx="23" cy="8" rx="5" ry="7" transform="rotate(20 23 8)" fill="#F5F3EF" opacity="0.85"/></g><ellipse cx="18" cy="20" rx="12" ry="9" fill="#F2C14E"/><rect x="12" y="11" width="3.5" height="18" fill="#20252B"/><rect x="19" y="11" width="3.5" height="18" fill="#20252B"/><circle cx="31" cy="18" r="6" fill="#20252B"/><circle cx="33" cy="16" r="1.6" fill="#fff"/><path d="M6 20 1 21.5 6 23Z" fill="#20252B"/></svg></i></span>
+    <span class="sp-orbit o2"><i><svg viewBox="0 0 40 32" width="30" height="24" aria-hidden="true"><g class="wg"><ellipse cx="15" cy="9" rx="6" ry="8" transform="rotate(-25 15 9)" fill="#F5F3EF" opacity="0.85"/><ellipse cx="23" cy="8" rx="5" ry="7" transform="rotate(20 23 8)" fill="#F5F3EF" opacity="0.85"/></g><ellipse cx="18" cy="20" rx="12" ry="9" fill="#F2C14E"/><rect x="12" y="11" width="3.5" height="18" fill="#20252B"/><rect x="19" y="11" width="3.5" height="18" fill="#20252B"/><circle cx="31" cy="18" r="6" fill="#20252B"/><circle cx="33" cy="16" r="1.6" fill="#fff"/><path d="M6 20 1 21.5 6 23Z" fill="#20252B"/></svg></i></span>
+    <span class="sp-orbit o3"><i><svg viewBox="0 0 40 32" width="30" height="24" aria-hidden="true"><g class="wg"><ellipse cx="15" cy="9" rx="6" ry="8" transform="rotate(-25 15 9)" fill="#F5F3EF" opacity="0.85"/><ellipse cx="23" cy="8" rx="5" ry="7" transform="rotate(20 23 8)" fill="#F5F3EF" opacity="0.85"/></g><ellipse cx="18" cy="20" rx="12" ry="9" fill="#F2C14E"/><rect x="12" y="11" width="3.5" height="18" fill="#20252B"/><rect x="19" y="11" width="3.5" height="18" fill="#20252B"/><circle cx="31" cy="18" r="6" fill="#20252B"/><circle cx="33" cy="16" r="1.6" fill="#fff"/><path d="M6 20 1 21.5 6 23Z" fill="#20252B"/></svg></i></span>
+  </div>
+  <b class="sp-title"><span>Buzz</span>works</b>
   <div class="bar"><i></i></div>
   <small class="load-label" id="loadLabel">Loading</small>
   <p class="tip" id="splashTip"></p>
@@ -54,6 +62,7 @@
   <div class="modal-wrap hidden" id="modal"></div>
 </div>
 <script src="src/config.js"></script>
+<script src="src/ads.js"></script>
 <script src="src/data.js"></script>
 <script src="src/i18n.js"></script>
 <script src="src/format.js"></script>

@@ -223,6 +223,13 @@ textarea.input { height: 110px; width: 100%; padding: var(--sp-3); font-family: 
 .upg-detail b { display: block; font-size: var(--fs-sm); }
 .upg-detail small { display: block; font-size: var(--fs-xs); color: var(--text-muted); }
 .empty-line { font-size: var(--fs-sm); color: var(--text-faint); padding: var(--sp-3) 0; }
+.upg.empty { border-style: dashed; background: transparent; opacity: 0.35; cursor: default; pointer-events: none; }
+#upgDetail { min-height: 76px; margin-top: var(--sp-3); }
+#upgDetail .upg-detail { margin-top: 0; min-height: 76px; }
+#upgDetail .empty-line { min-height: 76px; display: flex; align-items: center; padding: 0 var(--sp-4); border: 1px dashed var(--border); border-radius: var(--r-md); }
+.promo .slide { min-height: 80px; }
+#buyAll { display: inline-flex; min-height: 36px; align-items: center; }
+@media (max-width: 520px) { #upgDetail, #upgDetail .upg-detail, #upgDetail .empty-line { min-height: 92px; } .promo .slide { min-height: 100px; } }
 
 .prod-list { display: flex; flex-direction: column; gap: var(--sp-2); }
 .prod { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: var(--sp-3); padding: var(--sp-3); background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); cursor: pointer; transition: border-color var(--dur) var(--ease), transform 100ms var(--ease), opacity var(--dur) var(--ease); position: relative; }
@@ -465,6 +472,9 @@ textarea.input { height: 110px; width: 100%; padding: var(--sp-3); font-family: 
 .rw.tk-core .ic, .tk.tk-core .ic { color: var(--teal); }
 .rw.part .ic { color: var(--orange); }
 .rw.bst .ic { color: var(--orange); }
+.rw.rwskin .ic { color: var(--orange); }
+.rw.rwbee svg { flex-shrink: 0; }
+.pcell .rw { white-space: normal; text-align: center; }
 .tk-bar { display: flex; gap: var(--sp-2); flex-wrap: wrap; margin-bottom: var(--sp-4); }
 .tk { flex: 1 1 120px; display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-2) var(--sp-3); border-radius: var(--r-md); background: var(--surface-2); border: 1px solid var(--border); min-width: 0; }
 .tk .ic { width: 22px; height: 22px; flex-shrink: 0; }

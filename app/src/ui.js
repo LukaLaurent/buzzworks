@@ -49,6 +49,36 @@
   }
   UI.fox = fox;
 
+  function morphNode(from, to) {
+    if (from.nodeType !== to.nodeType || from.nodeName !== to.nodeName) { from.replaceWith(to); return; }
+    if (from.nodeType !== 1) { if (from.nodeValue !== to.nodeValue) from.nodeValue = to.nodeValue; return; }
+    const fa = from.attributes;
+    for (let i = fa.length - 1; i >= 0; i--) { const nm = fa[i].name; if (!to.hasAttribute(nm)) from.removeAttribute(nm); }
+    const ta = to.attributes;
+    for (let i = 0; i < ta.length; i++) { const a = ta[i]; if (from.getAttribute(a.name) !== a.value) from.setAttribute(a.name, a.value); }
+    if (from.tagName === 'INPUT') {
+      if (from.type === 'checkbox') from.checked = to.hasAttribute('checked');
+      else if (document.activeElement !== from) from.value = to.getAttribute('value') || '';
+    }
+    if (from.tagName === 'TEXTAREA' && document.activeElement === from) return;
+    morphKids(from, to);
+  }
+  function morphKids(from, to) {
+    const fc = Array.from(from.childNodes), tc = Array.from(to.childNodes);
+    for (let i = 0; i < tc.length; i++) {
+      if (i < fc.length) morphNode(fc[i], tc[i]);
+      else from.appendChild(tc[i]);
+    }
+    for (let i = fc.length - 1; i >= tc.length; i--) fc[i].remove();
+  }
+  function morph(container, html) {
+    const tpl = document.createElement('template');
+    tpl.innerHTML = html;
+    morphKids(container, tpl.content);
+    container.querySelectorAll('*').forEach(el => { if (el._v !== undefined) el._v = undefined; });
+  }
+  UI.morph = morph;
+
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const S = () => G.cur();
   const prodName = id => n(BZ.PRODUCERS.find(p => p.id === id).name);
@@ -114,7 +144,9 @@
     const panel = $('panel');
     if (page === 'hive') { renderHive(); return; }
     const html = ((UI.ext && UI.ext[page]) || ({ queen: pageQueen, bees: pageBees, daily: pageDaily, trophies: pageTrophies, settings: pageSettings, about: pageAbout })[page])();
-    panel.innerHTML = '<div class="page on" data-page="' + page + '">' + html + '</div>';
+    const cur = panel.firstElementChild;
+    if (cur && cur.dataset.page === page && panel.children.length === 1) morph(cur, html);
+    else panel.innerHTML = '<div class="page on" data-page="' + page + '">' + html + '</div>';
     liveUpdate();
   };
 
@@ -156,7 +188,7 @@
       hiveKey = key;
       upgKey = '';
       const modes = [1, 10, 100, 'next', 'max'];
-      panel.innerHTML = '<div class="page on" data-page="hive">' +
+      const hiveHtml =
         (UI.promoHtml ? UI.promoHtml() : '') +
         '<div class="sec-title"><h3>' + t('upgrades') + '</h3><span id="buyAll"></span></div>' +
         '<div class="upg-grid" id="upgGrid"></div><div id="upgDetail"></div>' +
@@ -166,7 +198,10 @@
         vis.map(p => p.locked
           ? '<div class="prod locked" data-pid="' + p.id + '"><div class="pic">' + ic('lock') + '</div><div class="info"><b>' + n(p.name) + '</b><small>' + t('unlock_at', { v: F.num(p.cost * 0.3) }) + '</small></div><div class="cost"><b class="num">' + F.num(E.unitCost(s, p.id)) + '</b><small>' + t('locked') + '</small></div></div>'
           : '<div class="prod" data-act="buy" data-arg="' + p.id + '" data-pid="' + p.id + '"><div class="pic">' + ic(p.id) + '<span class="count num">0</span></div><div class="info"><b>' + n(p.name) + '</b><small class="num">-</small><div class="ms-row"><div class="ms"><i></i></div><em class="num">-</em></div></div><div class="cost"><b class="num">-</b><small>-</small></div></div>').join('') +
-        '</div></div>';
+        '</div>';
+      const curHive = panel.firstElementChild;
+      if (curHive && curHive.dataset.page === 'hive' && panel.children.length === 1) morph(curHive, hiveHtml);
+      else panel.innerHTML = '<div class="page on" data-page="hive">' + hiveHtml + '</div>';
       rows = {};
       panel.querySelectorAll('.prod[data-act]').forEach(el => {
         rows[el.dataset.pid] = { el, count: el.querySelector('.count'), rate: el.querySelector('.info small'), bar: el.querySelector('.ms i'), msl: el.querySelector('.ms-row em'), cost: el.querySelector('.cost b'), sub: el.querySelector('.cost small'), last: {} };
@@ -203,20 +238,21 @@
     const avail = E.availableUpgrades(s);
     const gw = $('panel').clientWidth - 48;
     const cols = Math.max(4, Math.floor((gw + 8) / 56));
-    const shown = avail.slice(0, Math.min(24, cols * (gw < 520 ? 2 : 3)));
-    const key = shown.map(u => u.id).join(',') + ':' + BZ.lang;
+    const slots = Math.min(24, cols * 2);
+    const shown = avail.slice(0, slots);
+    const key = shown.map(u => u.id).join(',') + ':' + BZ.lang + ':' + cols;
     const grid = $('upgGrid');
     if (!grid) return;
     if (key !== upgKey) {
       upgKey = key;
       if (selUpg && !shown.some(u => u.id === selUpg)) selUpg = null;
-      grid.innerHTML = shown.length ? shown.map(u => '<button class="upg" data-act="upg" data-arg="' + u.id + '" title="' + esc(n(u.name)) + '">' + upgIcon(u) + '</button>').join('') : '';
-      grid.style.display = shown.length ? '' : 'none';
+      grid.style.gridTemplateColumns = 'repeat(' + Math.min(cols, slots) + ', 1fr)';
+      morph(grid, shown.map(u => '<button class="upg" data-act="upg" data-arg="' + u.id + '" title="' + esc(n(u.name)) + '">' + upgIcon(u) + '</button>').join('') + '<span class="upg empty"></span>'.repeat(Math.max(0, slots - shown.length)));
       renderUpgDetail();
     }
     let affordable = 0;
     const curSel = selUpg || (shown[0] && shown[0].id);
-    grid.querySelectorAll('.upg').forEach(b => {
+    grid.querySelectorAll('.upg[data-arg]').forEach(b => {
       const u = BZ.UPGRADE_BY_ID[b.dataset.arg];
       const can = s.honey >= u.cost;
       if (can) affordable++;
@@ -238,9 +274,9 @@
     if (!det) return;
     const s = S();
     const avail = E.availableUpgrades(s);
-    if (!avail.length) { det.innerHTML = '<div class="empty-line">' + t('no_upgrades') + '</div>'; return; }
+    if (!avail.length) { morph(det, '<div class="empty-line">' + t('no_upgrades') + '</div>'); return; }
     const u = BZ.UPGRADE_BY_ID[selUpg] || avail[0];
-    det.innerHTML = '<div class="upg-detail"><div class="txt"><b>' + esc(n(u.name)) + '</b><small>' + esc(upgDesc(u)) + '</small></div><button class="btn btn-primary btn-sm num" data-act="upgbuy" data-arg="' + u.id + '">' + ic('drop') + F.num(u.cost) + '</button></div>';
+    morph(det, '<div class="upg-detail"><div class="txt"><b>' + esc(n(u.name)) + '</b><small>' + esc(upgDesc(u)) + '</small></div><button class="btn btn-primary btn-sm num" data-act="upgbuy" data-arg="' + u.id + '">' + ic('drop') + F.num(u.cost) + '</button></div>');
   }
 
 

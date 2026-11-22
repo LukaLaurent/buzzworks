@@ -42,7 +42,7 @@
     trophies_bonus: 'Each hall of fame trophy gives +2% honey', run_title: 'Swarm goals', run_d: 'They reset at every swarm and give tickets again', hall_title: 'Hall of fame', ag_world: 'Collection and worlds',
     tg_runHoney: 'Make {v} honey this swarm', tg_runOwn: 'Own {v} producers', tg_runUpg: 'Buy {v} upgrades this swarm', tg_runLucky: 'Catch {v} lucky bees this swarm', tg_runTaps: 'Tap {v} times this swarm', tg_runColony: 'Reach colony level {v}',
     tg_cores: 'Find {v} hive cores', tg_skins: 'Complete {v} hive skins', tg_worlds: 'Open {v} worlds', goal_done: 'Swarm goal: {n}',
-    play: 'Play', tip_1: 'Ticket bees carry egg tickets. Tap them before they fly away.', tip_2: 'Swarm goals reset at every swarm and give tickets each time.', tip_3: 'Equip hive cores in the Workshop for lasting bonuses.', tip_4: 'Each skin you complete gives +3% honey.', tip_5: 'Crowns open new worlds with their own twist.'
+    play: 'Play', tip_title: 'Tip', tip_1: 'Ticket bees carry egg tickets. Tap them before they fly away.', tip_2: 'Swarm goals reset at every swarm and give tickets each time.', tip_3: 'Equip hive cores in the Workshop for lasting bonuses.', tip_4: 'Each skin you complete gives +3% honey.', tip_5: 'Crowns open new worlds with their own twist.'
   }, {
     tab_pass: 'Pass', tab_workshop: 'Atelier', tab_worlds: 'Mondes',
     ticket_egg: 'Tickets d\'œuf', ticket_royal: 'Tickets royaux', ticket_core: 'Tickets de noyau', tickets: 'Tickets',
@@ -78,7 +78,7 @@
     trophies_bonus: 'Chaque trophée du palmarès donne +2 % de miel', run_title: 'Objectifs de l\'essaim', run_d: 'Ils repartent à chaque essaim et redonnent des tickets', hall_title: 'Palmarès', ag_world: 'Collection et mondes',
     tg_runHoney: 'Produire {v} de miel dans cet essaim', tg_runOwn: 'Posséder {v} producteurs', tg_runUpg: 'Acheter {v} améliorations dans cet essaim', tg_runLucky: 'Attraper {v} abeilles dorées dans cet essaim', tg_runTaps: 'Toucher {v} fois dans cet essaim', tg_runColony: 'Atteindre le niveau de colonie {v}',
     tg_cores: 'Trouver {v} noyaux de ruche', tg_skins: 'Terminer {v} décors', tg_worlds: 'Ouvrir {v} mondes', goal_done: 'Objectif d\'essaim : {n}',
-    play: 'Jouer', tip_1: 'Les abeilles à ticket portent des tickets d\'œuf. Touchez-les avant qu\'elles s\'envolent.', tip_2: 'Les objectifs de l\'essaim repartent à chaque essaim et redonnent des tickets.', tip_3: 'Équipez des noyaux dans l\'Atelier pour des bonus durables.', tip_4: 'Chaque décor terminé donne +3 % de miel.', tip_5: 'Les couronnes ouvrent de nouveaux mondes, chacun avec sa particularité.'
+    play: 'Jouer', tip_title: 'Astuce', tip_1: 'Les abeilles à ticket portent des tickets d\'œuf. Touchez-les avant qu\'elles s\'envolent.', tip_2: 'Les objectifs de l\'essaim repartent à chaque essaim et redonnent des tickets.', tip_3: 'Équipez des noyaux dans l\'Atelier pour des bonus durables.', tip_4: 'Chaque décor terminé donne +3 % de miel.', tip_5: 'Les couronnes ouvrent de nouveaux mondes, chacun avec sa particularité.'
   });
 
   const TICKET_COLOR = { egg: 'tk-egg', royal: 'tk-royal', core: 'tk-core' };
@@ -88,8 +88,8 @@
     if (r.core) return '<span class="rw tk-core">' + ic('ticket') + 'x' + r.core + '</span>';
     if (r.part) return '<span class="rw part">' + ic('palette') + 'x' + r.part + '</span>';
     if (r.boost) return '<span class="rw bst">' + ic('bolt') + 'x2  30 min</span>';
-    if (r.skin) return '<span class="rw skin">' + ic('palette') + n(BZ.SKIN_BY_ID[r.skin].name) + '</span>';
-    if (r.bee) return '<span class="rw bee">' + UI.beeSvg(BZ.BEE_BY_ID[r.bee], 22) + n(BZ.BEE_BY_ID[r.bee].name) + '</span>';
+    if (r.skin) return '<span class="rw rwskin">' + ic('palette') + n(BZ.SKIN_BY_ID[r.skin].name) + '</span>';
+    if (r.bee) return '<span class="rw rwbee">' + UI.beeSvg(BZ.BEE_BY_ID[r.bee], 22) + n(BZ.BEE_BY_ID[r.bee].name) + '</span>';
     if (r.warp) return '<span class="rw bst">' + ic('drop') + t('quick_honey') + '</span>';
     return '';
   }
@@ -365,7 +365,7 @@
     const el = $('promo');
     if (!el) return;
     const slides = promoSlides(G.main);
-    if (!slides.length) { el.style.display = 'none'; return; }
+    if (!slides.length) { const k = 1 + Math.floor(now / 15000) % 5; slides.push({ id: 'tip' + k, c: 'p-bless', icon: 'info', a: t('tip_title'), b: t('tip_' + k), act: 'none' }); }
     el.style.display = '';
     if (now - promoAt > 5000) { promoAt = now; promoIdx++; }
     const i = promoIdx % slides.length;

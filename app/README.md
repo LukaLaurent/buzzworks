@@ -54,7 +54,7 @@ Sign in with Google, cloud saves, weekly leagues with real players and rankings 
 
 1. Open https://console.firebase.google.com, Create a project (for example "buzzworks"). Google Analytics is not needed.
 2. Project overview, the web icon `</>`: register an app (any nickname, no Firebase Hosting). Copy `apiKey`, `authDomain`, `projectId` and `appId` into `app/src/config.js`. These values are public by design; the security rules protect the data.
-3. Build, Authentication, Get started, Sign-in method: enable **Google**. Then Settings, Authorized domains: add `lukalaurent.github.io` (localhost is already there).
+3. Build, Authentication, Get started, Sign-in method: enable **Google**. Then Settings, Authorized domains: add `buzzworks.novafox.fr` and `lukalaurent.github.io` (localhost is already there).
 4. Build, Firestore Database, Create database, pick a location close to the players, start in **production mode**.
 5. Firestore, Rules: replace everything with the content of `app/firebase/firestore.rules` and Publish.
 6. Publish the game again.
@@ -67,7 +67,7 @@ The game runs in the browser, so a determined player could send fake numbers. Th
 
 ## Publishing on GitHub Pages
 
-`app/tools/publish.ps1` signs in to GitHub if needed, creates the public repository `buzzworks`, commits, pushes and turns on GitHub Pages. The workflow in `.github/workflows/pages.yml` publishes the `app` folder at `https://YOUR-GITHUB-NAME.github.io/buzzworks/` on every push to `main`. Saves and logs (`data/`, `logs/`) are never committed.
+`app/tools/publish.ps1` signs in to GitHub if needed, creates the public repository `buzzworks`, commits, pushes and turns on GitHub Pages. The workflow in `.github/workflows/pages.yml` publishes the `app` folder on every push to `main`. The game lives at https://buzzworks.novafox.fr (DNS: CNAME `buzzworks` to `lukalaurent.github.io` at IONOS, custom domain set in the repository Pages settings). The old github.io address redirects there. Saves and logs (`data/`, `logs/`) are never committed.
 
 ```
 powershell -ExecutionPolicy Bypass -File app/tools/publish.ps1 -Message "What changed"

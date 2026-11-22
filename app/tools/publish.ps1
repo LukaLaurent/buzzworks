@@ -26,7 +26,7 @@ if ($LASTEXITCODE -ne 0) {
 
 & $gh repo view "$login/$Repo" *> $null
 if ($LASTEXITCODE -ne 0) {
-  & $gh repo create $Repo --public --description 'Buzzworks, a cozy idle honey tycoon you play in the browser.' --homepage "https://$login.github.io/$Repo/"
+  & $gh repo create $Repo --public --description 'Buzzworks, a cozy idle honey tycoon you play in the browser.' --homepage "https://buzzworks.novafox.fr/"
 }
 $remote = git remote
 if ($remote -notcontains 'origin') { git remote add origin "https://github.com/$login/$Repo.git" }
@@ -39,4 +39,4 @@ if ($LASTEXITCODE -ne 0) { Write-Host 'Push failed.'; exit 1 }
 
 Write-Host ''
 Write-Host "Repository: https://github.com/$login/$Repo"
-Write-Host "Game: https://$login.github.io/$Repo/"
+Write-Host "Game: https://buzzworks.novafox.fr/"

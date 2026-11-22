@@ -12,7 +12,7 @@
   );
   BZ.BEES.forEach(b => { BZ.BEE_BY_ID[b.id] = b; });
 
-  P.SHARED = ['tickets', 'pity', 'bees', 'cores', 'coreSlots', 'parts', 'skins', 'skin', 'xp', 'level', 'pass', 'daily', 'quick', 'ads', 'purchases', 'essence', 'worldsOpen', 'otherWorlds', 'flags', 'seed', 'playerName', 'league', 'quests', 'ticketBees', 'created', 'danceReady', 'cloud'];
+  P.SHARED = ['tickets', 'pity', 'bees', 'cores', 'coreSlots', 'parts', 'skins', 'skin', 'xp', 'level', 'pass', 'daily', 'quick', 'ads', 'essence', 'worldsOpen', 'otherWorlds', 'flags', 'seed', 'playerName', 'league', 'quests', 'ticketBees', 'created', 'danceReady', 'cloud'];
 
   P.XP = { buy: 1, upgrade: 4, milestone: 6, lucky: 10, quest: 50, quick: 15, swarm: 80, achievement: 8, hatch: 5, power: 5, coronation: 300, bless: 10, ticket: 6 };
   P.xpFor = L => Math.round(40 * Math.pow(L, 1.7));
@@ -55,7 +55,6 @@
   P.BLESS_AT = [1e5, 1e9, 1e13, 1e17];
 
   P.AD_CAPS = { boost: 6, offline: 3, ticket: 3, reroll: 3 };
-  P.NOADS_PRICE = 1.99;
 
   P.ensure = function (s) {
     s.tickets = Object.assign({ egg: 0, royal: 0, core: 0 }, s.tickets || {});
@@ -75,7 +74,7 @@
     s.blessOffer = s.blessOffer || null;
     s.blessDone = s.blessDone || [];
     s.ads = s.ads || { day: '', c: {} };
-    s.purchases = { noads: !!(s.purchases && s.purchases.noads) };
+    delete s.purchases;
     s.essence = s.essence || 0;
     s.worldsOpen = s.worldsOpen || [0];
     s.otherWorlds = s.otherWorlds || {};
@@ -90,7 +89,6 @@
   };
 
   P.essPerk = (s, id) => { const p = BZ.ESSENCE_PERKS.find(x => x.id === id); return !!p && (s.essence || 0) >= p.at; };
-  P.adsFree = s => !!(s.purchases && s.purchases.noads);
   P.coreSlotCount = s => 2 + ((s.level || 1) >= 20 ? 1 : 0) + (P.essPerk(s, 'slot') ? 1 : 0);
   P.ownedSkins = s => BZ.SKINS.filter(x => !x.world && x.id !== 'meadow' && s.skins[x.id]).length;
 
@@ -459,11 +457,4 @@
     return { state: ns, gain };
   };
 
-  P.Billing = {
-    available: () => !!(root.BZ_BILLING && root.BZ_BILLING.buy),
-    buy(id) { return root.BZ_BILLING.buy(id); }
-  };
-  P.priceText = function (price) {
-    return BZ.lang === 'fr' ? price.toFixed(2).replace('.', ',') + ' €' : '€' + price.toFixed(2);
-  };
 })(typeof window !== 'undefined' ? window : globalThis);

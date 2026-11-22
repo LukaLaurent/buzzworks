@@ -38,7 +38,6 @@
     worlds_how: 'Each world keeps its own honey, queen and crowns. Bees, cores, skins, tickets and your level are shared everywhere.',
     essence: 'Essence', essence_bonus: '+{h} honey and +{r} royal jelly in every world', sell_title: 'Sell this world?', sell_text: 'This world restarts from zero: honey, producers, royal jelly, queen skills, crowns and its trophies. Bees, cores, skins, tickets and other worlds stay. You gain {v} essence.', sell_btn: 'Sell this world  ·  +{v} essence', sell_need: 'Earn {v} crowns in this world to sell it', sell_done: '+{v} essence', ess_perks: 'Essence perks', ep_slot: '+1 core slot', ep_lucky: 'Lucky bees 20% more often', ep_mind: 'Hive mind without crowns', ep_crown: '+1 crown at every coronation', ep_tickets: 'Ticket bees give double', travel_done: 'Welcome to {w}', world_opened: '{w} is open', ess_at: '{n} essence',
     mind_locked: 'Needs 5 crowns',
-    noads_title: 'No ads', noads_d: 'Every ad reward becomes instant, forever.', soon: 'Coming soon', noads_owned: 'Ads removed. Thank you!',
     cloud_title: 'Cloud save', cloud_d: 'Sign in with Google to keep your progress on every device. The save goes to a private app folder in your Google Drive.', cloud_signin: 'Sign in with Google', cloud_signout: 'Sign out', cloud_sync: 'Sync now', cloud_last: 'Last sync {t} ago', cloud_never: 'Not synced yet', cloud_cfg: 'Cloud save is not set up on this site yet.', cloud_loaded: 'Cloud save loaded', cloud_saved: 'Saved to Google Drive', cloud_err: 'Cloud save failed. Your progress is still saved on this device.', cloud_pick: 'Two saves found', cloud_pick_d: 'The save in your Google Drive is newer than this device. Which one do you want to keep?', cloud_use: 'Use the cloud save', cloud_keep: 'Keep this device',
     trophies_bonus: 'Each hall of fame trophy gives +2% honey', run_title: 'Swarm goals', run_d: 'They reset at every swarm and give tickets again', hall_title: 'Hall of fame', ag_world: 'Collection and worlds',
     tg_runHoney: 'Make {v} honey this swarm', tg_runOwn: 'Own {v} producers', tg_runUpg: 'Buy {v} upgrades this swarm', tg_runLucky: 'Catch {v} lucky bees this swarm', tg_runTaps: 'Tap {v} times this swarm', tg_runColony: 'Reach colony level {v}',
@@ -75,7 +74,6 @@
     worlds_how: 'Chaque monde garde son miel, sa reine et ses couronnes. Abeilles, noyaux, décors, tickets et niveau sont partagés partout.',
     essence: 'Essence', essence_bonus: '+{h} de miel et +{r} de gelée royale dans tous les mondes', sell_title: 'Vendre ce monde ?', sell_text: 'Ce monde repart de zéro : miel, producteurs, gelée royale, compétences de la reine, couronnes et ses trophées. Abeilles, noyaux, décors, tickets et autres mondes restent. Vous gagnez {v} essences.', sell_btn: 'Vendre ce monde  ·  +{v} essences', sell_need: 'Gagnez {v} couronnes dans ce monde pour le vendre', sell_done: '+{v} essences', ess_perks: 'Avantages d\'essence', ep_slot: '+1 emplacement de noyau', ep_lucky: 'Abeilles dorées 20 % plus fréquentes', ep_mind: 'Esprit de ruche sans couronnes', ep_crown: '+1 couronne à chaque couronnement', ep_tickets: 'Abeilles à ticket doublées', travel_done: 'Bienvenue : {w}', world_opened: '{w} est ouvert', ess_at: '{n} essences',
     mind_locked: 'Il faut 5 couronnes',
-    noads_title: 'Sans pub', noads_d: 'Toutes les récompenses de pub deviennent immédiates, pour toujours.', soon: 'Bientôt', noads_owned: 'Pubs retirées. Merci !',
     cloud_title: 'Sauvegarde en ligne', cloud_d: 'Connectez-vous avec Google pour garder votre progression sur tous vos appareils. La sauvegarde va dans un dossier privé de votre Google Drive.', cloud_signin: 'Se connecter avec Google', cloud_signout: 'Se déconnecter', cloud_sync: 'Synchroniser', cloud_last: 'Synchronisé il y a {t}', cloud_never: 'Pas encore synchronisé', cloud_cfg: 'La sauvegarde en ligne n\'est pas encore configurée sur ce site.', cloud_loaded: 'Sauvegarde en ligne chargée', cloud_saved: 'Enregistré sur Google Drive', cloud_err: 'Échec de la sauvegarde en ligne. La progression reste enregistrée sur cet appareil.', cloud_pick: 'Deux sauvegardes trouvées', cloud_pick_d: 'La sauvegarde de votre Google Drive est plus récente que celle de cet appareil. Laquelle garder ?', cloud_use: 'Utiliser la sauvegarde en ligne', cloud_keep: 'Garder cet appareil',
     trophies_bonus: 'Chaque trophée du palmarès donne +2 % de miel', run_title: 'Objectifs de l\'essaim', run_d: 'Ils repartent à chaque essaim et redonnent des tickets', hall_title: 'Palmarès', ag_world: 'Collection et mondes',
     tg_runHoney: 'Produire {v} de miel dans cet essaim', tg_runOwn: 'Posséder {v} producteurs', tg_runUpg: 'Acheter {v} améliorations dans cet essaim', tg_runLucky: 'Attraper {v} abeilles dorées dans cet essaim', tg_runTaps: 'Toucher {v} fois dans cet essaim', tg_runColony: 'Atteindre le niveau de colonie {v}',
@@ -329,7 +327,6 @@
     return new Promise(resolve => {
       const s = G.main;
       if (P.adLeft(s, place) <= 0) { UI.toast('ad', t('ad_none')); resolve(false); return; }
-      if (P.adsFree(s)) { UI.toast('ad', t('ad_skip'), { ok: true }); resolve(true); return; }
       if (root.BZ_ADS && root.BZ_ADS.show) { root.BZ_ADS.show(place).then(r => { if (r === 'none') placeholder(resolve); else resolve(!!r); }).catch(() => placeholder(resolve)); return; }
       placeholder(resolve);
     }).then(ok => { if (ok) P.adUse(G.main, place); return ok; });
@@ -431,7 +428,6 @@
       case 'openworld': G.openWorld(+arg); break;
       case 'sell': G.askSell(); break;
       case 'quick': G.claimQuick(+arg); break;
-      case 'noads': G.buyNoAds(); break;
       case 'cloudin': G.cloudSignIn(); break;
       case 'cloudout': G.cloudSignOut(); break;
       case 'cloudsync': G.cloudSync(true); break;

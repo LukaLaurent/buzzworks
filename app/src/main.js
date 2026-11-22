@@ -99,19 +99,6 @@
     UI.closeModal();
     UI.showAd('reroll').then(ok => { if (ok) { P.blessOffer(G.main); G.save(); } UI.showBless(); });
   };
-  G.buyNoAds = function () {
-    if (!P.Billing.available()) return;
-    P.Billing.buy('noads').then(res => {
-      if (!res || !res.ok) return;
-      G.main.purchases.noads = true;
-      A.play('swarm');
-      UI.toast('ad', t('noads_owned'), { ok: true, long: true });
-      Log.info('purchase noads');
-      UI.render();
-      G.save();
-    }).catch(() => {});
-  };
-
   G.travel = function (idx) {
     const ns = P.travel(G.main, idx);
     if (!ns) return;

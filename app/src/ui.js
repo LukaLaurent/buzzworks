@@ -500,8 +500,6 @@
     h += '<div class="card"><div class="setting"><div><b>' + t('cloud_title') + '</b><small>' + (C && C.configured() ? (C.signedIn() ? esc(C.who() || '') + '  ·  ' + (s.cloud.at ? t('cloud_last', { t: F.time((Date.now() - s.cloud.at) / 1000) }) : t('cloud_never')) : t('cloud_d')) : t('cloud_cfg')) + '</small></div>';
     if (C && C.configured()) h += C.signedIn() ? '<div class="btns"><button class="btn btn-outline btn-sm" data-act="cloudsync">' + ic('upload') + t('cloud_sync') + '</button><button class="btn btn-ghost btn-sm" data-act="cloudout">' + t('cloud_signout') + '</button></div>' : '<button class="btn btn-primary btn-sm g-btn" data-act="cloudin">' + ic('user') + t('cloud_signin') + '</button>';
     h += '</div></div>';
-    const P2 = BZ.P;
-    h += '<div class="card"><div class="setting"><div><b>' + t('noads_title') + '</b><small>' + (P2.adsFree(s) ? t('noads_owned') : t('noads_d')) + '</small></div>' + (P2.adsFree(s) ? '<span class="badge b-success">' + ic('check') + '</span>' : P2.Billing.available() ? '<button class="btn btn-primary btn-sm" data-act="noads">' + P2.priceText(P2.NOADS_PRICE) + '</button>' : '<button class="btn btn-outline btn-sm off">' + t('soon') + '  ·  ' + P2.priceText(P2.NOADS_PRICE) + '</button>') + '</div></div>';
     h += '<div class="card"><div class="setting"><div><b>' + t('set_reset') + '</b></div><button class="btn btn-danger btn-sm" data-act="reset">' + ic('trash') + t('reset_ok') + '</button></div></div>';
     return h;
   }

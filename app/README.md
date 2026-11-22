@@ -44,7 +44,6 @@ With the local server, saves go to `data/save.json` and `data/settings.json`, wi
 - **Essence**: sell a world (5 crowns or more earned in it) to restart it from zero for essence. Essence gives +12% honey and +3% royal jelly per point in every world, and perks at 5, 15, 40, 80 and 150.
 - **Ads**: optional rewarded ads for x2 honey for 30 min (6 a day), 2 egg tickets (3 a day), away earnings x2 (3 a day) and blessing rerolls (3 a day). The free Bee dance gives x2 for 20 min every 4 h.
 - **League and rankings** (level 5, needs Firebase and Google sign-in): weekly groups of up to 20 real players and top 50 rankings.
-- **No ads**: the only paid item (1.99), shown as coming soon until a payment provider is plugged in.
 
 Keyboard: `Space` or `Enter` taps the comb, `1` to `0` switch tabs, `Esc` closes dialogs.
 
@@ -120,5 +119,4 @@ npx cap open android
 
 Hooks ready for platform features:
 - Rewarded ads: define `window.BZ_ADS = { show(placement) }` returning a promise of `true` when the reward is earned (AdMob on Android, AdSense H5 game ads on the web). Without it, a 4 second placeholder is shown. Placements: boost, ticket, offline, reroll.
-- No ads purchase: define `window.BZ_BILLING = { buy('noads') }` returning a promise of `{ ok: true }`. The button stays "coming soon" until the hook exists. Check purchases on a server before trusting them.
 - Fonts: the page loads Poppins and Inter from Google Fonts with system fallbacks. Bundle the font files in `app/assets/fonts` for offline use.

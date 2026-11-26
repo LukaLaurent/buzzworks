@@ -13,11 +13,11 @@
   BZ.BEES.sort((a, b) => a.r - b.r);
   BZ.BEES.forEach(b => { BZ.BEE_BY_ID[b.id] = b; });
 
-  P.SHARED = ['tickets', 'pity', 'bees', 'cores', 'coreSlots', 'parts', 'skins', 'skin', 'xp', 'level', 'pass', 'daily', 'quick', 'ads', 'ess', 'prime', 'primeStones', 'rubies', 'essenceTotal', 'essShop', 'worldsOpen', 'otherWorlds', 'battleEsc', 'battleHist', 'flags', 'seed', 'playerName', 'league', 'quests', 'ticketBees', 'created', 'danceReady', 'cloud'];
+  P.SHARED = ['tickets', 'pity', 'bees', 'cores', 'coreSlots', 'parts', 'skins', 'skin', 'xp', 'level', 'pass', 'daily', 'quick', 'ads', 'ess', 'prime', 'primeStones', 'rubies', 'essenceTotal', 'essShop', 'worldsOpen', 'otherWorlds', 'event', 'battleEsc', 'flags', 'seed', 'playerName', 'league', 'quests', 'ticketBees', 'created', 'danceReady', 'cloud'];
 
   P.XP = { buy: 1, upgrade: 4, milestone: 6, lucky: 10, quest: 50, quick: 15, swarm: 80, achievement: 8, hatch: 5, power: 5, coronation: 300, bless: 10, ticket: 6 };
   P.xpFor = L => Math.round(40 * Math.pow(L, 1.7));
-  P.UNLOCKS = { daily: 2, bees: 3, workshop: 5, league: 5, pass: 6 };
+  P.UNLOCKS = { daily: 2, bees: 3, community: 3, workshop: 5, league: 5, event: 5, pass: 6 };
 
   P.PASS_TIERS = 50;
   P.SEASON_DAYS = 7;
@@ -91,7 +91,10 @@
   P.applyGift = function (s, d) {
     const add = (v, x) => Math.max(0, (v || 0) + x);
     const num = v => (typeof v === 'number' && isFinite(v) ? v : 0);
-    for (const k of ['egg', 'royal', 'core']) if (num(d[k])) s.tickets[k] = add(s.tickets[k], num(d[k]));
+    for (const k of ['egg', 'royal', 'core', 'legend', 'mystic']) if (num(d[k])) s.tickets[k] = add(s.tickets[k], num(d[k]));
+    if (num(d.mystic) > 0) s.flags.mystic = 1;
+    if (num(d.legend) > 0) s.flags.legend = 1;
+    if (typeof d.boost === 'string' && BZ.BOOST_BY_ID[d.boost]) E.addBoost(s, d.boost);
     if (num(d.primeStones)) s.primeStones = add(s.primeStones, num(d.primeStones));
     if (Array.isArray(d.ess)) d.ess.forEach((v, i) => { v = num(v); if (!v || i >= s.ess.length) return; s.ess[i] = add(s.ess[i], v); if (v > 0) s.essenceTotal = (s.essenceTotal || 0) + v; });
     if (num(d.honey) > 0) E.gainHoney(s, num(d.honey));
@@ -114,14 +117,16 @@
   P.treeDone = s => P.treeDoneCount(s) === P.treeCount(s);
   P.primeCost = s => Math.ceil(BZ.PRIME_COST * Math.pow(BZ.PRIME_GROWTH, s.prime || 0));
   P.canPrime = s => P.treeDone(s) && (s.primeStones || 0) >= 1 && s.ess.every(v => v >= P.primeCost(s));
-  P.rubyChance = s => BZ.RUBY_CHANCE + BZ.ESS_BY_ID.ruby.v * P.essLvl(s, 'ruby');
+  P.rubyChance = s => (BZ.RUBY_CHANCE + BZ.ESS_BY_ID.ruby.v * P.essLvl(s, 'ruby')) * E.boostV(s, 'stone');
   P.rubyPool = s => BZ.RUBY.filter(x => !x.worlds || (s.worldsOpen || [0]).length >= x.worlds);
   P.rubyRoll = function (s, r) {
     const rnd = r || Math.random;
     const pool = P.rubyPool(s);
-    const tot = pool.reduce((a, x) => a + x.w, 0);
+    const sb = E.boostV(s, 'stone');
+    const wt = it => it.w * (it.id === 'stone' && sb > 1 ? 1.5 * sb : 1);
+    const tot = pool.reduce((a, x) => a + wt(x), 0);
     let v = rnd() * tot, x = pool[pool.length - 1];
-    for (const it of pool) { v -= it.w; if (v <= 0) { x = it; break; } }
+    for (const it of pool) { v -= wt(it); if (v <= 0) { x = it; break; } }
     s.rubies = (s.rubies || 0) + 1;
     let got = [];
     if (x.id === 'stone') s.primeStones = (s.primeStones || 0) + 1;
@@ -153,11 +158,11 @@
   };
 
   P.ensure = function (s) {
-    s.tickets = Object.assign({ egg: 0, royal: 0, core: 0 }, s.tickets || {});
+    s.tickets = Object.assign({ egg: 0, royal: 0, core: 0, legend: 0, mystic: 0 }, s.tickets || {});
     if (s.gems) { s.tickets.egg += Math.floor(s.gems / 25); }
     if (s.amber) { s.tickets.royal += Math.floor(s.amber / 120); }
     delete s.gems; delete s.amber; delete s.vipPts; delete s.perm; delete s.deals; delete s.vipChest; delete s.subUntil; delete s.subClaim; delete s.scouts; delete s.rushData; delete s.mode;
-    s.pity = Object.assign({ std: 0, stdEpic: 0, royal: 0, royalEpic: 0, core: 0, coreEpic: 0, guarantee: false }, s.pity || {});
+    s.pity = Object.assign({ std: 0, stdEpic: 0, royal: 0, royalEpic: 0, core: 0, coreEpic: 0, legend: 0, legendEpic: 0, mystic: 0, mysticEpic: 0, guarantee: false }, s.pity || {});
     s.cores = s.cores || {};
     s.coreSlots = s.coreSlots || [];
     s.parts = s.parts || {};
@@ -305,6 +310,8 @@
     if (r.egg) { E.addTickets(s, { egg: r.egg }); got.push({ k: 'egg', v: r.egg }); }
     if (r.royal) { E.addTickets(s, { royal: r.royal }); got.push({ k: 'royal', v: r.royal }); }
     if (r.core) { E.addTickets(s, { core: r.core }); got.push({ k: 'core', v: r.core }); }
+    if (r.legend) { E.addTickets(s, { legend: r.legend }); s.flags.legend = 1; got.push({ k: 'legend', v: r.legend }); }
+    if (r.mystic) { E.addTickets(s, { mystic: r.mystic }); s.flags.mystic = 1; got.push({ k: 'mystic', v: r.mystic }); }
     if (r.part) for (let i = 0; i < r.part; i++) got.push(P.addPart(s));
     if (r.skin) { s.skins[r.skin] = 1; s._dirty = true; got.push({ k: 'skin', v: r.skin }); }
     if (r.boost) { E.addBoost(s, r.boost); got.push({ k: 'boost', v: r.boost }); }
@@ -327,7 +334,7 @@
   };
 
   P.addXp = function (s, kind, n) {
-    const base = (P.XP[kind] || 0) * (n || 1);
+    const base = (P.XP[kind] || 0) * (n || 1) * E.boostV(s, 'xp');
     if (!base) return [];
     s.xp += base;
     P.passRoll(s);
@@ -438,11 +445,13 @@
     rnd = rnd || Math.random;
     const b = BZ.BANNERS[bn];
     const ek = bn + 'Epic';
+    const L = E.boostV(s, 'hatch');
+    s.pity[bn] = s.pity[bn] || 0; s.pity[ek] = s.pity[ek] || 0;
     let rar;
-    if (b.mythic && rnd() < b.mythic) rar = 4;
-    else if (rnd() < P.legendChance(bn, s.pity[bn])) rar = 3;
+    if (b.mythic && rnd() < b.mythic * (b.hard === 1 ? 1 : L)) rar = 4;
+    else if (rnd() < Math.min(1, P.legendChance(bn, s.pity[bn]) * L)) rar = 3;
     else {
-      rar = pickRarity(b.rates.slice(0, 3), rnd);
+      rar = pickRarity(b.rates.slice(0, 2).concat([b.rates[2] * L]), rnd);
       if (s.pity[ek] + 1 >= b.epicEvery && rar < 2) rar = 2;
     }
     s.pity[bn] = rar === 3 ? 0 : rar === 4 ? s.pity[bn] : s.pity[bn] + 1;

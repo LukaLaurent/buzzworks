@@ -32,7 +32,7 @@
   };
 
   const RES = [
-    ['egg', 'Egg tickets'], ['royal', 'Royal tickets'], ['core', 'Core tickets'], ['primeStones', 'Prime stones'],
+    ['egg', 'Egg tickets'], ['royal', 'Royal tickets'], ['core', 'Core tickets'], ['legend', 'Legendary eggs'], ['mystic', 'Mystic eggs'], ['primeStones', 'Prime stones'],
     ['ess0', 'Bloom essence'], ['ess1', 'Sun essence'], ['ess2', 'Frost essence'], ['ess3', 'Moon essence'], ['ess4', 'Ember essence'],
     ['honey', 'Honey (current world)'], ['rj', 'Royal jelly (current world)'], ['crowns', 'Crowns (current world)'],
     ['levels', 'Player levels'], ['passXp', 'Pass XP'], ['league', 'League points'], ['parts', 'Skin parts (give only)']
@@ -77,7 +77,7 @@
     h += '<div class="dev-card"><h5>' + ic('globe') + 'Worlds and collection</h5>' + opForm('devM', D.op, 'op') + '<small class="dev-hint">Closing the world you are in sends you back to the first world. The first world cannot be closed.</small></div>';
     const quick = [
       ['lucky', 'sparkle', 'Spawn lucky bee'], ['red', 'gem', 'Spawn red lucky bee'], ['ticketbee', 'ticket', 'Spawn ticket bee'],
-      ['bless', 'star', 'Blessing offer'], ['boost', 'bolt', 'x2 honey 30 min'], ['skip', 'clock', 'Skip 1 hour'],
+      ['bless', 'star', 'Blessing offer'], ['boost', 'bolt', 'x2 honey 30 min'], ['boosts', 'bolt', 'Every new boost'], ['gift', 'gift', 'Show daily gift again'], ['boss', 'boss', 'Allow another boss fight'], ['skip', 'clock', 'Skip 1 hour'],
       ['trees', 'globe', 'Max essence trees'], ['notrees', 'trash', 'Reset essence trees'], ['worlds', 'globe', 'Open every world'],
       ['bees', 'worker', 'One of every bee'], ['cores', 'hive', 'One of every core'], ['wheel', 'gem', 'Test red wheel (visual)'],
       ['jackpot', 'prime', 'Test jackpot (visual)'], ['wn', 'sparkle', 'Show What’s new'], ['wnreset', 'sparkle', 'Show What’s new banner again']
@@ -203,6 +203,9 @@
       case 'ticketbee': s.ticketOn = null; s.ticketT = 0.01; return done('Ticket bee on its way');
       case 'bless': P.blessOffer(s); UI.closeModal(); UI.showBless(); return;
       case 'boost': E.addBoost(s, 'x2'); return done('x2 honey for 30 minutes');
+      case 'boosts': ['x4', 'xp2', 'luck', 'lg2', 'stone'].forEach(id => E.addBoost(s, id)); return done('Every new boost added');
+      case 'gift': delete s.flags.loginDay; delete s.flags.loginOffer; UI.closeModal(); setTimeout(() => BZ.Welcome && BZ.Welcome.check(), 300); return;
+      case 'boss': if (s.event) s.event.done = 0; return done('You can fight the boss again today');
       case 'skip': E.offline(s, 3600); s.lastSave = Date.now(); return done('Skipped 1 hour');
       case 'trees': BZ.ESSENCE_SHOP.forEach(x => { s.essShop[x.id] = x.max; }); return done('Every essence tree maxed');
       case 'notrees': s.essShop = {}; return done('Essence trees reset');

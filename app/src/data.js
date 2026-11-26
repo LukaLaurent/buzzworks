@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '2.9.0';
+  BZ.VERSION = '3.0.0';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -176,7 +176,12 @@
     { id: 'x2s', mult: 2, dur: 300, name: { en: 'Double honey', fr: 'Miel double' } },
     { id: 'adx2', mult: 2, dur: 1800, name: { en: 'Double honey', fr: 'Miel double' } },
     { id: 'dance', mult: 2, dur: 1200, name: { en: 'Bee dance', fr: 'Danse des abeilles' } },
-    { id: 'luckyswarm', dur: 120, name: { en: 'Lucky swarm', fr: 'Essaim doré' } }
+    { id: 'luckyswarm', dur: 120, name: { en: 'Lucky swarm', fr: 'Essaim doré' } },
+    { id: 'x4', mult: 4, dur: 900, icon: 'bolt', name: { en: 'Quadruple honey', fr: 'Miel quadruple' } },
+    { id: 'xp2', kind: 'xp', v: 2, dur: 1800, icon: 'star', name: { en: 'Double XP', fr: 'XP double' } },
+    { id: 'luck', kind: 'hatch', v: 2, dur: 1800, icon: 'gift', name: { en: 'Lucky hatch', fr: 'Éclosion chanceuse' } },
+    { id: 'lg2', kind: 'league', v: 2, dur: 1800, icon: 'league', name: { en: 'League rush', fr: 'Ruée de ligue' } },
+    { id: 'stone', kind: 'stone', v: 2, dur: 1800, icon: 'gem', name: { en: 'Prime hunter', fr: 'Chasseur de Prime' } }
   ];
   BZ.BOOST_BY_ID = {};
   BZ.BOOSTS.forEach(b => { BZ.BOOST_BY_ID[b.id] = b; });
@@ -244,6 +249,15 @@
   BZ.LEAGUE_QUEST_COUNT = 4;
   BZ.LEAGUE_QUEST_GROW = 0.2;
   BZ.CHANGELOG = [
+    { v: '3.0.0', items: [
+      { icon: 'boss', en: 'Boss fights in the new Event tab: a new boss every 4 hours, 10 minutes in a fresh hive, the same for everyone, to hit it with your honey. The best hives win legendary and mystic eggs.', fr: 'Combats de boss dans le nouvel onglet Événement : un nouveau boss toutes les 4 heures, 10 minutes dans une ruche neuve, la même pour tous, pour le frapper avec votre miel. Les meilleures ruches gagnent des œufs légendaires et mystiques.' },
+      { icon: 'gift', en: 'Legendary eggs always hatch a legendary bee and mystic eggs a mythic one. Red lucky bees can drop them too.', fr: 'Les œufs légendaires donnent toujours une abeille légendaire et les œufs mystiques une mythique. Les abeilles dorées rouges peuvent aussi en donner.' },
+      { icon: 'chat', en: 'New Community tab with a chat open to every player.', fr: 'Nouvel onglet Communauté avec une discussion ouverte à tous les joueurs.' },
+      { icon: 'gift', en: 'A daily gift waits for you each day you come back: pick a box and win boosts or tickets.', fr: 'Un cadeau vous attend chaque jour où vous revenez : choisissez une boîte et gagnez des boosts ou des tickets.' },
+      { icon: 'worker', en: '10 new bees and 10 new cores, and levels now go up to 20 (the last ones are very hard to reach).', fr: '10 nouvelles abeilles et 10 nouveaux noyaux, et les niveaux montent maintenant jusqu’à 20 (les derniers sont très durs à atteindre).' },
+      { icon: 'bolt', en: 'New boosts: x4 honey, double XP, lucky hatch, league rush and Prime hunter.', fr: 'Nouveaux boosts : miel x4, XP double, éclosion chanceuse, ruée de ligue et chasseur de Prime.' },
+      { icon: 'info', en: 'Hive battles are gone. Any stake still waiting has been given back.', fr: 'Les combats de ruches sont retirés. Toute mise en attente vous a été rendue.' }
+    ] },
     { v: '2.9.0', items: [
       { icon: 'battle', en: 'Hive battles! Challenge another player in the League tab, bet the same stake (Prime stones, tickets, essence, crowns or a skin) and race for crowns in a fresh arena for 15 minutes. Winner takes all.', fr: 'Combats de ruches ! Défiez un autre joueur dans l’onglet Ligue, misez la même chose (pierres Prime, tickets, essence, couronnes ou un décor) et faites la course aux couronnes dans une arène neuve pendant 15 minutes. Le gagnant remporte tout.' },
       { icon: 'worker', en: 'Choose how the Hive mind buys producers: best value, x1, x10, x100, next milestone or max.', fr: 'Choisissez comment l’Esprit de la ruche achète les producteurs : meilleur rapport, x1, x10, x100, prochain palier ou max.' }
@@ -308,25 +322,35 @@
     { id: 'sweat', r: 0, kind: 'luckyDur', v: 0.03, c: ['#9BD3A8', '#2F4A45'], name: { en: 'Sweat bee', fr: 'Halicte' } },
     { id: 'mining', r: 0, kind: 'cost', v: 0.01, c: ['#C9A27A', '#3A2E25'], name: { en: 'Mining bee', fr: 'Andrène' } },
     { id: 'leafcutter', r: 0, kind: 'luckyFreq', v: 0.02, c: ['#B7CF9A', '#20252B'], name: { en: 'Leafcutter bee', fr: 'Mégachile' } },
+    { id: 'dandelion', r: 0, kind: 'tap', v: 0.08, c: ['#F7D84A', '#4A3A12'], name: { en: 'Dandelion bee', fr: 'Abeille pissenlit' } },
+    { id: 'heather', r: 0, kind: 'offline', v: 0.06, c: ['#C79BC2', '#2F2233'], name: { en: 'Heather bee', fr: 'Abeille de bruyère' } },
     { id: 'carpenter', r: 1, kind: 'honey', v: 0.06, c: ['#4A5568', '#F2C14E'], name: { en: 'Carpenter bee', fr: 'Xylocope' } },
     { id: 'orchard', r: 1, kind: 'tap', v: 0.15, c: ['#4C7CC4', '#1E2A3F'], name: { en: 'Blue orchard bee', fr: 'Osmie bleue' } },
     { id: 'bumble', r: 1, kind: 'offline', v: 0.1, c: ['#F2C14E', '#20252B'], name: { en: 'Bumblebee', fr: 'Bourdon' } },
     { id: 'sunflower', r: 1, kind: 'luckyFreq', v: 0.04, c: ['#F5B24A', '#5C3A1E'], name: { en: 'Sunflower bee', fr: 'Abeille tournesol' } },
     { id: 'night', r: 1, kind: 'rj', v: 0.03, c: ['#2E3D5A', '#F5F3EF'], name: { en: 'Night bee', fr: 'Abeille de nuit' } },
+    { id: 'cactus', r: 1, kind: 'combo', v: 0.1, c: ['#6FA35A', '#F5E6A8'], name: { en: 'Cactus bee', fr: 'Abeille cactus' } },
+    { id: 'lavender', r: 1, kind: 'luckyDur', v: 0.05, c: ['#A48AD4', '#2A2340'], name: { en: 'Lavender bee', fr: 'Abeille lavande' } },
     { id: 'emerald', r: 2, kind: 'honey', v: 0.12, c: ['#3E9B6A', '#16191D'], name: { en: 'Emerald bee', fr: 'Abeille émeraude' } },
     { id: 'cuckoo', r: 2, kind: 'luckyDur', v: 0.08, c: ['#C9485B', '#20252B'], name: { en: 'Cuckoo bee', fr: 'Abeille coucou' } },
     { id: 'frost', r: 2, kind: 'cost', v: 0.03, c: ['#DDE7EE', '#527C82'], name: { en: 'Frost bee', fr: 'Abeille du givre' } },
     { id: 'ruby', r: 2, kind: 'rj', v: 0.06, c: ['#D64545', '#3A1E22'], name: { en: 'Ruby bee', fr: 'Abeille rubis' } },
+    { id: 'opal', r: 2, kind: 'luckyFreq', v: 0.07, c: ['#BFE3E0', '#5A6B8C'], name: { en: 'Opal bee', fr: 'Abeille opale' } },
+    { id: 'thunder', r: 2, kind: 'tap', v: 0.3, c: ['#F2E14E', '#2B2F4A'], name: { en: 'Thunder bee', fr: 'Abeille tonnerre' } },
     { id: 'golden', r: 3, kind: 'honey', v: 0.25, c: ['#FFD45E', '#B8860B'], name: { en: 'Golden bee', fr: 'Abeille d\'or' } },
     { id: 'star', r: 3, kind: 'luckyFreq', v: 0.1, c: ['#8E6AC8', '#FFF4C8'], name: { en: 'Star bee', fr: 'Abeille étoile' } },
     { id: 'guard', r: 3, kind: 'combo', v: 0.25, c: ['#F28C28', '#20252B'], name: { en: 'Queen guard', fr: 'Garde de la reine' } },
+    { id: 'phoenix', r: 3, kind: 'rj', v: 0.12, c: ['#F2643C', '#FFD45E'], name: { en: 'Phoenix bee', fr: 'Abeille phénix' } },
+    { id: 'aurora', r: 3, kind: 'luckyDur', v: 0.15, c: ['#7FE0B8', '#3A2A6B'], name: { en: 'Aurora bee', fr: 'Abeille aurore' } },
     { id: 'celestial', r: 4, kind: 'honey', v: 0.6, c: ['#F0509E', '#2A1238'], name: { en: 'Celestial bee', fr: 'Abeille céleste' } },
     { id: 'eclipse', r: 4, kind: 'rj', v: 0.2, c: ['#2A1238', '#F0509E'], name: { en: 'Eclipse bee', fr: 'Abeille éclipse' } },
-    { id: 'prism', r: 4, kind: 'luckyFreq', v: 0.25, c: ['#9EE8F5', '#5B2A8C'], name: { en: 'Prism bee', fr: 'Abeille prisme' } }
+    { id: 'prism', r: 4, kind: 'luckyFreq', v: 0.25, c: ['#9EE8F5', '#5B2A8C'], name: { en: 'Prism bee', fr: 'Abeille prisme' } },
+    { id: 'nebula', r: 4, kind: 'combo', v: 0.5, c: ['#5B3FA8', '#F5B8E8'], name: { en: 'Nebula bee', fr: 'Abeille nébuleuse' } },
+    { id: 'solstice', r: 4, kind: 'tap', v: 0.8, c: ['#FFB13B', '#7A1E3A'], name: { en: 'Solstice bee', fr: 'Abeille solstice' } }
   ];
   BZ.BEE_BY_ID = {};
   BZ.BEES.forEach(b => { BZ.BEE_BY_ID[b.id] = b; });
-  BZ.BEE_LEVELS = [1, 3, 6, 10, 15, 21, 28, 36, 45, 55];
+  BZ.BEE_LEVELS = [1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 75, 100, 130, 165, 205, 250, 300, 360, 430, 510];
   BZ.DROP = { lucky: 0.06, part: 0.05, ticketMin: 0.03 };
 
   const TK = g => g >= 10 ? { royal: 1 } : g >= 5 ? { core: 1 } : g >= 3 ? { egg: 2 } : g >= 1 ? { egg: 1 } : null;
@@ -347,9 +371,9 @@
     [1, 5].forEach(n => add('colony' + n, 'colony', 'colony', n, 10));
     [1, 5, 20].forEach(n => add('crown' + n, 'crown', 'crowns', n, 10));
     [10, 25, 50, 100].forEach(n => add('level' + n, 'level', 'level', n, 10));
-    [3, 9, 18].forEach(n => add('bees' + n, 'bees', 'bees', n, 10));
-    [5, 10].forEach(n => add('beelvl' + n, 'bees', 'beelvl', n, 10));
-    [3, 8, 12].forEach(n => add('cores' + n, 'cores', 'cores', n, 5));
+    [3, 9, 18, 25, 31].forEach(n => add('bees' + n, 'bees', 'bees', n, 10));
+    [5, 10, 15, 20].forEach(n => add('beelvl' + n, 'bees', 'beelvl', n, 10));
+    [3, 8, 12, 18, 24].forEach(n => add('cores' + n, 'cores', 'cores', n, 5));
     [1, 4, 8].forEach(n => add('skins' + n, 'skins', 'skins', n, 10));
     [2, 3, 5].forEach(n => add('worlds' + n, 'world', 'worlds', n, 10));
     return list;
@@ -376,24 +400,36 @@
   BZ.BANNERS = {
     std: { ticket: 'egg', rates: [70, 24, 5.4, 0.6], hard: 120, soft: 95, epicEvery: 20, mythic: 0.0004 },
     royal: { ticket: 'royal', rates: [0, 78, 19, 3], hard: 80, soft: 60, epicEvery: 12, mythic: 0.002 },
-    core: { ticket: 'core', rates: [64, 27, 7.8, 1.2], hard: 100, soft: 80, epicEvery: 15, mythic: 0.001 }
+    core: { ticket: 'core', rates: [64, 27, 7.8, 1.2], hard: 100, soft: 80, epicEvery: 15, mythic: 0.001 },
+    legend: { ticket: 'legend', rates: [0, 0, 0, 100], hard: 1, soft: 1, epicEvery: 1, mythic: 0 },
+    mystic: { ticket: 'mystic', rates: [0, 0, 0, 100], hard: 1, soft: 1, epicEvery: 1, mythic: 1 }
   };
 
   BZ.CORES = [
     { id: 'c_honey', r: 0, kind: 'honey', v: 0.05, c: '#F2C14E', name: { en: 'Amber core', fr: 'Noyau d\'ambre' } },
     { id: 'c_tap', r: 0, kind: 'tap', v: 0.15, c: '#A9C98B', name: { en: 'Clover core', fr: 'Noyau de trèfle' } },
     { id: 'c_thrift', r: 0, kind: 'cost', v: 0.01, c: '#C9A27A', name: { en: 'Wax core', fr: 'Noyau de cire' } },
+    { id: 'c_pollen', r: 0, kind: 'luckyDur', v: 0.03, c: '#F7D84A', name: { en: 'Pollen core', fr: 'Noyau de pollen' } },
+    { id: 'c_resin', r: 0, kind: 'offlineH', v: 0.3, c: '#B5793A', name: { en: 'Resin core', fr: 'Noyau de résine' } },
     { id: 'c_lucky', r: 1, kind: 'luckyFreq', v: 0.04, c: '#F5B24A', name: { en: 'Sun core', fr: 'Noyau solaire' } },
     { id: 'c_elixir', r: 1, kind: 'luckyDur', v: 0.05, c: '#9BD3A8', name: { en: 'Mint core', fr: 'Noyau de menthe' } },
     { id: 'c_nap', r: 1, kind: 'offlineH', v: 0.5, c: '#7FA8AE', name: { en: 'Moss core', fr: 'Noyau de mousse' } },
     { id: 'c_ticket', r: 1, kind: 'ticketFreq', v: 0.08, c: '#E8A0B4', name: { en: 'Rose core', fr: 'Noyau de rose' } },
+    { id: 'c_amethyst', r: 1, kind: 'combo', v: 0.08, c: '#9C6ADE', name: { en: 'Amethyst core', fr: 'Noyau d’améthyste' } },
+    { id: 'c_coral', r: 1, kind: 'tap', v: 0.3, c: '#F28A7A', name: { en: 'Coral core', fr: 'Noyau de corail' } },
     { id: 'c_jelly', r: 2, kind: 'rj', v: 0.04, c: '#D64545', name: { en: 'Ruby core', fr: 'Noyau de rubis' } },
+    { id: 'c_topaz', r: 2, kind: 'ticketFreq', v: 0.15, c: '#F2A93B', name: { en: 'Topaz core', fr: 'Noyau de topaze' } },
+    { id: 'c_opal', r: 2, kind: 'luckyFreq', v: 0.08, c: '#BFE3E0', name: { en: 'Opal core', fr: 'Noyau d’opale' } },
     { id: 'c_combo', r: 2, kind: 'combo', v: 0.15, c: '#4C7CC4', name: { en: 'Sapphire core', fr: 'Noyau de saphir' } },
     { id: 'c_bloom', r: 2, kind: 'honey', v: 0.12, c: '#3E9B6A', name: { en: 'Emerald core', fr: 'Noyau d\'émeraude' } },
     { id: 'c_sun', r: 3, kind: 'honey', v: 0.3, c: '#FFD45E', name: { en: 'Golden heart', fr: 'Cœur doré' } },
     { id: 'c_star', r: 3, kind: 'lucky', v: 0.1, c: '#8E6AC8', name: { en: 'Star heart', fr: 'Cœur étoilé' } },
+    { id: 'c_aurora', r: 3, kind: 'rj', v: 0.1, c: '#7FE0B8', name: { en: 'Aurora heart', fr: 'Cœur d’aurore' } },
+    { id: 'c_comet', r: 3, kind: 'luckyDur', v: 0.15, c: '#7FB8F0', name: { en: 'Comet heart', fr: 'Cœur de comète' } },
     { id: 'c_nova', r: 4, kind: 'honey', v: 0.7, c: '#F0509E', name: { en: 'Nova heart', fr: 'Cœur nova' } },
-    { id: 'c_void', r: 4, kind: 'rj', v: 0.18, c: '#5B2A8C', name: { en: 'Void heart', fr: 'Cœur du néant' } }
+    { id: 'c_void', r: 4, kind: 'rj', v: 0.18, c: '#5B2A8C', name: { en: 'Void heart', fr: 'Cœur du néant' } },
+    { id: 'c_galaxy', r: 4, kind: 'combo', v: 0.5, c: '#3A2A8C', name: { en: 'Galaxy heart', fr: 'Cœur galactique' } },
+    { id: 'c_solar', r: 4, kind: 'ticketFreq', v: 0.4, c: '#FFB13B', name: { en: 'Solar heart', fr: 'Cœur solaire' } }
   ];
   BZ.CORE_BY_ID = {};
   BZ.CORES.forEach(c => { BZ.CORE_BY_ID[c.id] = c; });
@@ -405,8 +441,8 @@
     { id: 'moon', theme: 'w_moon', cost: 200, mods: { luckyFreq: 2.2, tap: 0.3, honey: 0.8 }, name: { en: 'Moon garden', fr: 'Jardin lunaire' }, crown: { en: 'Moon crowns', fr: 'Couronnes lunaires' }, hard: { rj: 0.05, crown: 100, ess: 5 } },
     { id: 'ember', theme: 'w_ember', cost: 250, mods: { rj: 2, growth: 1.165 }, name: { en: 'Ember peaks', fr: 'Pics de braise' }, crown: { en: 'Ember crowns', fr: 'Couronnes de braise' }, hard: { rj: 0.025, crown: 250, ess: 7 } }
   ];
-  BZ.BATTLE_WORLD = { id: 'arena', theme: 'w_ember', cost: 0, mods: { honey: 40, growth: 1.12 }, hard: { rj: 4, crown: 0.0001 }, name: { en: 'Battle arena', fr: 'Arène de combat' }, crown: { en: 'Battle crowns', fr: 'Couronnes de combat' } };
-  BZ.BATTLE_MIN = 15;
+  BZ.BATTLE_WORLD = { id: 'arena', theme: 'w_ember', cost: 0, mods: { honey: 40, growth: 1.12 }, hard: { rj: 4, crown: 0.0001 }, name: { en: 'Boss arena', fr: 'Arène du boss' }, crown: { en: 'Arena crowns', fr: 'Couronnes d’arène' } };
+  BZ.EVENT_MIN = 10;
   BZ.ESSENCES = [
     { color: '#E86FA8', icon: 'flower', name: { en: 'Bloom essence', fr: 'Essence florale' } },
     { color: '#F2B233', icon: 'sun', name: { en: 'Sun essence', fr: 'Essence solaire' } },
@@ -454,7 +490,12 @@
     { id: 'part', w: 10, v: 1, icon: 'palette', color: '#527C82' },
     { id: 'x2', w: 12, v: 30, icon: 'bolt', color: '#F2B233', boost: 'x2' },
     { id: 'swarm', w: 7, v: 2, icon: 'sparkle', color: '#FFD45E', boost: 'luckyswarm' },
-    { id: 'warp', w: 6, v: 60, icon: 'clock', color: '#6BC496' }
+    { id: 'warp', w: 6, v: 60, icon: 'clock', color: '#6BC496' },
+    { id: 'luck', w: 5, v: 30, icon: 'gift', color: '#C79BF2', boost: 'luck' },
+    { id: 'xp2', w: 5, v: 30, icon: 'star', color: '#7FB8F0', boost: 'xp2' },
+    { id: 'lg2', w: 4, v: 30, icon: 'league', color: '#E0A526', boost: 'lg2' },
+    { id: 'legend', w: 2, v: 1, icon: 'gift', color: '#E0A526' },
+    { id: 'mystic', w: 0.5, v: 1, icon: 'gift', color: '#B24CF0' }
   ];
   BZ.PRIME_GROWTH = 2;
   BZ.SELL_MIN = 5;

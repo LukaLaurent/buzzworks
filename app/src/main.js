@@ -246,7 +246,7 @@
   G.migrateState = s => migrate(s);
   G.save = function (sync) {
     if (!G.main) return;
-    if (G.battle && BZ.Battle) BZ.Battle.persist();
+    if (G.battle && BZ.Event) BZ.Event.persist();
     const real = G.realMain();
     real.lastSave = Date.now();
     const data = BZ.Store.serialize(real);
@@ -507,7 +507,7 @@
       case 'ticketSpawn': Scene.spawnLucky(d.t, 'ticket'); break;
       case 'ticketGone': Scene.removeLucky(false, 'ticket'); break;
       case 'buffEnd':
-        if (d.id !== 'rush' && d.id !== 'frenzy') UI.toast('clock', t('boost_end', { n: d.id === 'dance' ? t('shop_free') : t('ad_boost') }));
+        if (d.id !== 'rush' && d.id !== 'frenzy') UI.toast('clock', t('boost_end', { n: d.id === 'dance' ? t('shop_free') : BZ.BOOST_BY_ID[d.id] && d.id !== 'adx2' ? BZ.n(BZ.BOOST_BY_ID[d.id].name) : t('ad_boost') }));
         break;
     }
   }
@@ -736,13 +736,15 @@
       setLoad(1);
       lastFrame = performance.now();
       requestAnimationFrame(loop);
-      if (BZ.Battle) BZ.Battle.init();
+      if (BZ.Event) BZ.Event.init();
+      if (BZ.Community) BZ.Community.init();
       G.save();
       if (BZ.Platform && BZ.Platform.loaded) BZ.Platform.loaded();
       UI.splashReady(() => {
         if (BZ.Platform && BZ.Platform.play) BZ.Platform.play();
         A.unlock();
         if (offline) showOffline(offline);
+        if (BZ.Welcome) setTimeout(BZ.Welcome.check, offline ? 400 : 1200);
       });
     } catch (e) {
       Log.error('boot failed: ' + (e && e.stack || e));

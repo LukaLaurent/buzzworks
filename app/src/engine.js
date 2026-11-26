@@ -25,7 +25,7 @@
       owned: {}, upg: {}, ach: {}, runAch: {},
       taps: 0, runTaps: 0, lucky: 0, runLucky: 0, swarms: 0, rj: 0, rjEarned: 0, runUpg: 0,
       queen: {}, bees: {}, crowns: 0, crownsSpent: 0, crownsBonus: 0, rjLife: 0, coronations: 0,
-      tickets: { egg: 0, royal: 0, core: 0 },
+      tickets: { egg: 0, royal: 0, core: 0, legend: 0, mystic: 0 },
       buffs: [], boosts: [],
       combo: 0, comboIdle: 9, maxCombo: 0,
       luckyT: 40, luckyOn: null, ticketT: 70, ticketOn: null, ticketBees: 0,
@@ -178,6 +178,11 @@
     for (const b of s.boosts) if (b.mult) m *= b.mult;
     return m;
   };
+  E.boostV = function (s, kind) {
+    let m = 1;
+    for (const b of s.boosts || []) { const d = BZ.BOOST_BY_ID[b.id]; if (d && d.kind === kind) m *= d.v; }
+    return m;
+  };
   E.tapBuff = function (s) {
     let m = 1;
     for (const b of s.buffs) if (b.tap) m *= b.tap;
@@ -277,7 +282,7 @@
   E.addTickets = function (s, r) {
     if (!r) return;
     s.tickets = s.tickets || { egg: 0, royal: 0, core: 0 };
-    for (const k of ['egg', 'royal', 'core']) if (r[k]) s.tickets[k] = (s.tickets[k] || 0) + r[k];
+    for (const k of ['egg', 'royal', 'core', 'legend', 'mystic']) if (r[k]) s.tickets[k] = (s.tickets[k] || 0) + r[k];
   };
 
   E.tap = function (s) {

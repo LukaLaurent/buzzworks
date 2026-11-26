@@ -107,8 +107,8 @@
       return h;
     }
     if (O.banned) return h + '<div class="card lg-cta"><div class="lg-cta-pic">' + ic('lock') + '</div><p>' + t('lg_banned') + '</p></div>';
-    h += '<div class="seg lg-seg"><button data-act="lgview" data-arg="league" class="' + (view === 'league' ? 'on' : '') + '">' + t('lg_league') + '</button><button data-act="lgview" data-arg="ranks" class="' + (view === 'ranks' ? 'on' : '') + '">' + t('lg_ranks') + '</button><button data-act="lgview" data-arg="battle" class="' + (view === 'battle' ? 'on' : '') + '">' + t('bt_seg') + (BZ.Battle && BZ.Battle.pendingInvites().length ? ' <i class="seg-dot"></i>' : '') + '</button></div><div style="height:var(--sp-4)"></div>';
-    h += view === 'league' ? leagueView(s) : view === 'battle' && BZ.Battle ? BZ.Battle.view(BZ.Game.realMain()) : ranksView(s);
+    h += '<div class="seg lg-seg"><button data-act="lgview" data-arg="league" class="' + (view === 'league' ? 'on' : '') + '">' + t('lg_league') + '</button><button data-act="lgview" data-arg="ranks" class="' + (view === 'ranks' ? 'on' : '') + '">' + t('lg_ranks') + '</button></div><div style="height:var(--sp-4)"></div>';
+    h += view === 'league' ? leagueView(s) : ranksView(s);
     return h;
   };
 

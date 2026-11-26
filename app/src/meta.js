@@ -158,7 +158,7 @@
   };
 
   M.addPoints = function (s, kind, mult) {
-    const v = (BZ.LEAGUE_POINTS[kind] || 0) * (mult || 1);
+    const v = (BZ.LEAGUE_POINTS[kind] || 0) * (mult || 1) * BZ.E.boostV(s, 'league');
     if (!v) return;
     M.leagueRoll(s);
     if (!s.league.gid) return;

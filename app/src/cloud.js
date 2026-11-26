@@ -58,16 +58,33 @@
     async takeGift(id) {
       await fb.fs.deleteDoc(fb.fs.doc(fb.D, 'gifts', user.uid, 'items', id));
     },
-    battles: {
-      async create(d) { const r = await fb.fs.addDoc(fb.fs.collection(fb.D, 'battles'), d); return r.id; },
-      update: (id, d) => fb.fs.updateDoc(fb.fs.doc(fb.D, 'battles', id), d),
+    chat: {
+      send(txt, n, l) {
+        const f = fb.fs, b = f.writeBatch(fb.D), ts = f.serverTimestamp();
+        b.set(f.doc(f.collection(fb.D, 'chat')), { uid: user.uid, n, l, txt, at: ts });
+        b.set(f.doc(fb.D, 'chatmeta', user.uid), { last: ts });
+        return b.commit();
+      },
+      remove: id => fb.fs.deleteDoc(fb.fs.doc(fb.D, 'chat', id)),
       listen(cb) {
-        const f = fb.fs, uid = user.uid, docs = {};
-        const h = snap => { snap.docChanges().forEach(ch => { if (ch.type === 'removed') delete docs[ch.doc.id]; else docs[ch.doc.id] = Object.assign({}, ch.doc.data(), { id: ch.doc.id }); }); cb(Object.assign({}, docs)); };
-        const err = e => { if (BZ.Log) BZ.Log.error('battles: ' + (e && e.message)); };
-        const u1 = f.onSnapshot(f.query(f.collection(fb.D, 'battles'), f.where('a', '==', uid)), h, err);
-        const u2 = f.onSnapshot(f.query(f.collection(fb.D, 'battles'), f.where('b', '==', uid)), h, err);
-        return () => { u1(); u2(); };
+        const f = fb.fs;
+        return f.onSnapshot(f.query(f.collection(fb.D, 'chat'), f.orderBy('at', 'desc'), f.limit(60)), snap => {
+          cb(snap.docs.map(d => { const x = d.data({ serverTimestamps: 'estimate' }); return { id: d.id, uid: x.uid, n: x.n, l: x.l, txt: x.txt, at: x.at && x.at.toMillis ? x.at.toMillis() : Date.now() }; }).reverse());
+        }, e => { if (BZ.Log) BZ.Log.error('chat: ' + (e && e.message)); });
+      }
+    },
+    boss: {
+      setScore: (day, e) => fb.fs.setDoc(fb.fs.doc(fb.D, 'boss', day, 'scores', user.uid), Object.assign({}, e, { at: Date.now() })),
+      async top(day, k) {
+        const f = fb.fs;
+        const snap = await f.getDocs(f.query(f.collection(fb.D, 'boss', day, 'scores'), f.orderBy('p', 'desc'), f.limit(k || 50)));
+        return snap.docs.map(d => Object.assign({ uid: d.id }, d.data()));
+      },
+      async rank(day, p) {
+        const f = fb.fs;
+        const a = await f.getCountFromServer(f.query(f.collection(fb.D, 'boss', day, 'scores'), f.where('p', '>', p)));
+        const b = await f.getCountFromServer(f.collection(fb.D, 'boss', day, 'scores'));
+        return { rank: a.data().count + 1, total: b.data().count };
       }
     },
     admin: {

@@ -13,6 +13,8 @@
     { id: 'pass', icon: 'ticket' },
     { id: 'worlds', icon: 'globe' },
     { id: 'league', icon: 'league' },
+    { id: 'event', icon: 'boss' },
+    { id: 'community', icon: 'chat' },
     { id: 'trophies', icon: 'trophy' },
     { id: 'stats', icon: 'chart' },
     { id: 'settings', icon: 'settings' },
@@ -118,7 +120,7 @@
     if (tabs.scrollWidth > tabs.clientWidth + 1) bar.classList.add('t-menu');
   };
 
-  const visibleTabs = () => TABS.filter(x => x.id !== 'league' || (BZ.Cloud && BZ.Cloud.configured()));
+  const visibleTabs = () => TABS.filter(x => !['league', 'event', 'community'].includes(x.id) || (BZ.Cloud && BZ.Cloud.configured()));
   UI.buildChrome = function () {
     const TABS = visibleTabs();
     $('brand').innerHTML = BZ.appIconSvg(28) + '<div><span>Buzz</span><b>works</b></div>';
@@ -662,12 +664,12 @@
   function updateBuffs(s) {
     const list = [];
     for (const b of s.buffs) list.push({ id: b.id, icon: LUCKY_ICON[b.id], label: b.mult ? 'x' + b.mult : 'x' + b.tap, t: b.t, max: b.max });
-    for (const b of s.boosts) list.push({ id: b.id, icon: BOOST_ICON[b.id] || 'bolt', label: b.mult ? 'x' + b.mult : '', t: b.t, max: b.max });
+    for (const b of s.boosts) { const d = BZ.BOOST_BY_ID[b.id] || {}; list.push({ id: b.id, icon: BOOST_ICON[b.id] || d.icon || 'bolt', label: b.mult ? 'x' + b.mult : d.v ? 'x' + d.v : '', t: b.t, max: b.max, name: d.name ? n(d.name) : '' }); }
     const box = $('buffs');
     const key = list.map(b => b.id).join(',');
     if (box._key !== key) {
       box._key = key;
-      box.innerHTML = list.map(b => '<span class="buff" data-b="' + b.id + '">' + ic(b.icon) + '<span></span><i></i></span>').join('');
+      box.innerHTML = list.map(b => '<span class="buff" data-b="' + b.id + '"' + (b.name ? ' title="' + esc(b.name) + '"' : '') + '>' + ic(b.icon) + '<span></span><i></i></span>').join('');
     }
     list.forEach((b, i) => {
       const el = box.children[i];

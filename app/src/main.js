@@ -140,7 +140,8 @@
     const v = P.sellValue(s, idx);
     if (v < 1) { A.play('error'); return; }
     const w = BZ.WORLDS[idx];
-    UI.confirm(t('sell_title_w', { w: n(w.name) }), t('sell_text', { v: F.int(v) }), t('sell_done', { v: F.int(v) }), true, () => {
+    const en = P.essName(idx);
+    UI.confirm(t('sell_title_w', { w: n(w.name) }), t('sell_text', { v: F.int(v), e: en }), t('sell_done', { v: F.int(v), e: en }), true, () => {
       const r = P.sellWorld(G.main, idx);
       if (!r) return;
       const cur = idx === G.main.world;
@@ -153,8 +154,29 @@
       }
       A.play('swarm');
       Scene.pulse(6);
-      UI.toast('sparkle', t('sell_done', { v: F.int(r.gain) }), { ok: true, long: true });
+      UI.toast(BZ.ESSENCES[idx].icon, t('sell_done', { v: F.int(r.gain), e: en }), { ok: true, long: true });
       Log.info('world ' + idx + ' sold for ' + r.gain + ' essence');
+      UI.structureChanged();
+      UI.render();
+      G.save();
+    });
+  };
+  G.askPrime = function () {
+    const s = G.main;
+    if (!P.canPrime(s)) { A.play('error'); return; }
+    UI.confirm(t('pr_title'), t('pr_text', { n: (s.prime || 0) + 1, x: F.int(Math.pow(2, (s.prime || 0) + 1)) }), t('pr_go'), true, () => {
+      const ns = P.doPrime(G.main);
+      if (!ns) return;
+      G.main = ns;
+      Scene.removeLucky(false);
+      Scene.removeLucky(false, 'ticket');
+      lastLifetime = 0;
+      if (UI.closeMap) UI.closeMap();
+      G.refreshScene();
+      A.play('swarm');
+      Scene.pulse(10);
+      UI.toast('prime', t('pr_done', { x: F.int(Math.pow(2, ns.prime)) }), { ok: true, long: true });
+      Log.info('prime ' + ns.prime);
       UI.structureChanged();
       UI.render();
       G.save();
@@ -422,7 +444,13 @@
       case 'tap': M.questProgress(s, 'tap', 1); M.questProgress(s, 'combo', d.combo, true); break;
       case 'lucky': M.questProgress(s, 'lucky', 1); M.addPoints(s, 'lucky'); xp('lucky'); break;
       case 'ticketBee': M.questProgress(s, 'ticketbee', 1); M.addPoints(s, 'ticket'); xp('ticket'); break;
-      case 'swarm': M.questProgress(s, 'swarm', 1); M.addPoints(s, 'swarm'); xp('swarm'); break;
+      case 'swarm':
+        M.questProgress(s, 'swarm', 1); M.addPoints(s, 'swarm'); xp('swarm');
+        if (BZ.Cloud && BZ.Cloud.configured() && !BZ.Cloud.signedIn() && (s.flags.cloudAsk || 0) < 3 && Date.now() - (s.flags.cloudAskAt || 0) > 3 * 864e5) {
+          s.flags.cloudAsk = (s.flags.cloudAsk || 0) + 1; s.flags.cloudAskAt = Date.now();
+          setTimeout(() => { if (!UI.modalOpen()) UI.cloudInvite(true); }, 2500);
+        }
+        break;
       case 'achievement':
         M.addPoints(s, 'achievement');
         xp('achievement');

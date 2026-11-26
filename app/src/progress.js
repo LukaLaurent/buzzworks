@@ -12,7 +12,7 @@
   );
   BZ.BEES.forEach(b => { BZ.BEE_BY_ID[b.id] = b; });
 
-  P.SHARED = ['tickets', 'pity', 'bees', 'cores', 'coreSlots', 'parts', 'skins', 'skin', 'xp', 'level', 'pass', 'daily', 'quick', 'ads', 'essence', 'essenceTotal', 'essShop', 'worldsOpen', 'otherWorlds', 'flags', 'seed', 'playerName', 'league', 'quests', 'ticketBees', 'created', 'danceReady', 'cloud'];
+  P.SHARED = ['tickets', 'pity', 'bees', 'cores', 'coreSlots', 'parts', 'skins', 'skin', 'xp', 'level', 'pass', 'daily', 'quick', 'ads', 'ess', 'prime', 'essenceTotal', 'essShop', 'worldsOpen', 'otherWorlds', 'flags', 'seed', 'playerName', 'league', 'quests', 'ticketBees', 'created', 'danceReady', 'cloud'];
 
   P.XP = { buy: 1, upgrade: 4, milestone: 6, lucky: 10, quest: 50, quick: 15, swarm: 80, achievement: 8, hatch: 5, power: 5, coronation: 300, bless: 10, ticket: 6 };
   P.xpFor = L => Math.round(40 * Math.pow(L, 1.7));
@@ -64,11 +64,33 @@
   P.buyEss = function (s, id) {
     if (P.essMaxed(s, id) || !P.essReqMet(s, id)) return false;
     const c = P.essCost(s, id);
-    if ((s.essence || 0) < c) return false;
-    s.essence -= c;
+    const w = BZ.ESS_BY_ID[id].w;
+    if ((s.ess[w] || 0) < c) return false;
+    s.ess[w] -= c;
     s.essShop[id] = P.essLvl(s, id) + 1;
     s._dirty = true;
     return true;
+  };
+  P.essName = i => { const v = BZ.n(BZ.ESSENCES[i].name); return BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
+  P.essName = i => { const v = BZ.n(BZ.ESSENCES[i].name); return BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
+  P.essName = i => { const v = BZ.n(BZ.ESSENCES[i].name); return BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
+  P.treeCount = (s, w) => BZ.ESSENCE_SHOP.filter(x => w === undefined || x.w === w).length;
+  P.treeDoneCount = (s, w) => BZ.ESSENCE_SHOP.filter(x => (w === undefined || x.w === w) && P.essMaxed(s, x.id)).length;
+  P.treeDone = s => P.treeDoneCount(s) === P.treeCount(s);
+  P.primeCost = s => Math.ceil(BZ.PRIME_COST * Math.pow(BZ.PRIME_GROWTH, s.prime || 0));
+  P.canPrime = s => P.treeDone(s) && s.ess.every(v => v >= P.primeCost(s));
+  P.doPrime = function (s) {
+    if (!P.canPrime(s)) return null;
+    const keep = {};
+    for (const k of P.SHARED) keep[k] = s[k];
+    keep.prime = (s.prime || 0) + 1;
+    keep.ess = BZ.ESSENCES.map(() => 0);
+    keep.essShop = {};
+    keep.worldsOpen = [0];
+    keep.otherWorlds = {};
+    const ns = P.freshWorld(keep, 0);
+    ns.flags.worlds = 1;
+    return ns;
   };
   P.mindAllowed = function (s) {
     const need = BZ.QUEEN_BY_ID.mind.need;
@@ -95,9 +117,12 @@
     s.blessDone = s.blessDone || [];
     s.ads = s.ads || { day: '', c: {} };
     delete s.purchases;
-    s.essence = s.essence || 0;
+    if (!Array.isArray(s.ess)) s.ess = [s.essence || 0];
+    while (s.ess.length < BZ.ESSENCES.length) s.ess.push(0);
     s.essShop = s.essShop || {};
-    if (s.essenceTotal === undefined) s.essenceTotal = s.essence;
+    if (s.essenceTotal === undefined) s.essenceTotal = s.essence || 0;
+    delete s.essence;
+    s.prime = s.prime || 0;
     if (s.queen && s.queen.mind > P.mindAllowed(s)) { s.queen.mind = P.mindAllowed(s); if (!s.queen.mind) delete s.queen.mind; }
     s.worldsOpen = s.worldsOpen || [0];
     s.otherWorlds = s.otherWorlds || {};
@@ -111,19 +136,24 @@
     P.flagCheck(s);
   };
 
+  P.essHoney = s => ['honey', 'blaze', 'glow', 'forge'].reduce((a, id) => a * Math.pow(1 + BZ.ESS_BY_ID[id].v, P.essLvl(s, id)), 1);
   P.coreSlotCount = s => 2 + ((s.level || 1) >= 20 ? 1 : 0) + P.essLvl(s, 'slot');
   P.ownedSkins = s => BZ.SKINS.filter(x => !x.world && x.id !== 'meadow' && s.skins[x.id]).length;
 
   P.mods = function (s) {
     const m = { honey: 1, luckyFreq: 1, luckyDur: 1, tap: 1, cost: 1, rj: 1, combo: 0, offlineH: 0, offline: 1, ticketFreq: 1, prodX: {} };
     m.honey *= 1 + 0.01 * Math.max(0, (s.level || 1) - 1);
-    m.honey *= Math.pow(1 + BZ.ESS_BY_ID.honey.v, P.essLvl(s, 'honey'));
+    m.honey *= P.essHoney(s);
     m.rj *= Math.pow(1 + BZ.ESS_BY_ID.jelly.v, P.essLvl(s, 'jelly'));
     m.luckyFreq *= 1 + BZ.ESS_BY_ID.lucky.v * P.essLvl(s, 'lucky');
     m.ticketFreq *= 1 + BZ.ESS_BY_ID.tickets.v * P.essLvl(s, 'tickets');
     m.offlineH += BZ.ESS_BY_ID.nap.v * P.essLvl(s, 'nap');
     m.tap *= Math.pow(1 + BZ.ESS_BY_ID.tap.v, P.essLvl(s, 'tap'));
     m.luckyDur *= 1 + BZ.ESS_BY_ID.fortune.v * P.essLvl(s, 'fortune');
+    m.rj *= Math.pow(1 + BZ.ESS_BY_ID.ash.v, P.essLvl(s, 'ash'));
+    m.tap *= Math.pow(1 + BZ.ESS_BY_ID.tide.v, P.essLvl(s, 'tide'));
+    m.cost *= 1 - BZ.ESS_BY_ID.heart.v * P.essLvl(s, 'heart');
+    m.honey *= Math.pow(2, s.prime || 0);
     const w = E.world(s).mods;
     if (w.honey) m.honey *= w.honey;
     if (w.luckyFreq) m.luckyFreq *= w.luckyFreq;
@@ -262,7 +292,7 @@
     const f = s.flags;
     let changed = null;
     if (!f.queen && (s.swarms > 0 || s.rjLife > 0 || s.coronations > 0 || s.runHoney >= 3e8 || s.worldsOpen.length > 1)) { f.queen = 1; changed = 'queen'; }
-    if (!f.worlds && ((s.crowns || 0) + (s.crownsSpent || 0) >= 1 || s.essence > 0 || s.worldsOpen.length > 1)) { f.worlds = 1; changed = 'worlds'; }
+    if (!f.worlds && ((s.crowns || 0) + (s.crownsSpent || 0) >= 1 || (s.essenceTotal || 0) > 0 || s.worldsOpen.length > 1)) { f.worlds = 1; changed = 'worlds'; }
     return changed;
   };
   P.unlocked = function (s, tab) {
@@ -330,12 +360,13 @@
     const b = BZ.BANNERS[bn];
     const ek = bn + 'Epic';
     let rar;
-    if (rnd() < P.legendChance(bn, s.pity[bn])) rar = 3;
+    if (b.mythic && rnd() < b.mythic) rar = 4;
+    else if (rnd() < P.legendChance(bn, s.pity[bn])) rar = 3;
     else {
       rar = pickRarity(b.rates.slice(0, 3), rnd);
       if (s.pity[ek] + 1 >= b.epicEvery && rar < 2) rar = 2;
     }
-    s.pity[bn] = rar === 3 ? 0 : s.pity[bn] + 1;
+    s.pity[bn] = rar === 3 ? 0 : rar === 4 ? s.pity[bn] : s.pity[bn] + 1;
     s.pity[ek] = rar >= 2 ? 0 : s.pity[ek] + 1;
     if (bn === 'core') {
       const pool = BZ.CORES.filter(x => x.r === rar);
@@ -508,7 +539,7 @@
     if (idx === undefined) idx = s.world;
     const gain = P.sellValue(s, idx);
     if (gain < 1) return null;
-    s.essence = (s.essence || 0) + gain;
+    s.ess[idx] = (s.ess[idx] || 0) + gain;
     s.essenceTotal = (s.essenceTotal || 0) + gain;
     if (idx === s.world) return { state: P.freshWorld(s, s.world), gain };
     const fresh = P.strip(E.newState(idx));

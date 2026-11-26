@@ -46,7 +46,7 @@
 
   F.pct = function (x) {
     const v = x * 100;
-    return dec(trim(v, v < 10 ? 1 : 0)) + (F.lang === 'fr' ? ' %' : '%');
+    return dec(trim(v, v < 0.1 ? 2 : v < 10 ? 1 : 0)) + (F.lang === 'fr' ? ' %' : '%');
   };
 
   F.mult = function (x) {

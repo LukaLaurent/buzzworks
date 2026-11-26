@@ -99,6 +99,16 @@
     $('modal').addEventListener('click', e => { if (e.target.id === 'modal' && UI.modalDismiss) UI.closeModal(); });
     document.addEventListener('keydown', onKey);
     UI.buildChrome();
+    addEventListener('resize', UI.fitTabs);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(UI.fitTabs);
+  };
+  UI.fitTabs = function () {
+    const bar = document.querySelector('.topbar'), tabs = $('tabs');
+    if (!bar || !tabs) return;
+    bar.classList.remove('t-icons', 't-menu');
+    if (innerWidth <= 999) return;
+    if (tabs.scrollWidth > tabs.clientWidth + 1) bar.classList.add('t-icons');
+    if (tabs.scrollWidth > tabs.clientWidth + 1) bar.classList.add('t-menu');
   };
 
   const visibleTabs = () => TABS.filter(x => x.id !== 'league' || (BZ.Cloud && BZ.Cloud.configured()));
@@ -118,6 +128,7 @@
     document.documentElement.lang = BZ.lang;
     hiveKey = ''; upgKey = '';
     pageDirty = true;
+    requestAnimationFrame(UI.fitTabs);
   };
 
   function drawer(open) {
@@ -285,7 +296,7 @@
     const c0 = locked ? 'var(--border)' : b.c[0], c1 = locked ? 'var(--text-faint)' : b.c[1];
     const id = 'bc' + b.id + (locked ? 'l' : '') + Math.random().toString(36).slice(2, 6);
     return '<svg viewBox="0 0 64 64" width="' + size + '" height="' + size + '" aria-hidden="true">' +
-      (b.r === 3 && !locked ? '<circle cx="32" cy="34" r="27" fill="' + b.c[0] + '" opacity="0.18"/>' : '') +
+      (b.r >= 3 && !locked ? '<circle cx="32" cy="34" r="27" fill="' + b.c[0] + '" opacity="0.18"/>' : '') +
       '<ellipse cx="26" cy="20" rx="9" ry="13" transform="rotate(-25 26 20)" fill="#fff" opacity="' + (locked ? 0.35 : 0.85) + '" stroke="' + c1 + '" stroke-opacity="0.25"/>' +
       '<ellipse cx="38" cy="19" rx="8" ry="12" transform="rotate(20 38 19)" fill="#fff" opacity="' + (locked ? 0.35 : 0.85) + '" stroke="' + c1 + '" stroke-opacity="0.25"/>' +
       '<clipPath id="' + id + '"><ellipse cx="30" cy="38" rx="17" ry="13"/></clipPath>' +
@@ -295,7 +306,7 @@
       (locked ? '' : '<circle cx="50.5" cy="32.5" r="2.2" fill="#fff"/>') +
       '<path d="M13 38 7 40l6 3Z" fill="' + c1 + '"/>' +
       '<path d="M51 28c2-5 5-7 8-7M47 27c0-5 2-8 4-10" stroke="' + c1 + '" stroke-width="1.8" fill="none" stroke-linecap="round"/>' +
-      (b.r === 3 && !locked ? '<path d="M40 14l3-6 3 4 3-5 2 7Z" fill="#FFD45E" stroke="#B8860B" stroke-width="1"/>' : '') +
+      (b.r >= 3 && !locked ? '<path d="M40 14l3-6 3 4 3-5 2 7Z" fill="#FFD45E" stroke="#B8860B" stroke-width="1"/>' : '') +
       '</svg>';
   }
   UI.beeSvg = beeSvg;
@@ -588,7 +599,7 @@
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     if (e.key === 'Escape') { if (!$('modal').classList.contains('hidden') && UI.modalDismiss) UI.closeModal(); else drawer(false); return; }
     if (e.key === ' ' || e.key === 'Enter') {
-      if ($('modal').classList.contains('hidden')) { e.preventDefault(); G.tapAt(null); }
+      if ($('modal').classList.contains('hidden')) { e.preventDefault(); if (!e.repeat) G.tapAt(null); }
       return;
     }
     const idx = '1234567890'.indexOf(e.key);

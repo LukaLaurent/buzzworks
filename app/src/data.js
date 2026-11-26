@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '2.1.0';
+  BZ.VERSION = '2.2.0';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -243,7 +243,8 @@
     { id: 'common', w: 62, color: '#9AA4AE', name: { en: 'Common', fr: 'Commune' } },
     { id: 'rare', w: 27, color: '#4C7CC4', name: { en: 'Rare', fr: 'Rare' } },
     { id: 'epic', w: 9, color: '#8E6AC8', name: { en: 'Epic', fr: 'Épique' } },
-    { id: 'legendary', w: 2, color: '#E0A526', name: { en: 'Legendary', fr: 'Légendaire' } }
+    { id: 'legendary', w: 2, color: '#E0A526', name: { en: 'Legendary', fr: 'Légendaire' } },
+    { id: 'mythic', w: 0, color: '#F0509E', name: { en: 'Mythic', fr: 'Mythique' } }
   ];
   BZ.BEES = [
     { id: 'meadow', r: 0, kind: 'honey', v: 0.03, c: ['#F2C14E', '#20252B'], name: { en: 'Meadow bee', fr: 'Abeille des prés' } },
@@ -263,7 +264,10 @@
     { id: 'ruby', r: 2, kind: 'rj', v: 0.06, c: ['#D64545', '#3A1E22'], name: { en: 'Ruby bee', fr: 'Abeille rubis' } },
     { id: 'golden', r: 3, kind: 'honey', v: 0.25, c: ['#FFD45E', '#B8860B'], name: { en: 'Golden bee', fr: 'Abeille d\'or' } },
     { id: 'star', r: 3, kind: 'luckyFreq', v: 0.1, c: ['#8E6AC8', '#FFF4C8'], name: { en: 'Star bee', fr: 'Abeille étoile' } },
-    { id: 'guard', r: 3, kind: 'combo', v: 0.25, c: ['#F28C28', '#20252B'], name: { en: 'Queen guard', fr: 'Garde de la reine' } }
+    { id: 'guard', r: 3, kind: 'combo', v: 0.25, c: ['#F28C28', '#20252B'], name: { en: 'Queen guard', fr: 'Garde de la reine' } },
+    { id: 'celestial', r: 4, kind: 'honey', v: 0.6, c: ['#F0509E', '#2A1238'], name: { en: 'Celestial bee', fr: 'Abeille céleste' } },
+    { id: 'eclipse', r: 4, kind: 'rj', v: 0.2, c: ['#2A1238', '#F0509E'], name: { en: 'Eclipse bee', fr: 'Abeille éclipse' } },
+    { id: 'prism', r: 4, kind: 'luckyFreq', v: 0.25, c: ['#9EE8F5', '#5B2A8C'], name: { en: 'Prism bee', fr: 'Abeille prisme' } }
   ];
   BZ.BEE_BY_ID = {};
   BZ.BEES.forEach(b => { BZ.BEE_BY_ID[b.id] = b; });
@@ -315,9 +319,9 @@
   BZ.RUN_ACH.forEach(a => { BZ.RUN_ACH_BY_ID[a.id] = a; });
 
   BZ.BANNERS = {
-    std: { ticket: 'egg', rates: [70, 24, 5.4, 0.6], hard: 120, soft: 95, epicEvery: 20 },
-    royal: { ticket: 'royal', rates: [0, 78, 19, 3], hard: 80, soft: 60, epicEvery: 12 },
-    core: { ticket: 'core', rates: [64, 27, 7.8, 1.2], hard: 100, soft: 80, epicEvery: 15 }
+    std: { ticket: 'egg', rates: [70, 24, 5.4, 0.6], hard: 120, soft: 95, epicEvery: 20, mythic: 0.0004 },
+    royal: { ticket: 'royal', rates: [0, 78, 19, 3], hard: 80, soft: 60, epicEvery: 12, mythic: 0.002 },
+    core: { ticket: 'core', rates: [64, 27, 7.8, 1.2], hard: 100, soft: 80, epicEvery: 15, mythic: 0.001 }
   };
 
   BZ.CORES = [
@@ -332,7 +336,9 @@
     { id: 'c_combo', r: 2, kind: 'combo', v: 0.15, c: '#4C7CC4', name: { en: 'Sapphire core', fr: 'Noyau de saphir' } },
     { id: 'c_bloom', r: 2, kind: 'honey', v: 0.12, c: '#3E9B6A', name: { en: 'Emerald core', fr: 'Noyau d\'émeraude' } },
     { id: 'c_sun', r: 3, kind: 'honey', v: 0.3, c: '#FFD45E', name: { en: 'Golden heart', fr: 'Cœur doré' } },
-    { id: 'c_star', r: 3, kind: 'lucky', v: 0.1, c: '#8E6AC8', name: { en: 'Star heart', fr: 'Cœur étoilé' } }
+    { id: 'c_star', r: 3, kind: 'lucky', v: 0.1, c: '#8E6AC8', name: { en: 'Star heart', fr: 'Cœur étoilé' } },
+    { id: 'c_nova', r: 4, kind: 'honey', v: 0.7, c: '#F0509E', name: { en: 'Nova heart', fr: 'Cœur nova' } },
+    { id: 'c_void', r: 4, kind: 'rj', v: 0.18, c: '#5B2A8C', name: { en: 'Void heart', fr: 'Cœur du néant' } }
   ];
   BZ.CORE_BY_ID = {};
   BZ.CORES.forEach(c => { BZ.CORE_BY_ID[c.id] = c; });
@@ -344,24 +350,39 @@
     { id: 'moon', theme: 'w_moon', cost: 200, mods: { luckyFreq: 2.2, tap: 0.3, honey: 0.8 }, name: { en: 'Moon garden', fr: 'Jardin lunaire' } },
     { id: 'ember', theme: 'w_ember', cost: 250, mods: { rj: 2, growth: 1.165 }, name: { en: 'Ember peaks', fr: 'Pics de braise' } }
   ];
-  BZ.ESSENCE_SHOP = [
-    { id: 'honey', branch: 'honey', icon: 'drop', base: 2, growth: 1.45, max: 0, v: 0.25 },
-    { id: 'start', branch: 'honey', icon: 'worker', base: 6, growth: 2.2, max: 5, v: [10, 25, 50, 100, 200], req: ['honey', 3] },
-    { id: 'tap', branch: 'honey', icon: 'tap', base: 5, growth: 1.5, max: 0, v: 0.2, req: ['honey', 5] },
-    { id: 'colony', branch: 'honey', icon: 'hive', base: 40, growth: 2.5, max: 5, v: 0.1, req: ['start', 3] },
-    { id: 'jelly', branch: 'royal', icon: 'jelly', base: 3, growth: 1.5, max: 0, v: 0.15 },
-    { id: 'wisdom', branch: 'royal', icon: 'star', base: 10, growth: 2, max: 10, v: 0.05, req: ['jelly', 3] },
-    { id: 'crown', branch: 'royal', icon: 'crown', base: 60, growth: 3, max: 3, v: 1, req: ['jelly', 6] },
-    { id: 'map', branch: 'royal', icon: 'globe', base: 15, growth: 2.2, max: 5, v: 0.05, req: ['crown', 1] },
-    { id: 'lucky', branch: 'fortune', icon: 'sparkle', base: 4, growth: 1.7, max: 10, v: 0.05 },
-    { id: 'nap', branch: 'fortune', icon: 'clock', base: 3, growth: 2, max: 6, v: 2, req: ['lucky', 2] },
-    { id: 'tickets', branch: 'fortune', icon: 'ticket', base: 5, growth: 1.8, max: 10, v: 0.1, req: ['lucky', 3] },
-    { id: 'slot', branch: 'fortune', icon: 'palette', base: 25, growth: 4, max: 2, v: 1, req: ['tickets', 5] },
-    { id: 'fortune', branch: 'fortune', icon: 'fire', base: 20, growth: 1.6, max: 0, v: 0.05, req: ['lucky', 10] }
+  BZ.ESSENCES = [
+    { color: '#E86FA8', icon: 'flower', name: { en: 'Bloom essence', fr: 'Essence florale' } },
+    { color: '#F2B233', icon: 'sun', name: { en: 'Sun essence', fr: 'Essence solaire' } },
+    { color: '#7FC8E8', icon: 'snow', name: { en: 'Frost essence', fr: 'Essence de givre' } },
+    { color: '#9C7BE0', icon: 'moon', name: { en: 'Moon essence', fr: 'Essence lunaire' } },
+    { color: '#E8603C', icon: 'fire', name: { en: 'Ember essence', fr: 'Essence de braise' } }
   ];
-  BZ.ESS_BRANCHES = ['honey', 'royal', 'fortune'];
+  BZ.ESSENCE_SHOP = [
+    { id: 'honey', w: 0, icon: 'drop', base: 2, growth: 1.42, max: 18, v: 0.25 },
+    { id: 'tap', w: 0, icon: 'tap', base: 5, growth: 1.45, max: 12, v: 0.2, req: ['honey', 3] },
+    { id: 'start', w: 0, icon: 'worker', base: 6, growth: 2.2, max: 5, v: [10, 25, 50, 100, 200], req: ['honey', 5] },
+    { id: 'colony', w: 0, icon: 'hive', base: 40, growth: 2.5, max: 5, v: 0.1, req: ['start', 3] },
+    { id: 'jelly', w: 1, icon: 'jelly', base: 3, growth: 1.45, max: 15, v: 0.15 },
+    { id: 'wisdom', w: 1, icon: 'star', base: 10, growth: 1.7, max: 10, v: 0.05, req: ['jelly', 3] },
+    { id: 'crown', w: 1, icon: 'crown', base: 60, growth: 3, max: 3, v: 1, req: ['jelly', 6] },
+    { id: 'blaze', w: 1, icon: 'sun', base: 15, growth: 1.6, max: 10, v: 0.15, req: ['wisdom', 3] },
+    { id: 'nap', w: 2, icon: 'clock', base: 5, growth: 2.2, max: 6, v: 2 },
+    { id: 'tickets', w: 2, icon: 'ticket', base: 8, growth: 1.8, max: 10, v: 0.1, req: ['nap', 2] },
+    { id: 'map', w: 2, icon: 'globe', base: 15, growth: 2.2, max: 5, v: 0.05, req: ['nap', 3] },
+    { id: 'slot', w: 2, icon: 'palette', base: 25, growth: 4, max: 2, v: 1, req: ['tickets', 5] },
+    { id: 'lucky', w: 3, icon: 'sparkle', base: 4, growth: 1.7, max: 10, v: 0.05 },
+    { id: 'tide', w: 3, icon: 'tap', base: 10, growth: 1.6, max: 10, v: 0.2, req: ['lucky', 3] },
+    { id: 'fortune', w: 3, icon: 'fire', base: 20, growth: 1.45, max: 10, v: 0.05, req: ['lucky', 5] },
+    { id: 'glow', w: 3, icon: 'moon', base: 15, growth: 1.6, max: 8, v: 0.1, req: ['fortune', 5] },
+    { id: 'forge', w: 4, icon: 'fire', base: 10, growth: 1.6, max: 10, v: 0.25 },
+    { id: 'ash', w: 4, icon: 'jelly', base: 15, growth: 1.6, max: 10, v: 0.2, req: ['forge', 3] },
+    { id: 'heart', w: 4, icon: 'shop', base: 30, growth: 2, max: 5, v: 0.02, req: ['forge', 5] },
+    { id: 'kiln', w: 4, icon: 'crown', base: 40, growth: 2.2, max: 5, v: 0.1, req: ['ash', 3] }
+  ];
   BZ.ESS_BY_ID = {};
   BZ.ESSENCE_SHOP.forEach(x => { BZ.ESS_BY_ID[x.id] = x; });
+  BZ.PRIME_COST = 250;
+  BZ.PRIME_GROWTH = 2;
   BZ.SELL_MIN = 5;
 
   BZ.ACH_BONUS = 0.02;

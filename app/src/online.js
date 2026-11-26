@@ -32,7 +32,7 @@
     return {
       honey: ws.reduce((a, w) => a + (w.lifetime || 0), 0),
       crowns: ws.reduce((a, w) => a + (w.crowns || 0) + (w.crownsSpent || 0), 0),
-      essence: s.essenceTotal || s.essence || 0,
+      essence: s.essenceTotal || 0,
       bees: BZ.BEES.filter(b => s.bees && s.bees[b.id]).length,
       level: s.level || 1,
       trophies: ws.reduce((a, w) => a + Object.keys(w.ach || {}).length, 0)
@@ -105,7 +105,7 @@
       const L = s.league;
       if (L.prev && L.prev.gid) await finalize(s);
       if (L.rkWeek !== L.week) await rankRewards(s);
-      if (!L.gid) L.gid = await C.joinGroup(L.week, L.tier || 0, O.entry(s));
+      if (!L.gid) { L.points = 0; L.gid = await C.joinGroup(L.week, L.tier || 0, O.entry(s, 0)); }
       else await C.setScore(L.gid, O.entry(s));
       await C.publish(O.profile(s));
       O.group = await C.group(L.gid);

@@ -5,12 +5,20 @@
 
   BZ.addStrings({
     wm_back: 'Back to hive', wm_hint: 'Tap a world to see it, or travel there', wm_travel: 'Travel here', wm_here: 'You are here', wm_crowns: '{v} crowns', wm_toopen: '{v} crowns to open', wm_openwith: 'Open it with {v} crowns from {w}.', wm_needprev: 'Open {w} first.', wm_open: 'Open  ·  {v} crowns', wm_welcome: 'Welcome to', wm_how: 'Each world keeps its own honey, queen and crowns. Crowns earned in a world open the next one. Bees, cores, skins, tickets and your level are shared everywhere. Sell a world with at least {m} crowns to restart it for essence, then spend essence in the essence tree.',
-    tree_title: 'Essence tree', tree_d: 'Permanent upgrades for every world. Branches open as you level their first upgrade.', br_honey: 'Honey', br_royal: 'Royal', br_fortune: 'Fortune', tree_req: 'Needs {n} level {l}', tree_inf: 'No limit',
-    es_tap: 'Sweet paws', es_tap_d: 'x1.2 tap power per level', es_colony: 'Thriving colony', es_colony_d: 'Colony bonus +0.1 per level (x1.5 up to x2)', es_wisdom: 'Queen wisdom', es_wisdom_d: 'Queen skills 5% cheaper per level', es_fortune: 'Fortune', es_fortune_d: 'Lucky effects 5% longer per level', es_map_d: 'Worlds cost 5% fewer crowns per level'
+    br_honey: 'Honey', br_royal: 'Royal', br_fortune: 'Fortune', tree_req: 'Needs {n} level {l}', tree_inf: 'No limit',
+    es_tap: 'Sweet paws', es_tap_d: 'x1.2 tap power per level', es_colony: 'Thriving colony', es_colony_d: 'Colony bonus +0.1 per level (x1.5 up to x2)', es_wisdom: 'Queen wisdom', es_wisdom_d: 'Queen skills 5% cheaper per level', es_fortune: 'Fortune', es_fortune_d: 'Lucky effects 5% longer per level', es_map_d: 'Worlds cost 5% fewer crowns per level',
+    tree_title: 'Essence trees', tree_d: 'One tree per world, paid with the essence of that world. Sell a world to earn its essence. Upgrades last forever and work in every world.', tree_locked: 'Open {w} and sell it to earn this essence', tree_prog: '{a} / {b} complete',
+    es_blaze: 'Sunlit comb', es_blaze_d: 'x1.15 honey per level', es_glow: 'Moonglow', es_glow_d: 'x1.1 honey per level', es_forge: 'Ember forge', es_forge_d: 'x1.25 honey per level', es_ash: 'Ashen jelly', es_ash_d: 'x1.2 royal jelly per level', es_tide: 'Night tide', es_tide_d: 'x1.2 tap power per level', es_heart: 'Molten heart', es_heart_d: 'Producers 2% cheaper per level', es_kiln: 'Crown kiln', es_kiln_d: '+10% crowns at every coronation per level',
+    pr_head: 'Prime', pr_d: 'Complete all five trees, then spend {v} of every essence. You get one Prime point: honey x2 forever, and it stacks. Everything restarts from a single fresh world. Bees, cores, skins, tickets, level and pass stay.', pr_have: 'Prime points: {n}  ·  honey x{x}', pr_need: 'Complete every tree first ({a} / {b})', pr_btn: 'Become Prime',
+    pr_title: 'Become Prime?', pr_text: 'Worlds, crowns, essence and every essence tree restart from zero. Bees, cores, skins, tickets, level and pass stay. You reach Prime {n}: honey x{x} forever.', pr_go: 'Become Prime', pr_done: 'Prime reached: honey x{x}'
   }, {
     wm_back: 'Retour à la ruche', wm_hint: 'Touchez un monde pour le voir, ou y voyager', wm_travel: 'Voyager ici', wm_here: 'Vous êtes ici', wm_crowns: '{v} couronnes', wm_toopen: '{v} couronnes pour ouvrir', wm_openwith: 'Ouvrez-le avec {v} couronnes de {w}.', wm_needprev: 'Ouvrez d\'abord {w}.', wm_open: 'Ouvrir  ·  {v} couronnes', wm_welcome: 'Bienvenue :', wm_how: 'Chaque monde garde son miel, sa reine et ses couronnes. Les couronnes gagnées dans un monde ouvrent le suivant. Abeilles, noyaux, décors, tickets et niveau sont partagés partout. Vendez un monde avec au moins {m} couronnes pour le recommencer contre de l\'essence, puis dépensez-la dans l\'arbre d\'essence.',
-    tree_title: 'Arbre d\'essence', tree_d: 'Des améliorations permanentes pour tous les mondes. Les branches s\'ouvrent en montant leur première amélioration.', br_honey: 'Miel', br_royal: 'Royal', br_fortune: 'Fortune', tree_req: 'Il faut {n} niveau {l}', tree_inf: 'Sans limite',
-    es_tap: 'Pattes sucrées', es_tap_d: 'Récolte x1,2 par niveau', es_colony: 'Colonie prospère', es_colony_d: 'Bonus de colonie +0,1 par niveau (x1,5 jusqu\'à x2)', es_wisdom: 'Sagesse de la reine', es_wisdom_d: 'Compétences de la reine 5 % moins chères par niveau', es_fortune: 'Fortune', es_fortune_d: 'Effets dorés 5 % plus longs par niveau', es_map_d: 'Mondes 5 % moins chers en couronnes par niveau'
+    br_honey: 'Miel', br_royal: 'Royal', br_fortune: 'Fortune', tree_req: 'Il faut {n} niveau {l}', tree_inf: 'Sans limite',
+    es_tap: 'Pattes sucrées', es_tap_d: 'Récolte x1,2 par niveau', es_colony: 'Colonie prospère', es_colony_d: 'Bonus de colonie +0,1 par niveau (x1,5 jusqu\'à x2)', es_wisdom: 'Sagesse de la reine', es_wisdom_d: 'Compétences de la reine 5 % moins chères par niveau', es_fortune: 'Fortune', es_fortune_d: 'Effets dorés 5 % plus longs par niveau', es_map_d: 'Mondes 5 % moins chers en couronnes par niveau',
+    tree_title: 'Arbres d’essence', tree_d: 'Un arbre par monde, payé avec l’essence de ce monde. Vendez un monde pour gagner son essence. Les améliorations sont permanentes et valent dans tous les mondes.', tree_locked: 'Ouvrez {w} et vendez-le pour gagner cette essence', tree_prog: '{a} / {b} terminés',
+    es_blaze: 'Rayons dorés', es_blaze_d: 'Miel x1,15 par niveau', es_glow: 'Lueur lunaire', es_glow_d: 'Miel x1,1 par niveau', es_forge: 'Forge de braise', es_forge_d: 'Miel x1,25 par niveau', es_ash: 'Gelée de cendre', es_ash_d: 'Gelée royale x1,2 par niveau', es_tide: 'Marée nocturne', es_tide_d: 'Récolte x1,2 par niveau', es_heart: 'Cœur de lave', es_heart_d: 'Producteurs 2 % moins chers par niveau', es_kiln: 'Four à couronnes', es_kiln_d: '+10 % de couronnes à chaque couronnement par niveau',
+    pr_head: 'Prime', pr_d: 'Terminez les cinq arbres, puis dépensez {v} de chaque essence. Vous gagnez un point Prime : miel x2 pour toujours, cumulable. Tout recommence depuis un seul monde neuf. Abeilles, noyaux, décors, tickets, niveau et passe restent.', pr_have: 'Points Prime : {n}  ·  miel x{x}', pr_need: 'Terminez d’abord chaque arbre ({a} / {b})', pr_btn: 'Devenir Prime',
+    pr_title: 'Devenir Prime ?', pr_text: 'Mondes, couronnes, essences et arbres d’essence repartent de zéro. Abeilles, noyaux, décors, tickets, niveau et passe restent. Vous atteignez Prime {n} : miel x{x} pour toujours.', pr_go: 'Devenir Prime', pr_done: 'Prime atteint : miel x{x}'
   });
 
   const POS = { meadow: [330, 560, 290, 1190], dunes: [650, 300, 620, 940], glacier: [900, 610, 280, 700], moon: [1170, 290, 620, 460], ember: [1330, 640, 320, 240] };
@@ -89,7 +97,7 @@
     svg.querySelectorAll('.wm-isle').forEach(g => g.addEventListener('click', e => { e.stopPropagation(); select(+g.dataset.i); }));
     key = stateKey(s);
     camTo(sel, sel === null ? 1 : 1.45, true);
-    ov.querySelector('#wmEss').textContent = F.int(s.essence || 0);
+    chip();
   }
 
   function camTo(i, z, instant) {
@@ -112,7 +120,7 @@
       const info = P.worldInfo(s, i);
       h += '<div class="wm-stats"><div><small>' + t('wd_hps') + '</small><b>' + F.num(info.hps) + '/s</b></div><div><small>' + t('wd_crowns') + '</small><b>' + F.int(info.crowns) + '</b></div><div><small>' + t('wd_life') + '</small><b>' + F.num(info.lifetime) + '</b></div><div><small>' + t('wd_rj') + '</small><b>' + F.num(info.rj, { int: true }) + '</b></div></div>';
       const sv = P.sellValue(s, i);
-      h += '<div class="wm-acts">' + (i === s.world ? '<button class="btn btn-primary off">' + ic('check') + t('wm_here') + '</button>' : '<button class="btn btn-primary" data-wm="go">' + ic('globe') + t('wm_travel') + '</button>') + '<button class="btn btn-outline' + (sv < 1 ? ' off' : '') + '" data-wm="sell">' + ic('sparkle') + t('sell_other', { v: F.int(sv) }) + '</button></div>';
+      h += '<div class="wm-acts">' + (i === s.world ? '<button class="btn btn-primary off">' + ic('check') + t('wm_here') + '</button>' : '<button class="btn btn-primary" data-wm="go">' + ic('globe') + t('wm_travel') + '</button>') + '<button class="btn btn-outline' + (sv < 1 ? ' off' : '') + '" data-wm="sell">' + ic(BZ.ESSENCES[i].icon) + t('sell_other', { v: F.int(sv) + ' ' + P.essName(i) }) + '</button></div>';
       if (sv < 1) h += '<p class="wm-line">' + t('sell_need', { v: BZ.SELL_MIN }) + '</p>';
     } else {
       const next = i === s.worldsOpen.length;
@@ -137,34 +145,47 @@
     BZ.Audio.play('click');
   }
 
+  let tw = 0;
   function treeHtml() {
     const s = BZ.Game.main;
+    const e = BZ.ESSENCES[tw], have = s.ess[tw] || 0;
     let h = '<div class="wm-th"><div><h2>' + t('tree_title') + '</h2><small>' + t('tree_d') + '</small></div><button class="wm-x" data-wm="treeclose">' + ic('close') + '</button></div>';
-    h += '<div class="wm-ess-big">' + ic('sparkle') + '<b>' + F.int(s.essence || 0) + '</b><small>' + t('ess_total', { v: F.int(s.essenceTotal || 0) }) + '</small></div><div class="wm-tree">';
-    for (const br of BZ.ESS_BRANCHES) {
-      h += '<div class="wm-br"><div class="wm-brh">' + t('br_' + br) + '</div>';
-      BZ.ESSENCE_SHOP.filter(x => x.branch === br).forEach((x, k) => {
-        const lvl = P.essLvl(s, x.id);
-        const ok = P.essReqMet(s, x.id);
-        const max = P.essMaxed(s, x.id);
-        const cost = P.essCost(s, x.id);
-        const can = ok && !max && (s.essence || 0) >= cost;
-        if (k) h += '<i class="wm-link' + (ok ? ' on' : '') + '"></i>';
-        h += '<div class="wm-node' + (ok ? '' : ' locked') + (lvl ? ' has' : '') + (x.max ? '' : ' inf') + '"><div class="top"><span class="nic">' + ic(ok ? x.icon : 'lock') + '</span><div><b>' + t('es_' + x.id) + '</b><small>' + (x.max ? t('level', { n: lvl }) + ' / ' + x.max : t('level', { n: lvl }) + '  ·  ' + t('tree_inf')) + '</small></div></div><p>' + t('es_' + x.id + '_d') + '</p>';
-        if (!ok) h += '<small class="req">' + t('tree_req', { n: t('es_' + x.req[0]), l: x.req[1] }) + '</small>';
-        else h += '<small class="eff">' + t('es_now', { a: effect(x.id, lvl) }) + (max ? '' : '  ·  ' + t('es_next', { a: effect(x.id, lvl + 1) })) + '</small>' + (max ? '<button class="btn btn-outline btn-sm off">' + ic('check') + t('ess_max') + '</button>' : '<button class="btn btn-sm ' + (can ? 'btn-primary' : 'btn-outline off') + '" data-wm="buy" data-id="' + x.id + '">' + ic('sparkle') + F.int(cost) + '</button>');
-        h += '</div>';
-      });
+    h += '<div class="wm-etabs">' + BZ.ESSENCES.map((x, i) => '<button class="wm-etab' + (i === tw ? ' on' : '') + (s.worldsOpen.includes(i) ? '' : ' lk') + (P.treeDoneCount(s, i) === P.treeCount(s, i) ? ' done' : '') + '" data-wm="tw" data-i="' + i + '" style="--ec:' + x.color + '" title="' + esc(n(x.name)) + '">' + ic(x.icon) + '<b>' + F.int(s.ess[i] || 0) + '</b><small>' + P.treeDoneCount(s, i) + ' / ' + P.treeCount(s, i) + '</small></button>').join('') + '</div>';
+    h += '<div class="wm-ess-big" style="--ec:' + e.color + '">' + ic(e.icon) + '<b>' + F.int(have) + '</b><span>' + esc(n(e.name)) + '</span><small>' + t('tree_prog', { a: P.treeDoneCount(s, tw), b: P.treeCount(s, tw) }) + '</small></div>';
+    if (!s.worldsOpen.includes(tw) && !have) h += '<p class="wm-line">' + ic('lock') + t('tree_locked', { w: n(BZ.WORLDS[tw].name) }) + '</p>';
+    h += '<div class="wm-tree" style="--ec:' + e.color + '">';
+    BZ.ESSENCE_SHOP.filter(x => x.w === tw).forEach(x => {
+      const lvl = P.essLvl(s, x.id);
+      const ok = P.essReqMet(s, x.id);
+      const max = P.essMaxed(s, x.id);
+      const cost = P.essCost(s, x.id);
+      const can = ok && !max && have >= cost;
+      h += '<div class="wm-node' + (ok ? '' : ' locked') + (lvl ? ' has' : '') + (max ? ' max' : '') + '"><div class="top"><span class="nic">' + ic(ok ? x.icon : 'lock') + '</span><div><b>' + t('es_' + x.id) + '</b><small>' + t('level', { n: lvl }) + ' / ' + x.max + '</small></div></div><p>' + t('es_' + x.id + '_d') + '</p>';
+      if (!ok) h += '<small class="req">' + t('tree_req', { n: t('es_' + x.req[0]), l: x.req[1] }) + '</small>';
+      else h += '<small class="eff">' + t('es_now', { a: effect(x.id, lvl) }) + (max ? '' : '  ·  ' + t('es_next', { a: effect(x.id, lvl + 1) })) + '</small>' + (max ? '<button class="btn btn-outline btn-sm off">' + ic('check') + t('ess_max') + '</button>' : '<button class="btn btn-sm ' + (can ? 'btn-primary' : 'btn-outline off') + '" data-wm="buy" data-id="' + x.id + '">' + ic(e.icon) + F.int(cost) + '</button>');
       h += '</div>';
-    }
-    return h + '</div>';
+    });
+    h += '</div>';
+    const pc = P.primeCost(s), can = P.canPrime(s), pr = s.prime || 0;
+    h += '<div class="wm-prime' + (can ? ' ready' : '') + '"><div class="top"><span class="nic">' + ic('prime') + '</span><div><b>' + t('pr_head') + '</b><small>' + t('pr_have', { n: pr, x: F.int(Math.pow(2, pr)) }) + '</small></div></div><p>' + t('pr_d', { v: F.int(pc) }) + '</p>';
+    h += '<div class="wm-pcost">' + BZ.ESSENCES.map((x, i) => '<span class="' + ((s.ess[i] || 0) >= pc ? 'ok' : '') + '" style="--ec:' + x.color + '" title="' + esc(n(x.name)) + '">' + ic(x.icon) + F.int(s.ess[i] || 0) + ' / ' + F.int(pc) + '</span>').join('') + '</div>';
+    if (!P.treeDone(s)) h += '<small class="req">' + t('pr_need', { a: P.treeDoneCount(s), b: P.treeCount(s) }) + '</small>';
+    h += '<button class="btn ' + (can ? 'btn-primary' : 'btn-outline off') + '" data-wm="prime">' + ic('prime') + t('pr_btn') + '</button></div>';
+    return h;
+  }
+  function chip() {
+    const s = BZ.Game.main, e = BZ.ESSENCES[s.world] || BZ.ESSENCES[0], c = ov.querySelector('.wm-chip');
+    c.style.setProperty('--ec', e.color);
+    c.title = n(e.name);
+    c.innerHTML = ic(e.icon) + '<span id="wmEss">' + F.int(s.ess[s.world] || 0) + '</span>';
   }
   function effect(id, lvl) {
     const x = BZ.ESS_BY_ID[id];
     switch (id) {
-      case 'honey': case 'jelly': case 'tap': return 'x' + F.num(Math.pow(1 + x.v, lvl), { small: true });
+      case 'honey': case 'jelly': case 'tap': case 'blaze': case 'glow': case 'forge': case 'ash': case 'tide': return 'x' + F.num(Math.pow(1 + x.v, lvl), { small: true });
       case 'lucky': case 'tickets': case 'fortune': return '+' + F.pct(x.v * lvl);
-      case 'wisdom': case 'map': return '-' + F.pct(x.v * lvl);
+      case 'kiln': return '+' + F.pct(x.v * lvl);
+      case 'wisdom': case 'map': case 'heart': return '-' + F.pct(x.v * lvl);
       case 'nap': return '+' + (x.v * lvl) + ' h';
       case 'start': return F.int(lvl ? x.v[lvl - 1] : 0);
       case 'colony': return 'x' + F.num(BZ.COLONY_MULT + x.v * lvl, { small: true });
@@ -219,9 +240,11 @@
     else if (a === 'go' && sel !== null) travel(sel);
     else if (a === 'sell' && sel !== null) G.askSell(sel);
     else if (a === 'open' && sel !== null) G.openWorld(sel);
-    else if (a === 'tree') { renderTree(); ov.querySelector('.wm-treep').classList.add('on'); BZ.Audio.play('click'); }
+    else if (a === 'tw') { tw = +el.dataset.i; renderTree(); BZ.Audio.play('click'); }
+    else if (a === 'prime') G.askPrime();
+    else if (a === 'tree') { tw = G.main.world || 0; renderTree(); ov.querySelector('.wm-treep').classList.add('on'); BZ.Audio.play('click'); }
     else if (a === 'treeclose') ov.querySelector('.wm-treep').classList.remove('on');
-    else if (a === 'buy') { G.buyEss(el.dataset.id); renderTree(); ov.querySelector('#wmEss').textContent = F.int(G.main.essence || 0); }
+    else if (a === 'buy') { G.buyEss(el.dataset.id); renderTree(); chip(); }
     else if (a === 'help') UI.modal('<div class="hero"><div class="pic">' + ic('globe') + '</div></div><p style="text-align:center;line-height:1.6">' + t('wm_how', { m: BZ.SELL_MIN }) + '</p><div class="row center"><button class="btn btn-primary" data-close>' + t('ok') + '</button></div>', true);
   }
 
@@ -265,7 +288,7 @@
       const s = BZ.Game.main;
       if (stateKey(s) !== key) { build(); if (sel !== null) ov.querySelector('.wm-card').innerHTML = cardHtml(sel); }
       else if (sel !== null && !UI.modalOpen()) ov.querySelector('.wm-card').innerHTML = cardHtml(sel);
-      ov.querySelector('#wmEss').textContent = F.int(s.essence || 0);
+      chip();
     }, 1000);
   };
   UI.closeMap = function () {

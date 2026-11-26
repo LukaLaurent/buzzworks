@@ -407,6 +407,8 @@
     if (gain < 1) return 0;
     const pend = E.pendingRJ(s);
     s.rjLife = (s.rjLife || 0) + pend;
+    const kiln = BZ.P && BZ.P.essLvl ? BZ.P.essLvl(s, 'kiln') : 0;
+    if (kiln) gain = Math.floor(gain * (1 + BZ.ESS_BY_ID.kiln.v * kiln));
     const extra = BZ.P && BZ.P.essLvl ? BZ.P.essLvl(s, 'crown') : 0;
     if (extra) { gain += extra; s.crownsBonus = (s.crownsBonus || 0) + extra; }
     s.crowns = (s.crowns || 0) + gain;

@@ -26,7 +26,7 @@ With the local server, saves go to `data/save.json` and `data/settings.json`, wi
 - **Blessings**: at the start of each swarm and at 100 K, 1 B, 10 T and 100 Qa honey, pick 1 of 3 bonuses for the swarm. Reroll with an ad.
 - **Tickets**: egg tickets (standard eggs), royal tickets (royal eggs) and core tickets (hive cores). There is no paid currency.
 - **Bees tab**: the standard egg (egg tickets) and the royal egg (royal tickets, weekly featured limited bee, 50/50 with guarantee). Rates: standard 70 / 24 / 5.4 / 0.6 %, royal 78 / 19 / 3 % (rare, epic, legendary). Pity: legendary guaranteed within 120 standard or 80 royal hatches, an epic or better every 20 standard or 12 royal. Hatch 1, 10 or all your tickets at once (up to 500), and hatch again straight from the results. The bee collection is never reset.
-- **Workshop tab**: core summoning (core tickets, rates 64 / 27 / 7.8 / 1.2 %, legendary within 100). 12 hive cores in 4 rarities, duplicates level them up. 2 core slots, a 3rd at level 20, a 4th with 5 essence. Hive skins: 8 skins built from parts (4 to 8 parts each) plus the pass skin. Parts drop from treasure chests, lucky bees (5%), level rewards, the streak and the pass. Each owned skin gives +3% honey and the skin in use gives its own bonus.
+- **Workshop tab**: core summoning (core tickets, rates 64 / 27 / 7.8 / 1.2 %, legendary within 100). 12 hive cores in 4 rarities, duplicates level them up. 2 core slots, a 3rd at level 20, a 4th and 5th from the Frost tree. Hive skins: 8 skins built from parts (4 to 8 parts each) plus the pass skin. Parts drop from treasure chests, lucky bees (5%), level rewards, the streak and the pass. Each owned skin gives +3% honey and the skin in use gives its own bonus.
 - **Daily tab**: 7 day streak (10 to 20 egg tickets, core tickets, skin parts, 5 royal tickets and an epic bee on day 7), 3 daily quests (3 egg, 5 egg, 2 core tickets) and 2 quick tasks that renew every 15 minutes.
 - **Hive pass**: free, resets every Monday, 50 tiers. Tier n needs 500 + 50 x (n - 1) XP (86,250 XP in total, about ten hours of active play). Rewards: 10 to 20 egg tickets on most tiers, 10 core tickets every 5 tiers, 5 royal tickets every 10, skin parts, boosts, the Sunflower field skin (tier 25) and the Sunflare bee (tier 50).
 - **Trophies**: two parts. **Swarm goals** reset at every swarm and give tickets again (they are the main source of royal tickets). The **Hall of fame** is permanent, gives +2% honey per trophy and tickets once.
@@ -41,7 +41,9 @@ With the local server, saves go to `data/save.json` and `data/settings.json`, wi
 | Moon garden | 200 crowns of the Glacier hive | lucky bees x2.2, weak taps |
 | Ember peaks | 250 crowns of the Moon garden | double royal jelly, steeper prices |
 
-- **Essence tree**: sell any open world with 5 crowns or more earned in it to restart it for essence, then spend essence in the essence tree (button on the world map). Three branches: Honey (Ancient honey and Sweet paws with no level limit, Quick colony, Thriving colony), Royal (Royal roots with no limit, Queen wisdom, Crown memory, Cartographer) and Fortune (Lucky aura, Deep sleep, Ticket nest, Core socket, Fortune with no limit). Each upgrade needs the one above it at a given level, and costs grow with each level.
+- **Essence trees**: each world has its own essence (Bloom, Sun, Frost, Moon, Ember). Sell an open world with 5 crowns or more earned in it to restart it for that world's essence, then spend it in that world's tree (button on the world map). Every tree has 4 upgrades with a level cap, so finishing them all means playing and selling every world.
+- **Prime**: once all five trees are complete, spend 250 of every essence (doubles each time) to gain a Prime point. Honey x2 per point, stacking. Worlds, crowns, essence and trees restart from one fresh world; bees, cores, skins, tickets, level and pass stay.
+- **Mythic**: a fifth rarity above legendary. 3 mythic bees and 2 mythic cores, at 0.04% (standard egg), 0.2% (royal egg) and 0.1% (core summoning) per hatch, outside the pity system.
 - **Stats tab**: every multiplier (honey, taps, lucky bees, royal jelly, prices, away time) broken down by source, plus general stats.
 - **Ads**: optional rewarded ads for x2 honey for 30 min (6 a day), 2 egg tickets (3 a day), away earnings x2 (3 a day) and blessing rerolls (3 a day). The free Bee dance gives x2 for 20 min every 4 h.
 - **League and rankings** (level 5, needs Firebase and Google sign-in): weekly groups of up to 20 real players and top 50 rankings.
@@ -61,7 +63,7 @@ Sign in with Google, cloud saves, weekly leagues with real players and rankings 
 
 What is stored: `saves/{uid}` (the player's save, private), `players/{uid}` (public name, level and ranking stats), `groups/{week_tier_n}` (league groups of up to 20 players with their weekly points). The game syncs every 3 minutes while signed in.
 
-Leagues: points come from lucky bees, ticket bees, quests, quick tasks, swarms, milestones, upgrades, trophies and play time. Each week (Monday to Monday, local time) players join a group of up to 20 in their tier. When a new week starts, the top quarter moves up a tier and the bottom quarter moves down (groups of 4 or more). Rewards: egg tickets for everyone, royal tickets for the top 3, a core ticket on promotion. Rankings show the top 50 for honey made (all worlds), crowns, essence, bee species, level and trophies.
+Leagues: points only count once the player has joined this week's group, so nobody starts ahead. Points come from lucky bees, ticket bees, quests, quick tasks, swarms, milestones, upgrades, trophies and play time. Each week (Monday to Monday, local time) players join a group of up to 20 in their tier. When a new week starts, the top quarter moves up a tier and the bottom quarter moves down (groups of 4 or more). Rewards: egg tickets for everyone, royal tickets for the top 3, a core ticket on promotion. Rankings show the top 50 for honey made (all worlds), crowns, essence, bee species, level and trophies.
 
 The game runs in the browser, so a determined player could send fake numbers. The rules cap values and point gains per update; obvious cheaters can be deleted from the Firestore console.
 
@@ -81,7 +83,7 @@ What the build changes: `src/config.js` gets `platform: 'crazygames'` with no Fi
 - reports loading start and stop, gameplay start on Play, gameplay stop and start around ads, and a happy moment on coronations;
 - follows the CrazyGames mute setting;
 - hides Google sign-in, leagues, rankings and the player name (no outside logins allowed), and removes the NovaFox and GitHub links from About (no links to a playable copy elsewhere);
-- uses the CrazyGames language when the player has not picked one.
+- always starts in English (CrazyGames requires English as the default language); French stays available in Settings.
 
 Rewarded ads only grant their reward when the ad finishes, and their buttons disappear when ads are disabled or blocked.
 

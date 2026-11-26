@@ -17,7 +17,7 @@
 
   BZ.Platform = {
     name: 'crazygames',
-    locale: '',
+    locale: 'en',
     async init() {
       SDK = root.CrazyGames && root.CrazyGames.SDK;
       if (!SDK) { log('sdk missing'); return; }
@@ -25,7 +25,6 @@
       if (SDK.environment === 'disabled') { log('disabled environment'); return; }
       on = true;
       call(() => SDK.game.loadingStart());
-      try { BZ.Platform.locale = (SDK.user && SDK.user.systemInfo && SDK.user.systemInfo.locale) || ''; } catch (e) {}
       try {
         const data = SDK.data;
         const keys = ['buzzworks.save', 'buzzworks.settings'];

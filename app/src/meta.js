@@ -124,6 +124,7 @@
     const v = (BZ.LEAGUE_POINTS[kind] || 0) * (mult || 1);
     if (!v) return;
     M.leagueRoll(s);
+    if (!s.league.gid) return;
     s.league.points += v;
   };
   M.weekFrac = function (now) {

@@ -75,14 +75,16 @@
   E.achCount = s => Object.keys(s.ach).length;
   E.beeLevel = function (s, id) {
     const c = (s.bees && s.bees[id]) || 0;
+    const b = BZ.BEE_BY_ID[id];
     let l = 0;
-    for (const x of BZ.BEE_LEVELS) { if (c >= x) l++; else break; }
+    for (const x of BZ.levelsFor(b ? b.r : 0)) { if (c >= x) l++; else break; }
     return l;
   };
   E.coreLevel = function (s, id) {
     const c = (s.cores && s.cores[id]) || 0;
+    const k = BZ.CORE_BY_ID[id];
     let l = 0;
-    for (const x of BZ.BEE_LEVELS) { if (c >= x) l++; else break; }
+    for (const x of BZ.levelsFor(k ? k.r : 0)) { if (c >= x) l++; else break; }
     return l;
   };
   E.beeBonus = function (s) {
@@ -274,6 +276,8 @@
     s.honey = Math.min(1e300, s.honey + amt);
     s.runHoney = Math.min(1e300, s.runHoney + amt);
     s.lifetime = Math.min(1e300, s.lifetime + amt);
+    if (s._acc !== undefined) s._acc += amt;
+    s._earn = (s._earn || 0) + amt;
     const pb = before > 0 ? Math.floor(Math.log10(before)) : -1;
     const pa = Math.floor(Math.log10(s.runHoney));
     if (pa > pb && pa >= 2) E.emit(s, 'power', { power: pa, count: pa - Math.max(pb, 1) });
@@ -564,7 +568,7 @@
     const cap = E.offlineCap(s);
     const t = Math.min(secs, cap);
     const before = s.honey;
-    const lifeBefore = s.lifetime;
+    s._acc = 0;
     let left = t;
     const step = t > 3600 ? 30 : 10;
     while (left > 0) {
@@ -572,10 +576,12 @@
       E.tick(s, d, { offline: true });
       left -= d;
     }
+    const made = s._acc;
+    delete s._acc;
     const pm = E.mods(s);
-    const extra = (s.lifetime - lifeBefore) * (E.beeBonus(s).offline + (pm ? pm.offline - 1 : 0));
+    const extra = made * (E.beeBonus(s).offline + (pm ? pm.offline - 1 : 0));
     if (extra > 0) E.gainHoney(s, extra);
-    return { secs: t, capped: secs > cap, earned: s.lifetime - lifeBefore, net: s.honey - before };
+    return { secs: t, capped: secs > cap, earned: made + Math.max(0, extra), net: s.honey - before };
   };
 
   E.ACH_TESTS = {

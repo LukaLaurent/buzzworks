@@ -7,18 +7,34 @@
   const TABS = [
     { id: 'hive', icon: 'hive' },
     { id: 'queen', icon: 'crown' },
-    { id: 'bees', icon: 'worker' },
-    { id: 'workshop', icon: 'palette' },
-    { id: 'daily', icon: 'calendar' },
-    { id: 'pass', icon: 'ticket' },
+    { id: 'collection', icon: 'worker', pages: ['bees', 'workshop'] },
+    { id: 'activities', icon: 'calendar', pages: ['daily', 'pass', 'event'] },
     { id: 'worlds', icon: 'globe' },
     { id: 'league', icon: 'league' },
-    { id: 'event', icon: 'boss' },
-    { id: 'trophies', icon: 'trophy' },
-    { id: 'stats', icon: 'chart' },
+    { id: 'profile', icon: 'trophy', pages: ['trophies', 'stats'] },
     { id: 'settings', icon: 'settings' },
     { id: 'about', icon: 'info' }
   ];
+  const SUB_ICON = { bees: 'worker', workshop: 'palette', daily: 'calendar', pass: 'ticket', event: 'boss', trophies: 'trophy', stats: 'chart' };
+  const cloudPage = p => p !== 'event' || !!(BZ.Cloud && BZ.Cloud.configured());
+  const pagesOf = g => (g.pages || [g.id]).filter(cloudPage);
+  const lastSub = {};
+  UI.groupOf = p => TABS.find(g => g.id === p || (g.pages && g.pages.includes(p))) || null;
+  UI.subPages = p => { const g = UI.groupOf(p); return g && g.pages ? pagesOf(g) : []; };
+  UI.tabUnlocked = (s, id) => { const g = TABS.find(x => x.id === id); return g && g.pages ? pagesOf(g).some(p => BZ.P.unlocked(s, p)) : BZ.P.unlocked(s, id); };
+  UI.resolveTab = function (p) {
+    const g = TABS.find(x => x.id === p);
+    if (!g || !g.pages) return p;
+    const list = pagesOf(g), s = G && G.main;
+    if (lastSub[g.id] && list.includes(lastSub[g.id]) && (!s || BZ.P.unlocked(s, lastSub[g.id]))) return lastSub[g.id];
+    return (s && list.find(x => BZ.P.unlocked(s, x))) || list[0];
+  };
+  function subNav(p) {
+    const list = UI.subPages(p);
+    if (list.length < 2) return '';
+    const s = G.main;
+    return '<div class="seg sub-seg">' + list.map(x => '<button data-sub="' + x + '" class="' + (x === p ? 'on' : '') + (BZ.P.unlocked(s, x) ? '' : ' locked') + '">' + ic(BZ.P.unlocked(s, x) ? SUB_ICON[x] : 'lock') + '<span>' + t('tab_' + x) + '</span></button>').join('') + '</div>';
+  }
   const LUCKY_ICON = { rush: 'bolt', harvest: 'drop', frenzy: 'tap', ticket: 'ticket', chest: 'gift' };
   const BOOST_ICON = { x2: 'bolt', luckyswarm: 'sparkle', dance: 'music', adx2: 'ad' };
 
@@ -94,6 +110,7 @@
     $('menuBtn').innerHTML = ic('menu');
     $('menuBtn').onclick = () => drawer(true);
     $('scrim').onclick = () => drawer(false);
+    $('panel').addEventListener('click', e => { const b = e.target.closest('[data-sub]'); if (b) { e.stopPropagation(); UI.show(b.dataset.sub); } });
     $('panel').addEventListener('click', onPanelClick);
     $('panel').addEventListener('contextmenu', e => {
       const el = e.target.closest('[data-act="buy"]');
@@ -119,7 +136,7 @@
     if (tabs.scrollWidth > tabs.clientWidth + 1) bar.classList.add('t-menu');
   };
 
-  const visibleTabs = () => TABS.filter(x => !['league', 'event'].includes(x.id) || (BZ.Cloud && BZ.Cloud.configured()));
+  const visibleTabs = () => TABS.filter(x => x.id !== 'league' || (BZ.Cloud && BZ.Cloud.configured()));
   UI.buildChrome = function () {
     const TABS = visibleTabs();
     $('brand').innerHTML = BZ.appIconSvg(28) + '<div><span>Buzz</span><b>works</b></div>';
@@ -145,9 +162,12 @@
   }
 
   UI.show = function (p) {
+    p = UI.resolveTab(p);
     if (!BZ.P.unlocked(G.main, p)) { BZ.Audio.play('error'); UI.toast('lock', BZ.P.lockText(G.main, p)); return; }
     page = p;
-    document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === p));
+    const grp = UI.groupOf(p);
+    if (grp && grp.pages) lastSub[grp.id] = p;
+    document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === p || (!!grp && b.dataset.tab === grp.id)));
     selUpg = null; selAch = null;
     pageDirty = true;
     hiveKey = ''; upgKey = '';
@@ -163,7 +183,7 @@
     pageDirty = false;
     const panel = $('panel');
     if (page === 'hive') { renderHive(); return; }
-    const html = ((UI.ext && UI.ext[page]) || ({ queen: pageQueen, bees: pageBees, daily: pageDaily, trophies: pageTrophies, settings: pageSettings })[page])();
+    const html = subNav(page) + ((UI.ext && UI.ext[page]) || ({ queen: pageQueen, bees: pageBees, daily: pageDaily, trophies: pageTrophies, settings: pageSettings })[page])();
     const cur = panel.firstElementChild;
     if (cur && cur.dataset.page === page && panel.children.length === 1) morph(cur, html);
     else panel.innerHTML = '<div class="page on" data-page="' + page + '">' + html + '</div>';
@@ -341,8 +361,8 @@
         h += '<div class="bee locked"><div class="art">' + beeSvg(b, 60, true) + '</div><b>?</b><span class="rar" style="color:' + rar.color + '">' + n(rar.name) + '</span></div>';
         continue;
       }
-      const nextAt = BZ.BEE_LEVELS[lvl];
-      const prevAt = BZ.BEE_LEVELS[lvl - 1] || 0;
+      const nextAt = BZ.levelsFor(b.r)[lvl];
+      const prevAt = BZ.levelsFor(b.r)[lvl - 1] || 0;
       const prog = nextAt ? (cnt - prevAt) / (nextAt - prevAt) : 1;
       h += '<div class="bee" style="--rc:' + rar.color + '"><div class="art">' + beeSvg(b, 60) + '<span class="lv">' + lvl + '</span></div><b>' + n(b.name) + '</b><span class="rar" style="color:' + rar.color + '">' + n(rar.name) + '</span><small>' + bonusText(b.kind, b.v * lvl) + '</small>' +
         '<div class="progress"><i style="width:' + (prog * 100).toFixed(0) + '%"></i></div><small class="faint">' + (nextAt ? t('bee_next', { n: nextAt - cnt }) : t('maxed')) + '</small></div>';
@@ -695,6 +715,13 @@
       queen: E.pendingRJ(s) >= Math.max(1, s.rjEarned) && E.pendingRJ(s) >= 1
     };
     if (UI.extDots) UI.extDots(flags);
+    TABS.forEach(g => { if (g.pages) flags[g.id] = pagesOf(g).some(p => flags[p]); });
+    document.querySelectorAll('[data-sub]').forEach(b => {
+      const want = !!flags[b.dataset.sub];
+      const has = !!b.querySelector('.dot');
+      if (want && !has) b.insertAdjacentHTML('beforeend', '<span class="dot"></span>');
+      else if (!want && has) b.querySelector('.dot').remove();
+    });
     document.querySelectorAll('[data-tab]').forEach(b => {
       const want = !!flags[b.dataset.tab];
       const has = !!b.querySelector('.dot');

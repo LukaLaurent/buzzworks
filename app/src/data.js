@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '3.2.0';
+  BZ.VERSION = '3.3.0';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -249,6 +249,14 @@
   BZ.LEAGUE_QUEST_COUNT = 4;
   BZ.LEAGUE_QUEST_GROW = 0.2;
   BZ.CHANGELOG = [
+    { v: '3.3.0', items: [
+      { icon: 'hive', en: 'Cleaner menu: Bees and Cores are now in Collection, Daily, Pass and Boss in Activities, Trophies and Stats in Profile.', fr: 'Menu plus clair : Abeilles et Noyaux sont dans Collection, Jour, Pass et Boss dans Activités, Trophées et Stats dans Profil.' },
+      { icon: 'gift', en: 'The weekly pass now gives legendary eggs on big levels and a mystic egg at level 50.', fr: 'Le pass de la semaine donne maintenant des œufs légendaires aux grands paliers et un œuf mystique au palier 50.' },
+      { icon: 'worker', en: 'Rarer bees and cores need fewer copies to level up. Level 20 of a mythic now takes 100 copies.', fr: 'Les abeilles et noyaux rares demandent moins de copies pour monter. Le niveau 20 d’un mythique demande maintenant 100 copies.' },
+      { icon: 'sparkle', en: 'Fewer popups: the daily gift shows what your bees made while you were away, and blessings that arrive together are picked in one window.', fr: 'Moins de fenêtres : le cadeau du jour montre ce que vos abeilles ont produit pendant votre absence, et les bénédictions qui arrivent ensemble se choisissent dans une seule fenêtre.' },
+      { icon: 'check', en: 'Fixed: on very big hives, away earnings, the Bumblebee bonus and Earn honey quests could count 0.', fr: 'Corrigé : sur les très grosses ruches, les gains d’absence, le bonus du Bourdon et les quêtes Gagner du miel pouvaient compter 0.' },
+      { icon: 'info', en: 'Fewer orange dots, only for things you can claim. Two new bees were renamed Blaze bee and Borealis bee.', fr: 'Moins de pastilles orange, seulement pour ce que vous pouvez récupérer. Deux nouvelles abeilles s’appellent maintenant Abeille brasier et Abeille boréale.' }
+    ] },
     { v: '3.2.0', items: [
       { icon: 'bug', en: 'Found a bug or have an idea? Send it from the About tab or the Settings tab with the new Bug or idea button.', fr: 'Un bug ou une idée ? Envoyez-le depuis l’onglet À propos ou Paramètres avec le nouveau bouton Bug ou idée.' },
       { icon: 'star', en: 'The level button at the top got a cleaner look with your progress around a star.', fr: 'Le bouton de niveau en haut a un look plus net, avec votre progression autour d’une étoile.' }
@@ -350,8 +358,8 @@
     { id: 'golden', r: 3, kind: 'honey', v: 0.25, c: ['#FFD45E', '#B8860B'], name: { en: 'Golden bee', fr: 'Abeille d\'or' } },
     { id: 'star', r: 3, kind: 'luckyFreq', v: 0.1, c: ['#8E6AC8', '#FFF4C8'], name: { en: 'Star bee', fr: 'Abeille étoile' } },
     { id: 'guard', r: 3, kind: 'combo', v: 0.25, c: ['#F28C28', '#20252B'], name: { en: 'Queen guard', fr: 'Garde de la reine' } },
-    { id: 'phoenix', r: 3, kind: 'rj', v: 0.12, c: ['#F2643C', '#FFD45E'], name: { en: 'Phoenix bee', fr: 'Abeille phénix' } },
-    { id: 'aurora', r: 3, kind: 'luckyDur', v: 0.15, c: ['#7FE0B8', '#3A2A6B'], name: { en: 'Aurora bee', fr: 'Abeille aurore' } },
+    { id: 'blaze', r: 3, kind: 'rj', v: 0.12, c: ['#F2643C', '#FFD45E'], name: { en: 'Blaze bee', fr: 'Abeille brasier' } },
+    { id: 'borealis', r: 3, kind: 'luckyDur', v: 0.15, c: ['#7FE0B8', '#3A2A6B'], name: { en: 'Borealis bee', fr: 'Abeille boréale' } },
     { id: 'celestial', r: 4, kind: 'honey', v: 0.6, c: ['#F0509E', '#2A1238'], name: { en: 'Celestial bee', fr: 'Abeille céleste' } },
     { id: 'eclipse', r: 4, kind: 'rj', v: 0.2, c: ['#2A1238', '#F0509E'], name: { en: 'Eclipse bee', fr: 'Abeille éclipse' } },
     { id: 'prism', r: 4, kind: 'luckyFreq', v: 0.25, c: ['#9EE8F5', '#5B2A8C'], name: { en: 'Prism bee', fr: 'Abeille prisme' } },
@@ -361,6 +369,14 @@
   BZ.BEE_BY_ID = {};
   BZ.BEES.forEach(b => { BZ.BEE_BY_ID[b.id] = b; });
   BZ.BEE_LEVELS = [1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 75, 100, 130, 165, 205, 250, 300, 360, 430, 510];
+  BZ.LEVELS_BY_R = [
+    BZ.BEE_LEVELS,
+    [1, 3, 5, 8, 12, 16, 21, 27, 33, 40, 52, 66, 82, 100, 122, 146, 174, 205, 240, 280],
+    [1, 2, 4, 6, 9, 12, 16, 20, 25, 30, 38, 47, 57, 68, 81, 95, 111, 129, 149, 170],
+    [1, 2, 4, 6, 8, 11, 14, 18, 22, 26, 32, 39, 47, 56, 66, 77, 89, 103, 120, 140],
+    [1, 2, 3, 4, 6, 8, 10, 12, 15, 18, 22, 27, 32, 38, 45, 53, 62, 72, 85, 100]
+  ];
+  BZ.levelsFor = r => BZ.LEVELS_BY_R[r] || BZ.BEE_LEVELS;
   BZ.DROP = { lucky: 0.06, part: 0.05, ticketMin: 0.03 };
 
   const TK = g => g >= 10 ? { royal: 1 } : g >= 5 ? { core: 1 } : g >= 3 ? { egg: 2 } : g >= 1 ? { egg: 1 } : null;

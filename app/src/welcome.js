@@ -5,9 +5,11 @@
 
   BZ.addStrings({
     wl_title: 'Daily gift', wl_d: 'Welcome back! Day {n} in a row. Pick one of the boxes.', wl_d1: 'Welcome back! Pick one of the boxes.',
+    wl_away: 'While you were away ({t})', wl_found: '+{v} egg tickets found', wl_found1: '+1 egg ticket found', wl_ad: 'Double the honey (ad)',
     wl_base: 'Bonus for coming back', wl_pick: 'Pick a box', wl_got: 'Your gift', wl_miss: 'In the other boxes', wl_ok: 'Collect', wl_streak: 'Come back tomorrow for a bigger bonus!'
   }, {
     wl_title: 'Cadeau du jour', wl_d: 'Bon retour ! Jour {n} d’affilée. Choisissez une des boîtes.', wl_d1: 'Bon retour ! Choisissez une des boîtes.',
+    wl_away: 'Pendant votre absence ({t})', wl_found: '+{v} tickets d’œuf trouvés', wl_found1: '+1 ticket d’œuf trouvé', wl_ad: 'Doubler le miel (pub)',
     wl_base: 'Bonus de retour', wl_pick: 'Choisissez une boîte', wl_got: 'Votre cadeau', wl_miss: 'Dans les autres boîtes', wl_ok: 'Récupérer', wl_streak: 'Revenez demain pour un bonus plus grand !'
   });
 
@@ -31,14 +33,22 @@
   }
   W.base = streak => ({ egg: 3 + Math.min(7, streak) });
 
-  W.check = function () {
+  W.due = function () {
+    const g = BZ.Game;
+    if (!g || !g.main || g.battle) return false;
+    const s = g.realMain();
+    return s.flags.loginDay !== M.dayKey() && (s.level || 1) >= 2;
+  };
+  W.check = function (offline) {
     const g = BZ.Game;
     if (!g || !g.main || g.battle) return;
     const s = g.realMain();
     const day = M.dayKey();
     const f = s.flags;
     if (f.loginDay === day || (s.level || 1) < 2) return;
-    if (UI.modalOpen()) { setTimeout(W.check, 4000); return; }
+    if (UI.modalOpen()) { setTimeout(() => W.check(offline), 4000); return; }
+    W.offline = offline && offline.earned >= 1 && offline.secs >= 60 ? offline : null;
+    if (W.offline && g.offlineFound) g.offlineFound(W.offline);
     if (!f.loginOffer || f.loginOffer.day !== day) {
       const y = new Date(); y.setDate(y.getDate() - 1);
       const streak = f.loginDay === M.dayKey(y) ? (f.loginStreak || 1) + 1 : 1;
@@ -54,11 +64,14 @@
   function show(s, off) {
     const base = W.base(off.streak);
     let h = '<div class="wl"><div class="wl-rays"></div><div class="hero"><h4>' + t('wl_title') + '</h4><p>' + esc(off.streak > 1 ? t('wl_d', { n: off.streak }) : t('wl_d1')) + '</p></div>';
+    const away = W.offline;
+    if (away) h += '<div class="wl-away"><span class="wl-away-ic">' + ic('drop') + '</span><div><small>' + esc(t('wl_away', { t: BZ.F.time(away.secs) })) + '</small><b class="num">+' + BZ.F.num(away.earned) + '</b>' + (away._found > 0 ? '<small class="wl-found">' + esc(away._found === 1 ? t('wl_found1') : t('wl_found', { v: away._found })) + '</small>' : '') + '</div></div>';
     h += '<div class="wl-base"><small>' + t('wl_base') + '</small>' + UI.rewardChips(base) + '</div>';
     h += '<div class="wl-boxes">' + [0, 1, 2].map(boxHtml).join('') + '</div>';
-    h += '<p class="wl-hint">' + t('wl_pick') + '</p><div class="row center"><button class="btn btn-primary off" id="wlOk">' + t('wl_ok') + '</button></div></div>';
+    const adOk = away && UI.adsOn && UI.adsOn('offline');
+    h += '<p class="wl-hint">' + t('wl_pick') + '</p><div class="row center">' + (adOk ? '<button class="btn btn-secondary off" id="wlAd">' + ic('play') + t('wl_ad') + '</button>' : '') + '<button class="btn btn-primary off" id="wlOk">' + t('wl_ok') + '</button></div></div>';
     let done = false;
-    UI.modal(h, false, { '#wlOk': () => { if (done) UI.closeModal(); } });
+    UI.modal(h, false, { '#wlOk': () => { if (done) UI.closeModal(); }, '#wlAd': () => { if (!done) return; UI.closeModal(); BZ.Game.offlineAd(away); } });
     BZ.Audio.play('luckySpawn');
     const m = document.querySelector('.wl');
     m.querySelectorAll('[data-wl]').forEach(b => {
@@ -83,6 +96,8 @@
         });
         m.querySelector('.wl-hint').textContent = t('wl_streak');
         m.querySelector('#wlOk').classList.remove('off');
+        const ad = m.querySelector('#wlAd');
+        if (ad) ad.classList.remove('off');
         BZ.Audio.play(r.mystic ? 'swarm' : 'lucky');
       };
     });

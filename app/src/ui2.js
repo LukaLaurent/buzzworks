@@ -252,8 +252,8 @@
       const rar = BZ.RARITIES[c.r];
       if (!cnt) { h += '<div class="bee locked"><div class="art">' + coreSvg(c, 52, true) + '</div><b>?</b><span class="rar" style="color:' + rar.color + '">' + n(rar.name) + '</span></div>'; continue; }
       const lvl = E.coreLevel(s, c.id);
-      const nextAt = BZ.BEE_LEVELS[lvl];
-      const prevAt = BZ.BEE_LEVELS[lvl - 1] || 0;
+      const nextAt = BZ.levelsFor(c.r)[lvl];
+      const prevAt = BZ.levelsFor(c.r)[lvl - 1] || 0;
       const prog = nextAt ? (cnt - prevAt) / (nextAt - prevAt) : 1;
       const on = s.coreSlots.slice(0, slots).includes(c.id);
       h += '<button class="bee core-card' + (on ? ' equipped' : '') + '" data-act="core" data-arg="' + c.id + '" style="--rc:' + rar.color + '"><div class="art">' + coreSvg(c, 52) + '<span class="lv">' + lvl + '</span>' + (on ? '<span class="eq">' + ic('check') + '</span>' : '') + '</div><b>' + esc(n(c.name)) + '</b><span class="rar" style="color:' + rar.color + '">' + n(rar.name) + '</span><small>' + esc(coreText(c, lvl)) + '</small><div class="progress"><i style="width:' + (prog * 100).toFixed(0) + '%"></i></div><small class="faint">' + (nextAt ? t('bee_next', { n: nextAt - cnt }) : t('maxed')) + '</small></button>';
@@ -325,17 +325,27 @@
     const s = G.main;
     if (!s.blessOffer) return;
     const RC = ['#9AA4AE', '#4C7CC4', '#8E6AC8', '#E0A526', '#F0509E'];
-    let h = '<h4 style="text-align:center">' + t('bless_title') + '</h4><p style="text-align:center">' + t('bless_sub') + '</p><div class="bless-grid">';
+    let h = '<div class="bless-wrap"><div class="bless-step" id="blessStep">' + UI.blessStepHtml() + '</div><h4 style="text-align:center">' + t('bless_title') + '</h4><p style="text-align:center">' + t('bless_sub') + '</p><div class="bless-grid">';
     s.blessOffer.forEach((e, i) => {
       const b = P.BLESS_BY_ID[e.id];
       h += '<button class="bless r' + b.r + '" style="--rc:' + RC[b.r] + '" data-bless="' + i + '"><span class="bpic">' + ic(BLESS_ICON[b.id]) + '</span><b>' + t('bl_' + b.id) + '</b><small>' + esc(blessDesc(e)) + '</small><span class="rar">' + n(BZ.RARITIES[b.r].name) + '</span></button>';
     });
     const adL = UI.adsOn('reroll') ? P.adLeft(s, 'reroll') : 0;
-    h += '</div>' + (adL ? '<div class="row center"><button class="btn btn-outline btn-sm" id="bReAd">' + ic('play') + t('bless_reroll') + '  ·  ' + t('ad_left', { n: adL }) + '</button></div>' : '');
+    h += '</div>' + (adL ? '<div class="row center"><button class="btn btn-outline btn-sm" id="bReAd">' + ic('play') + t('bless_reroll') + '  ·  ' + t('ad_left', { n: adL }) + '</button></div>' : '') + '</div>';
+    const wasOpen = !!document.querySelector('#modal .bless-wrap');
     UI.modal(h, true, { '#bReAd': () => G.blessReroll() });
+    if (wasOpen) { const w = document.querySelector('#modal .bless-wrap'); if (w) w.classList.add('next'); }
     document.querySelectorAll('#modal [data-bless]').forEach(el => { el.onclick = () => G.blessPick(+el.dataset.bless); });
   };
 
+  UI.blessStepHtml = function () {
+    const st = P.blessStep(G.main);
+    if (st.total < 2) return '';
+    let d = '';
+    for (let i = 1; i <= st.total; i++) d += '<i class="' + (i < st.step ? 'done' : i === st.step ? 'on' : '') + '"></i>';
+    return '<span class="bs-dots">' + d + '</span><small>' + t('bless_step', { n: st.step, m: st.total }) + '</small>';
+  };
+  UI.blessStepUpdate = function () { const el = document.getElementById('blessStep'); if (el) el.innerHTML = UI.blessStepHtml(); };
   UI.adsOn = place => !!(root.BZ_ADS && root.BZ_ADS.available && root.BZ_ADS.available()) && P.adLeft(G.main, place) > 0;
   UI.showAd = function (place) {
     const s = G.main;
@@ -419,7 +429,7 @@
     const ab = $('adBtn');
     if (ab) ab.style.display = UI.adsOn('boost') ? '' : 'none';
     document.querySelectorAll('[data-tab]').forEach(b => {
-      const lock = !P.unlocked(s, b.dataset.tab);
+      const lock = !UI.tabUnlocked(s, b.dataset.tab);
       if (b.classList.contains('locked') !== lock) b.classList.toggle('locked', lock);
     });
     if (UI.page() === 'hive') updatePromo(now);
@@ -428,11 +438,9 @@
   UI.extDots = function (flags) {
     const s = G.main;
     flags.pass = P.passReady(s);
-    flags.bees = (s.tickets.egg || 0) > 0 || (s.tickets.royal || 0) > 0 || (s.tickets.mystic || 0) > 0 || (s.tickets.legend || 0) > 0;
-    flags.workshop = (s.tickets.core || 0) > 0;
+    flags.bees = (s.tickets.mystic || 0) > 0 || (s.tickets.legend || 0) > 0;
     flags.worlds = P.canOpenWorld(s, P.nextWorld(s));
     flags.league = !!(BZ.Cloud && BZ.Cloud.signedIn()) && BZ.Meta.lqList(G.realMain()).some(q => !q.claimed && BZ.Meta.questDone(q));
-    flags.event = !!(BZ.Event && BZ.Event.dot());
     for (const k in flags) if (!P.unlocked(s, k)) flags[k] = false;
   };
 

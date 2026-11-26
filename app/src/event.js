@@ -4,7 +4,7 @@
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
   BZ.addStrings({
-    tab_event: 'Event',
+    tab_event: 'Boss', tab_collection: 'Collection', tab_activities: 'Activities', tab_profile: 'Profile', bless_step: 'Blessing {n} of {m}',
     ev_title: 'Boss fight', ev_d: 'Fight the boss with your honey! You get 10 minutes in a brand new hive, the same for every player: bees, cores, skins, levels and essence give no bonus. Every drop of honey you make hits the boss. A new boss comes every 4 hours, you get one try against each, and the best hives win legendary and mystic eggs when it leaves.',
     ev_fight: 'Fight the boss', ev_done: 'Already fought this boss', ev_in: 'Fight in progress', ev_resume: 'Back to the fight',
     ev_lvl: 'Level {n}', ev_dmg: 'Damage', ev_rank: 'Rank', ev_board: 'Ranking for this boss', ev_board_empty: 'Nobody fought this boss yet. Be the first!', ev_you: 'You',
@@ -17,7 +17,7 @@
     hb_legend: 'Legendary', ticket_legend: 'Legendary eggs', r_legend: '+{v} legendary eggs', legend_t: 'Legendary egg', legend_d: 'Always hatches a legendary bee. Won against the boss or from a red lucky bee.',
     rr_luck: 'Lucky hatch {v} min', rr_xp2: 'Double XP {v} min', rr_lg2: 'League rush {v} min', rr_legend: 'Legendary egg', rr_mystic: 'Mystic egg'
   }, {
-    tab_event: 'Événement',
+    tab_event: 'Boss', tab_collection: 'Collection', tab_activities: 'Activités', tab_profile: 'Profil', bless_step: 'Bénédiction {n} sur {m}',
     ev_title: 'Combat de boss', ev_d: 'Affrontez le boss avec votre miel ! Vous avez 10 minutes dans une ruche toute neuve, la même pour tous les joueurs : abeilles, noyaux, décors, niveaux et essence ne donnent aucun bonus. Chaque goutte de miel frappe le boss. Un nouveau boss arrive toutes les 4 heures, vous avez un essai contre chacun, et les meilleures ruches gagnent des œufs légendaires et mystiques à son départ.',
     ev_fight: 'Affronter le boss', ev_done: 'Déjà combattu contre ce boss', ev_in: 'Combat en cours', ev_resume: 'Retour au combat',
     ev_lvl: 'Niveau {n}', ev_dmg: 'Dégâts', ev_rank: 'Rang', ev_board: 'Classement contre ce boss', ev_board_empty: 'Personne n’a encore affronté ce boss. Soyez le premier !', ev_you: 'Vous',
@@ -364,7 +364,7 @@
   const blockTabs = ['bees', 'workshop', 'daily', 'pass', 'worlds', 'trophies'];
   const origShow = UI.show;
   UI.show = function (p) {
-    if (G() && G().battle && blockTabs.includes(p)) { UI.toast('boss', t('ev_blocked')); return; }
+    if (G() && G().battle && blockTabs.includes(UI.resolveTab ? UI.resolveTab(p) : p)) { UI.toast('boss', t('ev_blocked')); return; }
     return origShow.apply(this, arguments);
   };
   const wrap = (obj, key) => { const fn = obj[key]; if (!fn) return; obj[key] = function () { if (G().battle) { UI.toast('boss', t('ev_blocked')); return; } return fn.apply(this, arguments); }; };

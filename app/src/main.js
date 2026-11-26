@@ -90,10 +90,11 @@
   G.blessPick = function (i) {
     const e = P.blessPick(G.main, i);
     if (!e) return;
-    UI.closeModal();
+    if (G.main.blessOffer) UI.showBless();
+    else UI.closeModal();
     A.play('upgrade');
     Scene.pulse(3);
-    UI.toast('sparkle', t('bl_' + e.id) + '  ' + UI.blessDesc(e), { ok: true });
+    if (!G.main.blessOffer) UI.toast('sparkle', t('bl_' + e.id) + '  ' + UI.blessDesc(e), { ok: true });
     xp('bless');
     UI.structureChanged();
     G.save();
@@ -113,6 +114,7 @@
     if (away > 60) E.offline(ns, away);
     ns.lastSave = Date.now();
     lastLifetime = ns.lifetime;
+    ns._earn = 0;
     G.refreshScene();
     A.play('swarm');
     Scene.pulse(5);
@@ -274,6 +276,7 @@
     Scene.removeLucky(false);
     Scene.removeLucky(false, 'ticket');
     lastLifetime = G.main.lifetime;
+    G.main._earn = 0;
     G.refreshScene();
     UI.structureChanged();
     UI.render();
@@ -574,6 +577,23 @@
     if (Math.random() < BZ.DROP.lucky) setTimeout(() => giveBee(0), 700);
   }
 
+  G.offlineFound = function (res) {
+    if (!res || res.earned < 1 || res.secs < 60) return -1;
+    if (res._found !== undefined) return res._found;
+    const found = res.secs >= 3600 ? Math.min(4, Math.floor(res.secs / 7200)) : 0;
+    if (found > 0) E.addTickets(G.main, { egg: found });
+    res._found = found;
+    return found;
+  };
+  G.offlineAd = function (res) {
+    const s = G.main;
+    UI.showAd('offline').then(ok => { if (ok) { E.gainHoney(s, res.earned); A.play('lucky'); UI.toast('drop', '+' + F.num(res.earned), { ok: true }); G.save(); } });
+  };
+  function arrival(res) {
+    if (BZ.Welcome && BZ.Welcome.due()) BZ.Welcome.check(res);
+    else showOffline(res);
+  }
+  G.arrival = arrival;
   function showOffline(res) {
     if (res.earned < 1 || res.secs < 60) return;
     const s = G.main;
@@ -585,10 +605,8 @@
         UI.showAd('offline').then(ok => { if (ok) { E.gainHoney(s, res.earned); A.play('lucky'); UI.toast('drop', '+' + F.num(res.earned), { ok: true }); G.save(); } });
       }
     });
-    if (res.secs >= 3600) {
-      const found = Math.min(4, Math.floor(res.secs / 7200));
-      if (found > 0) { E.addTickets(s, { egg: found }); setTimeout(() => UI.toast('ticket', t('r_egg', { v: found }), { ok: true }), 900); }
-    }
+    const found = G.offlineFound(res);
+    if (found > 0) setTimeout(() => UI.toast('ticket', t('r_egg', { v: found }), { ok: true }), 900);
   }
 
   G.cloudSignIn = function () { if (BZ.Cloud) BZ.Cloud.signIn().then(() => { bootLastSave = 0; G.cloudSync(true, true); UI.render(); }).catch(e => { Log.error('cloud sign in: ' + (e && e.message || e)); UI.toast('info', t('cloud_err'), { nova: 'oops' }); UI.render(); }); };
@@ -639,9 +657,10 @@
     if (achAcc >= 1) {
       achAcc = 0;
       E.checkAchievements(s);
-      const life = s.lifetime;
-      if (lastLifetime) M.questProgress(s, 'earn', Math.max(0, life - lastLifetime));
-      lastLifetime = life;
+      const earned = s._earn || 0;
+      s._earn = 0;
+      if (lastLifetime && earned > 0) M.questProgress(s, 'earn', earned);
+      lastLifetime = s.lifetime || 1;
       if (M.questGen(s)) UI.dirty('daily');
       if (M.quickGen(s)) UI.dirty('daily');
       if (M.lqGen(s)) UI.dirty('league');
@@ -649,7 +668,9 @@
       if (fl) { A.play('milestone'); UI.toast('info', t('unlocked_tab', { p: t('tab_' + fl) }), { ok: true, long: true }); UI.buildChrome(); }
       if (s.league.rkPending && !UI.modalOpen()) { const p = s.league.rkPending; s.league.rkPending = null; A.play('achievement'); UI.showRankResult(p); G.save(); }
       if (s.league.pending && !UI.modalOpen()) { const p = s.league.pending; s.league.pending = null; A.play(p.move > 0 ? 'milestone' : 'achievement'); UI.showLeagueResult(p); G.save(); }
-      if (P.blessCheck(s)) { A.play('luckySpawn'); if (!UI.modalOpen()) UI.showBless(); else UI.toast('sparkle', t('bless_pending'), { ok: true }); }
+      const bc = P.blessCheck(s);
+      if (bc === 'more') { if (document.querySelector('#modal .bless-wrap')) UI.blessStepUpdate(); }
+      else if (bc) { A.play('luckySpawn'); if (!UI.modalOpen()) UI.showBless(); else UI.toast('sparkle', t('bless_pending'), { ok: true }); }
     }
     minuteAcc += dt;
     if (minuteAcc >= 60) {
@@ -704,6 +725,7 @@
         Log.info('new game');
       }
       lastLifetime = G.main.lifetime;
+      G.main._earn = 0;
       G.refreshScene();
       M.questGen(G.main);
       M.quickGen(G.main);
@@ -717,7 +739,7 @@
         else {
           A.resume();
           const away = (Date.now() - (G.main.lastSave || Date.now())) / 1000;
-          if (away > 30) { const r = E.offline(G.main, away); G.main.lastSave = Date.now(); showOffline(r); }
+          if (away > 30) { const r = E.offline(G.main, away); G.main.lastSave = Date.now(); G.main._earn = 0; arrival(r); }
         }
       });
       root.addEventListener('pagehide', () => G.save(true));
@@ -742,8 +764,8 @@
       UI.splashReady(() => {
         if (BZ.Platform && BZ.Platform.play) BZ.Platform.play();
         A.unlock();
-        if (offline) showOffline(offline);
-        if (BZ.Welcome) setTimeout(BZ.Welcome.check, offline ? 400 : 1200);
+        if (BZ.Welcome && BZ.Welcome.due()) setTimeout(() => BZ.Welcome.check(offline), 700);
+        else if (offline) showOffline(offline);
       });
     } catch (e) {
       Log.error('boot failed: ' + (e && e.stack || e));

@@ -25,9 +25,9 @@
   P.passNeed = tier => 500 + 50 * (tier - 1);
   P.passTotal = (() => { let t = 0; for (let i = 1; i <= 50; i++) t += 500 + 50 * (i - 1); return t; })();
   P.passReward = function (tier) {
-    if (tier === 50) return { bee: 'sunflare', royal: 10 };
-    if (tier === 25) return { skin: 'sunflower', egg: 20 };
-    if (tier % 10 === 0) return { royal: 5, egg: 20 };
+    if (tier === 50) return { mystic: 1, bee: 'sunflare', royal: 10 };
+    if (tier === 25) return { skin: 'sunflower', legend: 1 };
+    if (tier % 10 === 0) return { royal: 5, legend: 1 };
     if (tier % 5 === 0) return { core: 10 };
     if (tier % 4 === 0) return { part: 2, egg: 10 };
     if (tier % 7 === 0) return { boost: 'x2', egg: 15 };
@@ -499,17 +499,19 @@
   };
 
   P.blessCheck = function (s) {
-    if (s.blessOffer) return false;
+    let n = 0;
     for (let i = 0; i < P.BLESS_AT.length; i++) {
       const key = 'h' + i;
-      if (s.runHoney >= P.BLESS_AT[i] && !s.blessDone.includes(key)) {
-        s.blessDone.push(key);
-        P.blessOffer(s);
-        return true;
-      }
+      if (s.runHoney >= P.BLESS_AT[i] && !s.blessDone.includes(key)) { s.blessDone.push(key); n++; }
     }
-    return false;
+    if (!n) return false;
+    if (s.blessOffer) { s.blessMore = (s.blessMore || 0) + n; s.blessTotal = (s.blessTotal || 1) + n; return 'more'; }
+    P.blessOffer(s);
+    s.blessMore = n - 1;
+    s.blessTotal = n;
+    return true;
   };
+  P.blessStep = s => ({ total: Math.max(1, s.blessTotal || 1), step: Math.max(1, (s.blessTotal || 1) - (s.blessMore || 0)) });
   P.blessOffer = function (s) {
     const taken = new Set((s.bless || []).map(b => b.id));
     const picks = [];
@@ -536,6 +538,8 @@
     const e = s.blessOffer[i];
     s.bless.push(e);
     s.blessOffer = null;
+    if ((s.blessMore || 0) > 0) { s.blessMore--; P.blessOffer(s); }
+    else { s.blessMore = 0; s.blessTotal = 0; }
     s._dirty = true;
     return e;
   };
@@ -543,7 +547,9 @@
     s.bless = [];
     s.blessDone = [];
     s.blessOffer = null;
-    if (s.swarms > 0 || s.coronations > 0) P.blessOffer(s);
+    s.blessMore = 0;
+    s.blessTotal = 0;
+    if (s.swarms > 0 || s.coronations > 0) { P.blessOffer(s); s.blessTotal = 1; }
   };
 
   P.strip = function (s) {

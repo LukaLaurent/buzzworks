@@ -294,7 +294,7 @@
     if (!base) return [];
     s.xp += base;
     P.passRoll(s);
-    s.pass.xp = Math.min(P.passTotal, s.pass.xp + base);
+    s.pass.xp += base;
     const ups = [];
     while (s.xp >= P.xpFor(s.level)) {
       s.xp -= P.xpFor(s.level);
@@ -352,12 +352,29 @@
     s.pass.got[tier] = 1;
     return P.grant(s, P.passReward(tier));
   };
+  P.PASS_INF_XP = 2500;
+  P.PASS_INF_REWARD = { egg: 3, boost: 'x2s' };
+  P.passInfEarned = s => Math.max(0, Math.floor((s.pass.xp - P.passTotal) / P.PASS_INF_XP));
+  P.passInfReady = s => Math.max(0, P.passInfEarned(s) - (s.pass.inf || 0));
+  P.passInfIn = s => s.pass.xp < P.passTotal ? 0 : ((s.pass.xp - P.passTotal) % P.PASS_INF_XP) / P.PASS_INF_XP;
+  P.passInfClaim = function (s) {
+    const k = P.passInfReady(s);
+    if (!k) return null;
+    s.pass.inf = (s.pass.inf || 0) + k;
+    const got = P.grant(s, { egg: P.PASS_INF_REWARD.egg * k });
+    for (let i = 0; i < k; i++) E.addBoost(s, P.PASS_INF_REWARD.boost);
+    got.push({ k: 'boost', v: P.PASS_INF_REWARD.boost, n: k });
+    s._dirty = true;
+    return got;
+  };
   P.passClaimAll = function (s) {
     const out = [];
     for (let i = 1; i <= P.passTier(s); i++) { const a = P.passClaim(s, i); if (a) out.push(...a); }
+    const inf = P.passInfClaim(s); if (inf) out.push(...inf);
     return out;
   };
   P.passReady = function (s) {
+    if (P.passInfReady(s)) return true;
     for (let i = 1; i <= P.passTier(s); i++) if (!s.pass.got[i]) return true;
     return false;
   };

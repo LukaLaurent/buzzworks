@@ -20,7 +20,7 @@
     tbee: 'Ticket bee', found_ticket: 'You found an egg ticket', q_ticketbee: 'Catch {n} ticket bees',
     lock_queen: 'The Queen appears when your hive gets close to its first swarm', lock_worlds: 'Worlds open after your first crown', locked_tab: '{p} unlocks at level {n}', unlocked_tab: '{p} unlocked',
     lvl: 'Level {n}', lvl_up: 'Level {n}!', lvl_title: 'Player level', lvl_next: '{v} XP to level {n}', lvl_bonus: '+1% honey per level  ·  now +{v}', lvl_rewards: 'Next rewards', lvl_unlock: 'Unlocks {p}',
-    pass_title: 'Hive pass', pass_season: 'Season {n}', pass_ends: 'Ends in {t}', pass_tier: 'Tier {n} / {m}', pass_claim_all: 'Claim all', pass_how: 'The pass is free. Every action fills it: buying, lucky bees, ticket bees, quests, swarms and hatching.',
+    pass_title: 'Hive pass', pass_season: 'Season {n}', pass_ends: 'Ends in {t}', pass_tier: 'Tier {n} / {m}', pass_claim_all: 'Claim all', pass_inf_ready: 'x{n} ready', pass_inf_d: 'Endless tier, claimed {n} times this week', pass_inf_locked: 'Endless tier, opens after tier {n}', wn_tab: 'What\u2019s new', wn_bar_d: 'See what changed in this update', wn_hide: 'Hide', pass_how: 'The pass is free. Every action fills it: buying, lucky bees, ticket bees, quests, swarms and hatching.',
     hatch: 'Hatchery', hb_std: 'Standard egg', hb_royal: 'Royal egg', featured: 'Featured', featured_d: '{b} rate up  ·  ends in {t}', pull1: 'Hatch 1', pull10: 'Hatch 10', rates: 'Rates', pity_left: 'Legendary guaranteed within {n} hatches', guarantee_on: 'Next legendary is the featured bee', fifty: 'A legendary has a 50% chance to be the featured bee. If not, the next one is.', hatch_results: 'Results', new_tag: 'New', need_tickets: 'Not enough tickets', std_d: 'Hatch a random bee with an egg ticket', ad_tickets: '+2 egg tickets',
     bless_title: 'Choose a blessing', bless_sub: 'It lasts until your next swarm', bless_reroll: 'Reroll', bless_now: 'Blessings this swarm', bless_pending: 'Blessing ready', bless_none: 'Blessings appear at the start of each swarm and at big honey milestones.',
     bl_bloom: 'Blooming fields', bl_quick: 'Quick wings', bl_paws: 'Strong paws', bl_thrift: 'Bargain wax', bl_elixir: 'Long dance', bl_focus: 'Focus', bl_jelly: 'Jelly harvest', bl_rhythm: 'Rhythm', bl_nectar: 'Nectar flow', bl_ticket: 'Ticket wind', bl_crown: 'Crown blessing', bl_golden: 'Golden hour', bl_royal: 'Royal favor',
@@ -56,7 +56,7 @@
     tbee: 'Abeille à ticket', found_ticket: 'Vous trouvez un ticket d\'œuf', q_ticketbee: 'Attrapez {n} abeilles à ticket',
     lock_queen: 'La reine arrive quand la ruche approche de son premier essaim', lock_worlds: 'Les mondes s\'ouvrent après votre première couronne', locked_tab: '{p} se débloque au niveau {n}', unlocked_tab: '{p} débloqué',
     lvl: 'Niveau {n}', lvl_up: 'Niveau {n} !', lvl_title: 'Niveau du joueur', lvl_next: '{v} XP pour le niveau {n}', lvl_bonus: '+1 % de miel par niveau  ·  actuellement +{v}', lvl_rewards: 'Prochaines récompenses', lvl_unlock: 'Débloque {p}',
-    pass_title: 'Pass de la ruche', pass_season: 'Saison {n}', pass_ends: 'Fin dans {t}', pass_tier: 'Palier {n} / {m}', pass_claim_all: 'Tout récupérer', pass_how: 'Le pass est gratuit. Chaque action le remplit : achats, abeilles dorées, abeilles à ticket, quêtes, essaims et éclosions.',
+    pass_title: 'Pass de la ruche', pass_season: 'Saison {n}', pass_ends: 'Fin dans {t}', pass_tier: 'Palier {n} / {m}', pass_claim_all: 'Tout récupérer', pass_inf_ready: 'x{n} prêt', pass_inf_d: 'Palier sans fin, récupéré {n} fois cette semaine', pass_inf_locked: 'Palier sans fin, ouvert après le palier {n}', wn_tab: 'Nouveautés', wn_bar_d: 'Découvrez ce qui a changé', wn_hide: 'Masquer', pass_how: 'Le pass est gratuit. Chaque action le remplit : achats, abeilles dorées, abeilles à ticket, quêtes, essaims et éclosions.',
     hatch: 'Couvoir', hb_std: 'Œuf standard', hb_royal: 'Œuf royal', featured: 'En vedette', featured_d: '{b} en vedette  ·  fin dans {t}', pull1: 'Éclore 1', pull10: 'Éclore 10', rates: 'Taux', pity_left: 'Légendaire garantie d\'ici {n} éclosions', guarantee_on: 'La prochaine légendaire sera l\'abeille en vedette', fifty: 'Une légendaire a 50 % de chances d\'être l\'abeille en vedette. Sinon, la suivante l\'est.', hatch_results: 'Résultats', new_tag: 'Nouveau', need_tickets: 'Pas assez de tickets', std_d: 'Faites éclore une abeille au hasard avec un ticket d\'œuf', ad_tickets: '+2 tickets d\'œuf',
     bless_title: 'Choisissez une bénédiction', bless_sub: 'Elle dure jusqu\'au prochain essaim', bless_reroll: 'Relancer', bless_now: 'Bénédictions de cet essaim', bless_pending: 'Bénédiction prête', bless_none: 'Les bénédictions arrivent au début de chaque essaim et aux grands paliers de miel.',
     bl_bloom: 'Champs en fleurs', bl_quick: 'Ailes rapides', bl_paws: 'Pattes fortes', bl_thrift: 'Cire bon marché', bl_elixir: 'Longue danse', bl_focus: 'Concentration', bl_jelly: 'Récolte de gelée', bl_rhythm: 'Rythme', bl_nectar: 'Flot de nectar', bl_ticket: 'Vent de tickets', bl_crown: 'Bénédiction de la couronne', bl_golden: 'Heure dorée', bl_royal: 'Faveur royale',
@@ -87,7 +87,7 @@
     if (r.royal) return '<span class="rw tk-royal">' + ic('ticket') + 'x' + r.royal + '</span>';
     if (r.core) return '<span class="rw tk-core">' + ic('ticket') + 'x' + r.core + '</span>';
     if (r.part) return '<span class="rw part">' + ic('palette') + 'x' + r.part + '</span>';
-    if (r.boost) return '<span class="rw bst">' + ic('bolt') + 'x2  30 min</span>';
+    if (r.boost) { const bb = BZ.BOOST_BY_ID[r.boost] || { mult: 2, dur: 1800 }; return '<span class="rw bst">' + ic('bolt') + 'x' + (bb.mult || 2) + '  ' + Math.round(bb.dur / 60) + ' min</span>'; }
     if (r.skin) return '<span class="rw rwskin">' + ic('palette') + n(BZ.SKIN_BY_ID[r.skin].name) + '</span>';
     if (r.bee) return '<span class="rw rwbee">' + UI.beeSvg(BZ.BEE_BY_ID[r.bee], 22) + n(BZ.BEE_BY_ID[r.bee].name) + '</span>';
     if (r.warp) return '<span class="rw bst">' + ic('drop') + t('quick_honey') + '</span>';
@@ -169,6 +169,8 @@
       const can = reached && !done;
       h += '<div class="pass-row' + (reached ? ' reached' : '') + '"><span class="tnum">' + i + '</span><div class="pcell' + (done ? ' done' : '') + (can ? ' can' : '') + (i % 10 === 0 ? ' big' : '') + '"' + (can ? ' data-act="passclaim" data-arg="' + i + '"' : '') + '>' + UI.rewardChips(P.passReward(i)) + (done ? ic('check') : '') + '</div></div>';
     }
+    const infR = P.passInfReady(s), infOn = tier >= P.PASS_TIERS;
+    h += '<div class="pass-row pass-inf' + (infOn ? ' reached' : '') + '"><span class="tnum">' + ic('infinite') + '</span><div class="pcell big' + (infR ? ' can' : '') + '"' + (infR ? ' data-act="passinf"' : '') + '><div class="inf-top">' + UI.rewardChips(P.PASS_INF_REWARD) + (infR ? '<b class="inf-n">' + t('pass_inf_ready', { n: infR }) + '</b>' : '') + '</div><small class="inf-d">' + (infOn ? t('pass_inf_d', { n: F.int(s.pass.inf || 0) }) : t('pass_inf_locked', { n: P.PASS_TIERS })) + '</small>' + (infOn ? '<div class="progress"><i style="width:' + (P.passInfIn(s) * 100).toFixed(1) + '%"></i></div>' : '') + '</div></div>';
     h += '</div>';
     return h;
   };
@@ -358,7 +360,7 @@
     if (P.unlocked(s, 'worlds') && P.canOpenWorld(s, s.worldsOpen.length)) out.push({ id: 'world', c: 'p-vip', icon: 'globe', a: t('promo_world'), b: t('promo_world_d'), act: 'go:worlds' });
     return out;
   }
-  UI.promoHtml = () => '<div class="promo" id="promo"></div>';
+  UI.promoHtml = () => UI.wnBarHtml() + '<div class="promo" id="promo"></div>';
   function updatePromo(now) {
     const el = $('promo');
     if (!el) return;
@@ -388,13 +390,11 @@
       const want = !!(BZ.Cloud && BZ.Cloud.configured() && !BZ.Cloud.signedIn());
       if ((cc.style.display !== 'none') !== want) { cc.style.display = want ? '' : 'none'; UI.fitTabs(); }
     }
-    const cn = $('chipNew');
-    if (cn) {
-      const unseen = s.flags.seenVersion !== BZ.VERSION;
-      const want = unseen || Date.now() - (s.flags.newSeenAt || 0) < 3 * 864e5;
-      if ((cn.style.display !== 'none') !== want) { cn.style.display = want ? '' : 'none'; UI.fitTabs(); }
-      cn.classList.toggle('unseen', unseen);
-    }
+    const unseen = s.flags.seenVersion !== BZ.VERSION;
+    const wt = $('wnTab'), wb = $('wnBar'), bar = document.querySelector('.topbar');
+    const desk = innerWidth > 999;
+    if (wt) { const want = unseen && desk; if ((wt.style.display !== 'none') !== want) { wt.style.display = want ? '' : 'none'; UI.fitTabs(); } }
+    if (wb) { const want = unseen && (!desk || (bar && bar.classList.contains('t-menu'))); if ((wb.style.display !== 'none') !== want) wb.style.display = want ? '' : 'none'; }
     const bb = $('blessBtn');
     if (bb) bb.style.display = s.blessOffer ? '' : 'none';
     const ab = $('adBtn');
@@ -419,6 +419,7 @@
     switch (act) {
       case 'passall': G.passAll(); break;
       case 'passclaim': G.passClaim(+arg); break;
+      case 'passinf': G.passInf(); break;
       case 'hatchtab': hatchTab = arg; UI.render(); break;
       case 'pull': { const [bn, c] = arg.split(':'); G.pull(bn, c === 'all' ? 'all' : +c); break; }
       case 'adticket': G.adTickets(); break;
@@ -444,11 +445,21 @@
     const ct = $('chipTickets');
     if (ct) ct.onclick = () => { if (P.unlocked(G.main, 'bees')) UI.show('bees'); };
     const cc = $('chipCloud');
-    const cn = $('chipNew');
-    if (cn) { cn.innerHTML = ic('sparkle') + '<span class="gl">' + t('new_btn') + '</span><i class="gdot"></i>'; cn.title = t('new_btn'); cn.onclick = () => UI.whatsNew(); }
+    if (!UI._wnBound) {
+      UI._wnBound = true;
+      document.addEventListener('click', e => {
+        const el = e.target.closest('[data-wn]');
+        if (!el) return;
+        e.stopPropagation();
+        if (el.dataset.wn === 'open') UI.whatsNew();
+        else { const s = G.main; s.flags.seenVersion = BZ.VERSION; s._dirty = true; G.save(); BZ.Audio.play('click'); UI.extFrame(Date.now()); }
+      });
+    }
     if (cc) { cc.innerHTML = UI.gLogo + '<span class="gl">' + t('cloud_cta') + '</span><i class="gdot"></i>'; cc.title = t('cloud_signin'); cc.onclick = () => UI.cloudInvite(); }
   };
   UI.gLogo = '<svg class="glogo" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+  UI.wnTabHtml = () => '<span class="wn-tab" id="wnTab" style="display:none"><button class="wn-open" data-wn="open" title="' + t('wn_tab') + '">' + ic('sparkle') + '<span class="tl">' + t('wn_tab') + '</span><small>' + BZ.VERSION + '</small></button><button class="wn-x" data-wn="x" title="' + t('wn_hide') + '">' + ic('close') + '</button></span>';
+  UI.wnBarHtml = () => '<div class="wn-bar" id="wnBar" style="display:none"><button class="slide wn-slide" data-wn="open"><span class="spic">' + ic('sparkle') + '</span><span class="stxt"><b>' + t('new_title', { v: BZ.VERSION }) + '</b><small>' + t('wn_bar_d') + '</small></span></button><button class="wn-x" data-wn="x" title="' + t('wn_hide') + '">' + ic('close') + '</button></div>';
   UI.whatsNew = function () {
     const s = G.main;
     const L = BZ.F.lang === 'fr' ? 'fr' : 'en';
@@ -458,7 +469,7 @@
     const old = BZ.CHANGELOG.slice(1);
     if (old.length) h += '<details class="wn-old"><summary>' + t('new_before') + '</summary>' + old.map(c => '<div class="wn-ver"><b>' + t('new_ver', { v: c.v }) + '</b>' + c.items.map(x => '<div class="wn-mini">' + ic(x.icon) + '<span>' + x[L] + '</span></div>').join('') + '</div>').join('') + '</details>';
     h += '<div class="row center"><button class="btn btn-primary btn-lg" data-close>' + ic('play') + t('new_go') + '</button></div></div>';
-    if (s.flags.seenVersion !== BZ.VERSION) { s.flags.seenVersion = BZ.VERSION; s.flags.newSeenAt = Date.now(); s._dirty = true; G.save(); }
+    if (s.flags.seenVersion !== BZ.VERSION) { s.flags.seenVersion = BZ.VERSION; s._dirty = true; G.save(); }
     UI.modal(h, true);
     BZ.Audio.play('luckySpawn');
     UI.extFrame && UI.extFrame(Date.now());

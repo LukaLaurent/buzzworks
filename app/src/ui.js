@@ -115,8 +115,8 @@
   UI.buildChrome = function () {
     const TABS = visibleTabs();
     $('brand').innerHTML = BZ.appIconSvg(28) + '<div><span>Buzz</span><b>works</b></div>';
-    $('tabs').innerHTML = TABS.map(x => '<button data-tab="' + x.id + '" title="' + t('tab_' + x.id) + '" class="' + (x.id === page ? 'on' : '') + '">' + ic(x.icon) + '<span class="tl">' + t('tab_' + x.id) + '</span></button>').join('');
-    $('tabs').querySelectorAll('button').forEach(b => { b.onclick = () => UI.show(b.dataset.tab); });
+    $('tabs').innerHTML = TABS.map(x => '<button data-tab="' + x.id + '" title="' + t('tab_' + x.id) + '" class="' + (x.id === page ? 'on' : '') + '">' + ic(x.icon) + '<span class="tl">' + t('tab_' + x.id) + '</span></button>').join('') + (UI.wnTabHtml ? UI.wnTabHtml() : '');
+    $('tabs').querySelectorAll('button[data-tab]').forEach(b => { b.onclick = () => UI.show(b.dataset.tab); });
     $('drawer').innerHTML = '<div class="who">' + BZ.appIconSvg(36) + '<div><span>Buzz</span><b>works</b></div></div>' +
       TABS.map(x => '<button class="link' + (x.id === page ? ' on' : '') + '" data-tab="' + x.id + '">' + ic(x.icon) + t('tab_' + x.id) + '</button>').join('') +
       '<div class="foot">v' + BZ.VERSION + '</div>';

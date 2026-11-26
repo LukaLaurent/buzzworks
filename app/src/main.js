@@ -52,6 +52,7 @@
   }
   G.passClaim = tier => afterGot(P.passClaim(G.main, tier));
   G.passAll = () => afterGot(P.passClaimAll(G.main));
+  G.passInf = () => afterGot(P.passInfClaim(G.main));
 
   G.pull = function (bn, count) {
     const s = G.main;

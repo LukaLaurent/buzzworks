@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '2.5.0';
+  BZ.VERSION = '2.6.0';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -173,6 +173,7 @@
 
   BZ.BOOSTS = [
     { id: 'x2', mult: 2, dur: 1800, name: { en: 'Double honey', fr: 'Miel double' } },
+    { id: 'x2s', mult: 2, dur: 300, name: { en: 'Double honey', fr: 'Miel double' } },
     { id: 'adx2', mult: 2, dur: 1800, name: { en: 'Double honey', fr: 'Miel double' } },
     { id: 'dance', mult: 2, dur: 1200, name: { en: 'Bee dance', fr: 'Danse des abeilles' } },
     { id: 'luckyswarm', dur: 120, name: { en: 'Lucky swarm', fr: 'Essaim doré' } }
@@ -243,14 +244,13 @@
   BZ.LEAGUE_QUEST_COUNT = 4;
   BZ.LEAGUE_QUEST_GROW = 0.2;
   BZ.CHANGELOG = [
+    { v: '2.6.0', items: [
+      { icon: 'infinite', en: 'The pass now has an endless last tier. Past tier 50, keep filling it for 3 egg tickets and 5 minutes of double honey, again and again.', fr: 'Le pass a maintenant un dernier palier sans fin. Après le palier 50, continuez à le remplir pour 3 tickets d\u2019œuf et 5 minutes de miel double, encore et encore.' },
+      { icon: 'sparkle', en: 'A cleaner What\u2019s new banner that shows up once after each update.', fr: 'Une bannière Nouveautés plus discrète, qui apparaît une fois après chaque mise à jour.' }
+    ] },
     { v: '2.5.0', items: [
       { icon: 'star', en: 'League quests now renew: claim one and a new one appears right away, a little harder each time. Farm league points all week!', fr: 'Les quêtes de ligue se renouvellent : récupérez-en une et une nouvelle apparaît aussitôt, un peu plus dure à chaque fois. Des points de ligue toute la semaine !' },
       { icon: 'crown', en: 'Crowns now carry the name of their world (Meadow crowns, Dune crowns...), so you always know which world they open.', fr: 'Les couronnes portent maintenant le nom de leur monde (couronnes des prés, des dunes...), pour savoir quel monde elles ouvrent.' },
-      { icon: 'crown', en: 'Crowns now carry the name of their world (Meadow crowns, Dune crowns...), so you always know which world they open.', fr: 'Les couronnes portent maintenant le nom de leur monde (couronnes des prés, des dunes...), pour savoir quel monde elles ouvrent.' },
-      { icon: 'crown', en: 'Crowns now carry the name of their world (Meadow crowns, Dune crowns...), so you always know which world they open.', fr: 'Les couronnes portent maintenant le nom de leur monde (couronnes des prés, des dunes...), pour savoir quel monde elles ouvrent.' },
-      { icon: 'crown', en: 'Crowns now carry the name of their world (Meadow crowns, Dune crowns...), so you always know which world they open.', fr: 'Les couronnes portent maintenant le nom de leur monde (couronnes des prés, des dunes...), pour savoir quel monde elles ouvrent.' },
-      { icon: 'crown', en: 'Crowns now carry the name of their world (Meadow crowns, Dune crowns...), so you always know which world they open.', fr: 'Les couronnes portent maintenant le nom de leur monde (couronnes des prés, des dunes...), pour savoir quel monde elles ouvrent.' },
-      { icon: 'sparkle', en: 'This What\u2019s new button, so you never miss an update.', fr: 'Ce bouton Nouveautés, pour ne rater aucune mise à jour.' }
     ] },
     { v: '2.4.0', items: [
       { icon: 'league', en: 'Weekly league quests worth 150 to 400 league points each.', fr: 'Quêtes de ligue de la semaine, de 150 à 400 points de ligue chacune.' },

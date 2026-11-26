@@ -74,7 +74,7 @@
     return true;
   };
   M.questProgress = function (s, id, amount, absolute) {
-    const lists = [s.daily.quests, (s.quick && s.quick.tasks) || []];
+    const lists = [s.daily.quests, (s.quick && s.quick.tasks) || [], M.lqList(s)];
     for (const list of lists) for (const q of list) {
       if (q.id !== id || q.claimed) continue;
       if (absolute) q.prog = Math.max(q.prog, amount);
@@ -88,9 +88,38 @@
     q.claimed = true;
     s.quests = (s.quests || 0) + 1;
     M.addPoints(s, 'quest');
+    M.questProgress(s, 'dquest', 1);
     return BZ.P.grant(s, BZ.QUEST_REWARDS[q.tier] || BZ.QUEST_REWARDS[0]);
   };
 
+  M.lqList = function (s) {
+    const L = s.league;
+    return L && L.gid && L.lq && L.lq.week === L.week ? L.lq.list : [];
+  };
+  M.lqGen = function (s) {
+    const L = s.league;
+    if (!L || !L.gid || (L.lq && L.lq.week === L.week)) return false;
+    const rnd = E.rng(hash('lq:' + L.week + ':' + s.seed));
+    const ok = q => !q.needs || (q.needs === 'swarm' ? s.swarms > 0 || (s.flags && s.flags.queen) : q.needs === 'crown' ? (s.coronations || 0) > 0 || (s.crowns || 0) + (s.crownsSpent || 0) > 0 : !!(s.flags && s.flags.worlds));
+    const pool = BZ.LEAGUE_QUESTS.filter(ok);
+    const list = [];
+    while (list.length < Math.min(BZ.LEAGUE_QUEST_COUNT, pool.length)) {
+      const q = pool[Math.floor(rnd() * pool.length)];
+      if (list.some(x => x.id === q.id)) continue;
+      list.push({ id: q.id, target: q.amount, pts: q.pts, prog: 0, claimed: false });
+    }
+    L.lq = { week: L.week, list };
+    s._dirty = true;
+    return true;
+  };
+  M.claimLQ = function (s, i) {
+    const q = M.lqList(s)[i];
+    if (!q || q.claimed || !M.questDone(q)) return 0;
+    q.claimed = true;
+    M.addPoints(s, 'lq', q.pts);
+    s._dirty = true;
+    return q.pts;
+  };
   M.quickSlot = (now) => Math.floor((now || Date.now()) / (BZ.QUICK_EVERY * 1000));
   M.quickEnd = () => (M.quickSlot() + 1) * BZ.QUICK_EVERY * 1000;
   M.quickGen = function (s) {

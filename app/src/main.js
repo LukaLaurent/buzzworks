@@ -59,6 +59,7 @@
     if (!res) { A.play('error'); UI.toast('ticket', t('need_tickets')); return; }
     count = res.length;
     xp('hatch', count);
+    M.questProgress(s, 'hatch', count);
     UI.showPulls(res, bn);
     UI.render();
     G.save();
@@ -337,6 +338,7 @@
         Scene.pulse(6);
         UI.toast('crown', t('coronate_done', { v: F.int(g) }), { ok: true });
         xp('coronation');
+        M.questProgress(s, 'crown', 1);
         if (s.blessOffer) setTimeout(() => UI.showBless(), 500);
         Log.info('coronation +' + g + ' crowns (total ' + s.crowns + ')');
         UI.structureChanged();
@@ -394,6 +396,17 @@
     if (!got) return;
     if (G.main.daily.streak % 7 === 0) giveBee(2);
     afterGot(got);
+  };
+  G.claimLQ = function (i) {
+    const pts = M.claimLQ(G.main, i);
+    if (!pts) { A.play('error'); return; }
+    A.play('upgrade');
+    Scene.pulse(3);
+    UI.toast('league', t('lq_got', { v: F.int(pts) }), { ok: true });
+    if (BZ.Online && BZ.Cloud && BZ.Cloud.signedIn() && BZ.Online.sync) BZ.Online.sync(G.main).catch(() => {});
+    UI.dirty('league');
+    UI.render();
+    G.save();
   };
   G.claimQuest = function (i) {
     const got = M.claimQuest(G.main, i);
@@ -537,6 +550,7 @@
       A.play('lucky');
       vibrate([10, 30, 10, 30, 10]);
       E.emit(s, 'lucky', { id: 'ruby' });
+      M.questProgress(s, 'ruby', 1);
       const r = P.rubyRoll(s);
       Log.info('ruby roll ' + r.x.id);
       G.save();
@@ -625,6 +639,7 @@
       lastLifetime = life;
       if (M.questGen(s)) UI.dirty('daily');
       if (M.quickGen(s)) UI.dirty('daily');
+      if (M.lqGen(s)) UI.dirty('league');
       const fl = P.flagCheck(s);
       if (fl) { A.play('milestone'); UI.toast('info', t('unlocked_tab', { p: t('tab_' + fl) }), { ok: true, long: true }); UI.buildChrome(); }
       if (s.league.rkPending && !UI.modalOpen()) { const p = s.league.rkPending; s.league.rkPending = null; A.play('achievement'); UI.showRankResult(p); G.save(); }

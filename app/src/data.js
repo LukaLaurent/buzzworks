@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '2.3.0';
+  BZ.VERSION = '2.4.0';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -214,7 +214,7 @@
   ];
 
   BZ.LEAGUE_POINTS = {
-    lucky: 6, ticket: 4, quick: 10, quest: 30, swarm: 60, scout: 3, milestone: 3, upgrade: 1, achievement: 10, power: 8, minute: 1, rush: 20, streak: 10
+    lq: 1, lucky: 6, ticket: 4, quick: 10, quest: 30, swarm: 60, scout: 3, milestone: 3, upgrade: 1, achievement: 10, power: 8, minute: 1, rush: 20, streak: 10
   };
 
   BZ.QUEST_POOL = [
@@ -228,6 +228,19 @@
     { id: 'ticketbee', w: 2, amounts: [1, 2, 3] },
     { id: 'swarm', w: 1, amounts: [1, 1, 1], needsSwarm: true }
   ];
+  BZ.LEAGUE_QUESTS = [
+    { id: 'tap', amount: 4000, pts: 150 },
+    { id: 'lucky', amount: 30, pts: 200 },
+    { id: 'ticketbee', amount: 15, pts: 200 },
+    { id: 'upgrade', amount: 50, pts: 150 },
+    { id: 'milestone', amount: 40, pts: 150 },
+    { id: 'dquest', amount: 9, pts: 250 },
+    { id: 'hatch', amount: 40, pts: 200 },
+    { id: 'swarm', amount: 6, pts: 300, needs: 'swarm' },
+    { id: 'crown', amount: 2, pts: 400, needs: 'crown' },
+    { id: 'ruby', amount: 1, pts: 350, needs: 'worlds' }
+  ];
+  BZ.LEAGUE_QUEST_COUNT = 4;
   BZ.QUEST_REWARDS = [{ egg: 3 }, { egg: 5 }, { core: 2 }];
   BZ.QUICK_POOL = [
     { id: 'tap', amounts: [60, 120] },
@@ -362,27 +375,32 @@
     { id: 'tap', w: 0, icon: 'tap', base: 5, growth: 1.45, max: 12, v: 0.2, req: ['honey', 3] },
     { id: 'start', w: 0, icon: 'worker', base: 6, growth: 2.2, max: 5, v: [10, 25, 50, 100, 200], req: ['honey', 5] },
     { id: 'colony', w: 0, icon: 'hive', base: 40, growth: 2.5, max: 5, v: 0.1, req: ['start', 3] },
+    { id: 'nectar', w: 0, icon: 'drop', base: 250, growth: 1.6, max: 8, v: 0.3, req: ['colony', 3] },
     { id: 'jelly', w: 1, icon: 'jelly', base: 3, growth: 1.45, max: 15, v: 0.15 },
     { id: 'wisdom', w: 1, icon: 'star', base: 10, growth: 1.7, max: 10, v: 0.05, req: ['jelly', 3] },
     { id: 'crown', w: 1, icon: 'crown', base: 60, growth: 3, max: 3, v: 1, req: ['jelly', 6] },
     { id: 'blaze', w: 1, icon: 'sun', base: 15, growth: 1.6, max: 10, v: 0.15, req: ['wisdom', 3] },
+    { id: 'regal', w: 1, icon: 'crown', base: 250, growth: 1.6, max: 8, v: 0.25, req: ['blaze', 3] },
     { id: 'nap', w: 2, icon: 'clock', base: 5, growth: 2.2, max: 6, v: 2 },
     { id: 'tickets', w: 2, icon: 'ticket', base: 8, growth: 1.8, max: 10, v: 0.1, req: ['nap', 2] },
     { id: 'map', w: 2, icon: 'globe', base: 15, growth: 2.2, max: 5, v: 0.05, req: ['nap', 3] },
     { id: 'slot', w: 2, icon: 'palette', base: 25, growth: 4, max: 2, v: 1, req: ['tickets', 5] },
+    { id: 'chill', w: 2, icon: 'snow', base: 250, growth: 1.6, max: 8, v: 0.08, req: ['map', 3] },
     { id: 'lucky', w: 3, icon: 'sparkle', base: 4, growth: 1.7, max: 10, v: 0.05 },
     { id: 'tide', w: 3, icon: 'tap', base: 10, growth: 1.6, max: 10, v: 0.2, req: ['lucky', 3] },
     { id: 'fortune', w: 3, icon: 'fire', base: 20, growth: 1.45, max: 10, v: 0.05, req: ['lucky', 5] },
     { id: 'glow', w: 3, icon: 'moon', base: 15, growth: 1.6, max: 8, v: 0.1, req: ['fortune', 5] },
+    { id: 'ruby', w: 3, icon: 'gem', base: 300, growth: 1.6, max: 8, v: 0.005, req: ['glow', 3] },
     { id: 'forge', w: 4, icon: 'fire', base: 10, growth: 1.6, max: 10, v: 0.25 },
     { id: 'ash', w: 4, icon: 'jelly', base: 15, growth: 1.6, max: 10, v: 0.2, req: ['forge', 3] },
     { id: 'heart', w: 4, icon: 'shop', base: 30, growth: 2, max: 5, v: 0.02, req: ['forge', 5] },
-    { id: 'kiln', w: 4, icon: 'crown', base: 40, growth: 2.2, max: 5, v: 0.1, req: ['ash', 3] }
+    { id: 'kiln', w: 4, icon: 'crown', base: 40, growth: 2.2, max: 5, v: 0.1, req: ['ash', 3] },
+    { id: 'phoenix', w: 4, icon: 'fire', base: 250, growth: 1.6, max: 8, v: 0.3, req: ['kiln', 3] }
   ];
   BZ.ESS_BY_ID = {};
   BZ.ESSENCE_SHOP.forEach(x => { BZ.ESS_BY_ID[x.id] = x; });
   BZ.PRIME_COST = 50000;
-  BZ.RUBY_CHANCE = 0.06;
+  BZ.RUBY_CHANCE = 0.02;
   BZ.RUBY = [
     { id: 'stone', w: 3, v: 1, icon: 'gem', color: '#F0509E' },
     { id: 'core', w: 12, v: 2, icon: 'ticket', color: '#8E6AC8' },

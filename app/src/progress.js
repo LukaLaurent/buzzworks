@@ -79,6 +79,7 @@
   P.treeDone = s => P.treeDoneCount(s) === P.treeCount(s);
   P.primeCost = s => Math.ceil(BZ.PRIME_COST * Math.pow(BZ.PRIME_GROWTH, s.prime || 0));
   P.canPrime = s => P.treeDone(s) && (s.primeStones || 0) >= 1 && s.ess.every(v => v >= P.primeCost(s));
+  P.rubyChance = s => BZ.RUBY_CHANCE + BZ.ESS_BY_ID.ruby.v * P.essLvl(s, 'ruby');
   P.rubyRoll = function (s, r) {
     const rnd = r || Math.random;
     const tot = BZ.RUBY.reduce((a, x) => a + x.w, 0);
@@ -152,7 +153,7 @@
     P.flagCheck(s);
   };
 
-  P.essHoney = s => ['honey', 'blaze', 'glow', 'forge'].reduce((a, id) => a * Math.pow(1 + BZ.ESS_BY_ID[id].v, P.essLvl(s, id)), 1);
+  P.essHoney = s => ['honey', 'blaze', 'glow', 'forge', 'nectar', 'phoenix'].reduce((a, id) => a * Math.pow(1 + BZ.ESS_BY_ID[id].v, P.essLvl(s, id)), 1);
   P.coreSlotCount = s => 2 + ((s.level || 1) >= 20 ? 1 : 0) + P.essLvl(s, 'slot');
   P.ownedSkins = s => BZ.SKINS.filter(x => !x.world && x.id !== 'meadow' && s.skins[x.id]).length;
 
@@ -167,6 +168,8 @@
     m.tap *= Math.pow(1 + BZ.ESS_BY_ID.tap.v, P.essLvl(s, 'tap'));
     m.luckyDur *= 1 + BZ.ESS_BY_ID.fortune.v * P.essLvl(s, 'fortune');
     m.rj *= Math.pow(1 + BZ.ESS_BY_ID.ash.v, P.essLvl(s, 'ash'));
+    m.rj *= Math.pow(1 + BZ.ESS_BY_ID.regal.v, P.essLvl(s, 'regal'));
+    m.luckyDur *= 1 + BZ.ESS_BY_ID.chill.v * P.essLvl(s, 'chill');
     m.tap *= Math.pow(1 + BZ.ESS_BY_ID.tide.v, P.essLvl(s, 'tide'));
     m.cost *= 1 - BZ.ESS_BY_ID.heart.v * P.essLvl(s, 'heart');
     m.honey *= Math.pow(2, s.prime || 0);

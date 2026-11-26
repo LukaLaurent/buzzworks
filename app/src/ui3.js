@@ -5,6 +5,7 @@
   let view = 'league', field = 'honey', loading = '';
 
   BZ.addStrings({
+    lq_title: 'League quests', lq_d: 'Harder quests for the week that give lots of league points.', lq_got: '+{v} league points', lq_tap: 'Tap the comb {n} times', lq_lucky: 'Catch {n} lucky bees', lq_ticketbee: 'Catch {n} ticket bees', lq_upgrade: 'Buy {n} upgrades', lq_milestone: 'Reach {n} milestones', lq_dquest: 'Complete {n} daily quests', lq_hatch: 'Hatch {n} eggs or cores', lq_swarm: 'Start {n} new swarms', lq_crown: 'Get crowned {n} times', lq_ruby: 'Catch {n} red lucky bee',
     lg_note: 'Points count from the moment you join this week’s league, so everyone starts at zero.', lg_title: 'Leagues and rankings', lg_signin_d: 'Sign in with Google to join a weekly league with real players and appear in the rankings. Your save is kept in the cloud too.',
     lg_league: 'League', lg_ranks: 'Rankings', lg_group: '{n} players in your group', lg_loading: 'Loading', lg_err: 'Could not reach the server. Try again later.', lg_retry: 'Retry',
     lg_promo: 'Top {n} move up', lg_demo: 'Bottom {n} move down', lg_how: 'Earn points by catching lucky bees and ticket bees, finishing quests, swarming, reaching milestones, buying upgrades and playing. Every Monday the top quarter of each group moves up a league and the bottom quarter moves down. Rewards: tickets for everyone, royal tickets for the top 3.',
@@ -15,6 +16,7 @@
     lg_wait: 'Waiting for players', lg_wait_d: 'The league starts when {m} players are in your group. {n} / {m} so far. Your points already count.', lg_cta_1: 'Weekly groups of 20 players', lg_cta_2: 'Move up from Bronze to Royal', lg_cta_3: 'Tickets every week',
     rk_rewards: 'Weekly ranking rewards', rk_rewards_d: 'Given at the start of each week for your best rank in any ranking, once at least {m} players are ranked.', rk_top: 'Top {n}', rk_first: '1st', rk_all: 'Everyone else', rk_result: 'Ranking rewards: rank {n}', rk_result_d: 'Your best rank last week was in {f}.', ad_unavailable: 'No ad available right now. Try again in a moment.'
   }, {
+    lq_title: 'Quêtes de ligue', lq_d: 'Des quêtes plus dures pour la semaine, qui rapportent beaucoup de points de ligue.', lq_got: '+{v} points de ligue', lq_tap: 'Touchez le rayon {n} fois', lq_lucky: 'Attrapez {n} abeilles dorées', lq_ticketbee: 'Attrapez {n} abeilles à ticket', lq_upgrade: 'Achetez {n} améliorations', lq_milestone: 'Atteignez {n} paliers', lq_dquest: 'Terminez {n} quêtes du jour', lq_hatch: 'Faites éclore {n} œufs ou noyaux', lq_swarm: 'Lancez {n} nouveaux essaims', lq_crown: 'Soyez couronné {n} fois', lq_ruby: 'Attrapez {n} abeille dorée rouge',
     lg_note: 'Les points comptent à partir du moment où vous rejoignez la ligue de la semaine : tout le monde part de zéro.', lg_title: 'Ligues et classements', lg_signin_d: 'Connectez-vous avec Google pour rejoindre une ligue hebdomadaire avec de vrais joueurs et apparaître dans les classements. Votre sauvegarde est aussi gardée en ligne.',
     lg_league: 'Ligue', lg_ranks: 'Classements', lg_group: '{n} joueurs dans votre groupe', lg_loading: 'Chargement', lg_err: 'Serveur injoignable. Réessayez plus tard.', lg_retry: 'Réessayer',
     lg_promo: 'Les {n} premiers montent', lg_demo: 'Les {n} derniers descendent', lg_how: 'Gagnez des points en attrapant des abeilles dorées et des abeilles à ticket, en finissant des quêtes, en essaimant, en atteignant des paliers, en achetant des améliorations et en jouant. Chaque lundi, le premier quart de chaque groupe monte d\'une ligue et le dernier quart descend. Récompenses : des tickets pour tous, des tickets royaux pour le podium.',
@@ -49,6 +51,17 @@
     const me = waiting ? null : list.find(e => e.you);
     let h = '<div class="card"><div class="league-head"><div class="tier-badge" style="background:' + tier.color + '">' + ic('league') + '</div><div><b>' + t('league') + ' ' + n(tier.name) + '</b><small class="num">' + (me ? t('league_rank', { n: me.rank }) + '  ·  ' : '') + t('league_points', { v: F.int(L.points) }) + '  ·  <span data-t="' + M.weekEnd().getTime() + '" data-tfmt="league_ends"></span></small></div></div>';
     h += '<div class="tiers">' + BZ.LEAGUE_TIERS.map((x, i) => '<i class="' + (i <= (L.tier || 0) ? 'on' : '') + '" style="background:' + x.color + '" title="' + esc(n(x.name)) + '"></i>').join('') + '</div><p class="muted lg-note">' + t('lg_note') + '</p></div>';
+    M.lqGen(s);
+    const lq = M.lqList(s);
+    if (lq.length) {
+      h += '<div class="card lq-card"><div class="sec-title"><h3>' + ic('star') + t('lq_title') + '</h3><small data-t="' + M.weekEnd().getTime() + '" data-tfmt="league_ends"></small></div><p class="muted lq-d">' + t('lq_d') + '</p>';
+      lq.forEach((q, i) => {
+        const done = M.questDone(q);
+        const pts = '<span class="lq-pts">' + ic('league') + '+' + F.int(q.pts) + '</span>';
+        h += '<div class="quest"><div class="txt"><b>' + t('lq_' + q.id, { n: F.int(q.target) }) + '</b><div class="progress"><i style="width:' + (Math.min(1, q.prog / q.target) * 100).toFixed(1) + '%"></i></div><small class="num">' + F.int(Math.min(q.prog, q.target)) + ' / ' + F.int(q.target) + '</small></div>' + (q.claimed ? '<span class="badge b-success">' + t('claimed') + '</span>' : done ? '<button class="btn btn-primary btn-sm" data-act="lqclaim" data-arg="' + i + '">' + pts + '</button>' : '<span class="reward">' + pts + '</span>') + '</div>';
+      });
+      h += '</div>';
+    }
     h += '<div class="card" style="padding:var(--sp-3)">';
     if (!list.length) h += '<div class="empty-line">' + (O.error ? t('lg_err') + ' <button class="btn btn-outline btn-sm" data-act="lgretry">' + t('lg_retry') + '</button>' : t('lg_loading')) + '</div>';
     else if (waiting) {
@@ -101,6 +114,7 @@
   const prevAct = UI.extAct;
   UI.extAct = function (act, arg, el) {
     if (act === 'lgview') { view = arg; UI.render(); return; }
+    if (act === 'lqclaim') { BZ.Game.claimLQ(+arg); return; }
     if (act === 'rkfield') { field = arg; UI.render(); return; }
     if (act === 'lgretry') { O.error = ''; O.group = null; O.boards = {}; UI.render(); return; }
     prevAct(act, arg, el);

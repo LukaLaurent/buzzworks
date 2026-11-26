@@ -41,9 +41,9 @@ With the local server, saves go to `data/save.json` and `data/settings.json`, wi
 | Moon garden | 200 crowns of the Glacier hive | lucky bees x2.2, weak taps |
 | Ember peaks | 250 crowns of the Moon garden | double royal jelly, steeper prices |
 
-- **Essence trees**: each world has its own essence (Bloom, Sun, Frost, Moon, Ember). Sell an open world with 5 crowns or more earned in it to restart it for that world's essence, then spend it in that world's tree (button on the world map). Every tree has 4 upgrades with a level cap, so finishing them all means playing and selling every world.
+- **Essence trees**: each world has its own essence (Bloom, Sun, Frost, Moon, Ember). Sell an open world with 5 crowns or more earned in it to restart it for that world's essence, then spend it in that world's tree (button on the world map). Every tree has 5 upgrades with a level cap (the fifth is a costly late node: Royal nectar, Regal bloodline, Frozen time, Ruby lure, Phoenix wings), so finishing them all means playing and selling every world.
 - **Prime**: once all five trees are complete, spend 50 K of every essence (doubles each time) and one Prime stone to gain a Prime point. Honey x2 per point, stacking. Worlds, crowns, essence and trees restart from one fresh world; bees, cores, skins, tickets, level and pass stay.
-- **Red lucky bees**: once worlds are open, 6% of lucky bees are red. Catching one spins a reel: Prime stone 3%, 6 egg tickets 30%, 150 essence of the current world 25%, 3 royal tickets 15%, a skin part 15%, 2 core tickets 12%.
+- **Red lucky bees**: once worlds are open, 2% of lucky bees are red, up to 6% with the Ruby lure upgrade in the Moon tree. Catching one spins a reel: Prime stone 3%, 6 egg tickets 30%, 150 essence of the current world 25%, 3 royal tickets 15%, a skin part 15%, 2 core tickets 12%.
 - **Mythic**: a fifth rarity above legendary. 3 mythic bees and 2 mythic cores, at 0.04% (standard egg), 0.2% (royal egg) and 0.1% (core summoning) per hatch, outside the pity system.
 - **Stats tab**: every multiplier (honey, taps, lucky bees, royal jelly, prices, away time) broken down by source, plus general stats.
 - **Ads**: optional rewarded ads for x2 honey for 30 min (6 a day), 2 egg tickets (3 a day), away earnings x2 (3 a day) and blessing rerolls (3 a day). The free Bee dance gives x2 for 20 min every 4 h.
@@ -63,6 +63,8 @@ Sign in with Google, cloud saves, weekly leagues with real players and rankings 
 6. Publish the game again.
 
 What is stored: `saves/{uid}` (the player's save, private), `players/{uid}` (public name, level and ranking stats), `groups/{week_tier_n}` (league groups of up to 20 players with their weekly points). The game syncs every 3 minutes while signed in.
+
+League quests: once in a group, each player gets 4 harder quests for the week (for example catch 15 ticket bees, hatch 40 eggs, get crowned twice, catch a red lucky bee) worth 150 to 400 league points each.
 
 Leagues: points only count once the player has joined this week's group, so nobody starts ahead. Points come from lucky bees, ticket bees, quests, quick tasks, swarms, milestones, upgrades, trophies and play time. Each week (Monday to Monday, local time) players join a group of up to 20 in their tier. When a new week starts, the top quarter moves up a tier and the bottom quarter moves down (groups of 4 or more). Rewards: egg tickets for everyone, royal tickets for the top 3, a core ticket on promotion. Rankings show the top 50 for honey made (all worlds), crowns, essence, bee species, level and trophies.
 

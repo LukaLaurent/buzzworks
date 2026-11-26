@@ -528,7 +528,7 @@
         s.luckyT -= dt;
         if (s.luckyT <= 0) {
           const life = s.boosts.some(b => b.id === 'luckyswarm') ? 7 : 12;
-          s.luckyOn = { t: life, max: life, red: !!(s.flags && s.flags.worlds) && (opts.rng || Math.random)() < BZ.RUBY_CHANCE };
+          s.luckyOn = { t: life, max: life, red: !!(s.flags && s.flags.worlds) && (opts.rng || Math.random)() < (BZ.P && BZ.P.rubyChance ? BZ.P.rubyChance(s) : BZ.RUBY_CHANCE) };
           s.luckyT = E.luckyInterval(s, opts.rng);
           E.emit(s, 'luckySpawn', s.luckyOn);
         }

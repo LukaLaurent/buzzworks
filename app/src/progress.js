@@ -86,7 +86,7 @@
     s._dirty = true;
     return true;
   };
-  P.crownName = (i, cap) => { const g = BZ.Game && BZ.Game.main; const w = (g && g.battle && i === g.world && BZ.BATTLE_WORLD) || BZ.WORLDS[i] || BZ.WORLDS[0]; const v = BZ.n(w.crown); return !cap && BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
+  P.crownName = (i, cap) => { const g = BZ.Game && BZ.Game.main; const w = (g && g.battle && i === g.world && BZ.E.world(g)) || BZ.WORLDS[i] || BZ.WORLDS[0]; const v = BZ.n(w.crown); return !cap && BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
   P.essName = i => { const v = BZ.n(BZ.ESSENCES[i].name); return BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
   P.applyGift = function (s, d) {
     const add = (v, x) => Math.max(0, (v || 0) + x);

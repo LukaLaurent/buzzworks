@@ -437,7 +437,7 @@
       h += settingSwitch('auto_upg', '', s.auto.upg, 'auto:upg');
       if (mind >= 2) {
         h += settingSwitch('auto_prod', '', s.auto.prod, 'auto:prod');
-        h += '<div class="setting"><div><b>' + t('auto_mode') + '</b><small>' + t('auto_mode_d') + '</small></div><div class="seg seg-wrap">' + ['best', 1, 10, 100, 'next', 'max'].map(v => '<button data-act="prodmode" data-arg="' + v + '" class="' + (String(s.auto.prodMode || 'best') === String(v) ? 'on' : '') + '">' + (v === 'best' ? t('auto_best') : v === 'next' ? t('next') : v === 'max' ? t('max') : 'x' + v) + '</button>').join('') + '</div></div>';
+        h += '<div class="setting setting-stack"><div><b>' + t('auto_mode') + '</b><small>' + t('auto_mode_d') + '</small></div><div class="seg seg-wrap seg-fill">' + ['best', 1, 10, 100, 'next', 'max'].map(v => '<button data-act="prodmode" data-arg="' + v + '" class="' + (String(s.auto.prodMode || 'best') === String(v) ? 'on' : '') + '">' + (v === 'best' ? t('auto_best') : v === 'next' ? t('next') : v === 'max' ? t('max') : 'x' + v) + '</button>').join('') + '</div></div>';
       }
       if (mind >= 3) {
         h += settingSwitch('auto_swarm', t('auto_swarm_at', { v: 'x' + s.auto.swarmAt }), s.auto.swarm, 'auto:swarm');

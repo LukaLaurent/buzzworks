@@ -52,6 +52,18 @@
   function demonCard() {
     return '<div class="wm-hd"><span class="wm-sw wm-sw-demon"><i></i></span><div><h3>' + esc(t('wm_demon')) + '</h3><div class="wm-tw2">' + esc(t('wm_demon_sub')) + '</div></div><button class="wm-x" data-wm="close">' + ic('close') + '</button></div><p class="wm-line wm-demon-d">' + esc(t('wm_demon_d')) + '</p><div class="wm-acts"><button class="btn btn-primary off">' + ic('lock') + esc(t('wm_soon')) + '</button></div>';
   }
+  function pirateSelect() {
+    if (busy) return;
+    sel = null;
+    ov.querySelectorAll('.wm-isle').forEach(g => { g.classList.remove('sel'); g.classList.add('dim'); });
+    const dm = ov.querySelector('.wm-demon');
+    if (dm) dm.classList.add('dim');
+    ov.querySelector('.wm-hint').style.opacity = 0;
+    const card = ov.querySelector('.wm-card');
+    card.innerHTML = BZ.Pirate.cardHtml();
+    card.classList.add('on');
+    BZ.Audio.play('luckySpawn');
+  }
   function demonSelect() {
     if (busy) return;
     sel = null;
@@ -103,7 +115,7 @@
     return d;
   }
 
-  function stateKey(s) { return [s.world, s.worldsOpen.join(','), BZ.WORLDS.map((w, i) => P.worldCrowns(s, i)).join(','), BZ.lang, innerHeight > innerWidth * 1.1].join('|'); }
+  function stateKey(s) { return [BZ.Pirate && BZ.Pirate.active() ? 'pi' : '', s.world, s.worldsOpen.join(','), BZ.WORLDS.map((w, i) => P.worldCrowns(s, i)).join(','), BZ.lang, innerHeight > innerWidth * 1.1].join('|'); }
 
   function build() {
     const s = BZ.Game.main;
@@ -133,6 +145,7 @@
       const lw = Math.max(label.length * 13, sub.length * 9) + 44;
       h += '<g class="wm-flag" transform="translate(0 150)' + (tall ? ' scale(1.35)' : '') + '"><rect x="' + (-lw / 2) + '" y="0" width="' + lw + '" height="64" rx="18"/><text text-anchor="middle" y="28">' + esc(label) + '</text><text class="sub" text-anchor="middle" y="50">' + esc(sub) + '</text></g></g>';
     });
+    if (BZ.Pirate) h += BZ.Pirate.mapHtml(tall ? 610 : 640, tall ? 1480 : 930, tall ? 0.9 : 0.85);
     const last = BZ.WORLDS[BZ.WORLDS.length - 1];
     h += '<path class="wm-route wm-route-demon" d="M' + X(last) + ',' + Y(last) + ' Q' + ((X(last) + DX()) / 2 + 60) + ',' + ((Y(last) + DY()) / 2 + 40) + ' ' + DX() + ',' + DY() + '"/>' + demonHtml();
     h += '<g id="wmBee" style="display:none"><ellipse cx="-6" cy="-12" rx="9" ry="13" fill="#F5F3EF" opacity="0.9"/><ellipse cx="6" cy="-12" rx="8" ry="12" fill="#F5F3EF" opacity="0.9"/><ellipse cx="0" cy="0" rx="20" ry="14" fill="#F2C14E"/><rect x="-8" y="-14" width="5" height="28" fill="#20252B"/><rect x="3" y="-14" width="5" height="28" fill="#20252B"/><circle cx="20" cy="-2" r="9" fill="#20252B"/></g>';
@@ -142,6 +155,8 @@
     svg.querySelectorAll('.wm-isle').forEach(g => g.addEventListener('click', e => { e.stopPropagation(); select(+g.dataset.i); }));
     const dm = svg.querySelector('.wm-demon');
     if (dm) dm.addEventListener('click', e => { e.stopPropagation(); demonSelect(); });
+    const ps = svg.querySelector('.wm-pirate');
+    if (ps) ps.addEventListener('click', e => { e.stopPropagation(); pirateSelect(); });
     key = stateKey(s);
     camTo(sel, sel === null ? 1 : 1.45, true);
     chip();

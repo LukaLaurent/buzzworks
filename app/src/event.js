@@ -151,6 +151,7 @@
   Ev.persist = function () {
     const g = G();
     if (!g.battle) return;
+    if (g.battle.pirate) { if (BZ.Pirate) BZ.Pirate.persist(); return; }
     try { localStorage.setItem(KEY, JSON.stringify({ info: { day: g.battle.day, end: g.battle.end }, state: BZ.Store.serialize(g.main) })); } catch (e) {}
   };
   function record(s, day, sc) {
@@ -166,7 +167,7 @@
   Ev.leave = function () {
     const g = G();
     const b = g.battle;
-    if (!b) return;
+    if (!b || b.pirate) return;
     const sc = Ev.score(g.main);
     g.main = b.real;
     g.battle = null;
@@ -307,6 +308,7 @@
   setInterval(() => {
     const g = G();
     if (!g || !g.main) return;
+    if (g.battle && g.battle.pirate) { bubble(); return; }
     if (g.battle) {
       if (now() >= g.battle.end) { Ev.leave(); return; }
       if (now() - Ev.lastPush > PUSH_MS) { Ev.lastPush = now(); const sc = Ev.score(g.main); record(g.battle.real, g.battle.day, sc); push(g.battle.day, Ev.state(g.battle.real).best, g.battle.real); }

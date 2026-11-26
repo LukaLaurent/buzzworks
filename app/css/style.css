@@ -1254,3 +1254,32 @@ button.bee.core-card:hover { transform: translateY(-2px); }
 .ab-made .txt { flex: 1; min-width: 0; }
 .ab-made .ab-visit { margin-left: auto; flex-shrink: 0; text-decoration: none; }
 @media (max-width: 480px) { .ab-made { flex-wrap: wrap; } .ab-made .ab-visit { margin-left: 0; width: 100%; justify-content: center; } }
+.setting.setting-stack { flex-direction: column; align-items: stretch; gap: var(--sp-3); }
+.setting.setting-stack small { display: block; line-height: 1.5; margin-top: 2px; }
+.seg.seg-fill { display: flex; width: 100%; }
+.seg.seg-fill button { flex: 1; }
+.wm-pirate { cursor: pointer; }
+.wm-pirate .pi-sailing { animation: pisail 26s ease-in-out infinite alternate; }
+.wm-pirate .pi-rock { transform-box: fill-box; transform-origin: 50% 90%; animation: pirock 2.6s ease-in-out infinite alternate; }
+.wm-pirate .pi-wave, .pi-ship-svg .pi-wave { animation: piwave 1.6s linear infinite; }
+.pi-flag { transform-box: fill-box; transform-origin: 0 50%; animation: piflag 0.9s ease-in-out infinite alternate; }
+.wm-pirate:hover .pi-rock { filter: drop-shadow(0 0 14px rgba(255, 212, 94, 0.8)); }
+@keyframes pisail { from { transform: translateX(-140px); } to { transform: translateX(140px); } }
+@keyframes pirock { from { transform: rotate(-4deg) translateY(-2px); } to { transform: rotate(4deg) translateY(3px); } }
+@keyframes piwave { from { transform: translateX(0); } to { transform: translateX(-40px); } }
+@keyframes piflag { from { transform: scaleX(0.75); } to { transform: scaleX(1.1); } }
+.pi-ship-svg { overflow: visible; }
+.pi-ship-svg .pi-rock { transform-box: fill-box; transform-origin: 50% 90%; animation: pirock 2.6s ease-in-out infinite alternate; }
+.pi-sw { background: linear-gradient(180deg, #7FB8D0, #2E6F86) !important; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.pi-d { line-height: 1.55; }
+.pi-tiers { display: flex; flex-direction: column; gap: 6px; margin: var(--sp-2) 0 var(--sp-3); }
+.pi-tiers > div { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); flex-wrap: wrap; padding: 6px 10px; border-radius: 10px; background: var(--surface-2); }
+.pi-tiers small { font-size: var(--fs-xs); color: var(--text-muted); font-weight: 600; }
+.pi-tiers span { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.rw.rwstone .ic { color: #F0509E; }
+.pi-bar { background: linear-gradient(135deg, #12303A, #2E6F86); }
+.pi-bar .ev-hp i { background: linear-gradient(90deg, #E0A526, #FFD45E); }
+.pi-bar-pic { width: 48px; height: 40px; }
+.pi-pop { margin-bottom: 0; }
+.pi-big .pi-pop { filter: drop-shadow(0 0 18px rgba(255, 212, 94, 0.7)); }
+@media (prefers-reduced-motion: reduce) { .wm-pirate .pi-sailing, .pi-rock, .pi-wave, .pi-flag { animation: none !important; } }

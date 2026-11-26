@@ -40,7 +40,7 @@
     return s;
   };
 
-  E.world = s => (s.battle && BZ.BATTLE_WORLD) || BZ.WORLDS[s.world || 0] || BZ.WORLDS[0];
+  E.world = s => (s.battle && (s.battle === 2 && BZ.PIRATE_WORLD ? BZ.PIRATE_WORLD : BZ.BATTLE_WORLD)) || BZ.WORLDS[s.world || 0] || BZ.WORLDS[0];
   E.growth = s => E.world(s).mods.growth || BZ.COST_GROWTH;
   E.qlvl = (s, id) => (s.queen && s.queen[id]) || 0;
 
@@ -615,7 +615,6 @@
   E.runProgress = (s, a) => E.RUN_TESTS[a.test](s);
   E.checkAchievements = function (s) {
     const got = [];
-    if (s.battle) return got;
     if (s.battle) return got;
     for (const a of BZ.ACHIEVEMENTS) {
       if (s.ach[a.id]) continue;

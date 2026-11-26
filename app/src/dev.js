@@ -77,7 +77,7 @@
     h += '<div class="dev-card"><h5>' + ic('globe') + 'Worlds and collection</h5>' + opForm('devM', D.op, 'op') + '<small class="dev-hint">Closing the world you are in sends you back to the first world. The first world cannot be closed.</small></div>';
     const quick = [
       ['lucky', 'sparkle', 'Spawn lucky bee'], ['red', 'gem', 'Spawn red lucky bee'], ['ticketbee', 'ticket', 'Spawn ticket bee'],
-      ['bless', 'star', 'Blessing offer'], ['boost', 'bolt', 'x2 honey 30 min'], ['boosts', 'bolt', 'Every new boost'], ['gift', 'gift', 'Show daily gift again'], ['boss', 'boss', 'Allow another boss fight'], ['skip', 'clock', 'Skip 1 hour'],
+      ['bless', 'star', 'Blessing offer'], ['boost', 'bolt', 'x2 honey 30 min'], ['boosts', 'bolt', 'Every new boost'], ['gift', 'gift', 'Show daily gift again'], ['boss', 'boss', 'Allow another boss fight'], ['pirate', 'globe', 'Summon the pirate ship'], ['skip', 'clock', 'Skip 1 hour'],
       ['trees', 'globe', 'Max essence trees'], ['notrees', 'trash', 'Reset essence trees'], ['worlds', 'globe', 'Open every world'],
       ['bees', 'worker', 'One of every bee'], ['cores', 'hive', 'One of every core'], ['wheel', 'gem', 'Test red wheel (visual)'],
       ['jackpot', 'prime', 'Test jackpot (visual)'], ['wn', 'sparkle', 'Show What’s new'], ['wnreset', 'sparkle', 'Show What’s new banner again']
@@ -219,6 +219,7 @@
       case 'boosts': ['x4', 'xp2', 'luck', 'lg2', 'stone'].forEach(id => E.addBoost(s, id)); return done('Every new boost added');
       case 'gift': delete s.flags.loginDay; delete s.flags.loginOffer; UI.closeModal(); setTimeout(() => BZ.Welcome && BZ.Welcome.check(), 300); return;
       case 'boss': if (s.event) s.event.done = 0; return done('You can fight the boss again today');
+      case 'pirate': if (BZ.Pirate) BZ.Pirate.force = { w: -Date.now(), start: Date.now(), end: Date.now() + 10 * 60000 }; return done('Pirate ship anchored for 10 minutes. Open the world map.');
       case 'skip': E.offline(s, 3600); s.lastSave = Date.now(); return done('Skipped 1 hour');
       case 'trees': BZ.ESSENCE_SHOP.forEach(x => { s.essShop[x.id] = x.max; }); return done('Every essence tree maxed');
       case 'notrees': s.essShop = {}; return done('Essence trees reset');

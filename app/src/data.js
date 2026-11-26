@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '3.3.0';
+  BZ.VERSION = '3.4.0';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -177,6 +177,7 @@
     { id: 'adx2', mult: 2, dur: 1800, name: { en: 'Double honey', fr: 'Miel double' } },
     { id: 'dance', mult: 2, dur: 1200, name: { en: 'Bee dance', fr: 'Danse des abeilles' } },
     { id: 'luckyswarm', dur: 120, name: { en: 'Lucky swarm', fr: 'Essaim doré' } },
+    { id: 'x10', mult: 10, dur: 600, icon: 'bolt', name: { en: 'Pirate fury', fr: 'Furie pirate' } },
     { id: 'x4', mult: 4, dur: 900, icon: 'bolt', name: { en: 'Quadruple honey', fr: 'Miel quadruple' } },
     { id: 'xp2', kind: 'xp', v: 2, dur: 1800, icon: 'star', name: { en: 'Double XP', fr: 'XP double' } },
     { id: 'luck', kind: 'hatch', v: 2, dur: 1800, icon: 'gift', name: { en: 'Lucky hatch', fr: 'Éclosion chanceuse' } },
@@ -249,6 +250,10 @@
   BZ.LEAGUE_QUEST_COUNT = 4;
   BZ.LEAGUE_QUEST_GROW = 0.2;
   BZ.CHANGELOG = [
+    { v: '3.4.0', items: [
+      { icon: 'globe', en: 'Strange sails have been seen near your worlds... Keep an eye on the sea in the world map.', fr: 'D’étranges voiles ont été aperçues près de vos mondes... Surveillez la mer sur la carte du monde.' },
+      { icon: 'settings', en: 'The automation settings are easier to read.', fr: 'Les réglages d’automatisation sont plus lisibles.' }
+    ] },
     { v: '3.3.0', items: [
       { icon: 'hive', en: 'Cleaner menu: Bees and Cores are now in Collection, Daily, Pass and Boss in Activities, Trophies and Stats in Profile.', fr: 'Menu plus clair : Abeilles et Noyaux sont dans Collection, Jour, Pass et Boss dans Activités, Trophées et Stats dans Profil.' },
       { icon: 'gift', en: 'The weekly pass now gives legendary eggs on big levels and a mystic egg at level 50.', fr: 'Le pass de la semaine donne maintenant des œufs légendaires aux grands paliers et un œuf mystique au palier 50.' },
@@ -469,6 +474,7 @@
   ];
   BZ.BATTLE_WORLD = { id: 'arena', theme: 'w_ember', cost: 0, mods: { honey: 40, growth: 1.12 }, hard: { rj: 4, crown: 0.0001 }, name: { en: 'Boss arena', fr: 'Arène du boss' }, crown: { en: 'Arena crowns', fr: 'Couronnes d’arène' } };
   BZ.EVENT_MIN = 10;
+  BZ.PIRATE_WORLD = { id: 'cove', theme: 'w_dunes', cost: 0, mods: { honey: 40, growth: 1.12 }, hard: { rj: 4, crown: 0.0001 }, name: { en: 'Pirate ship', fr: 'Bateau pirate' }, crown: { en: 'Pirate crowns', fr: 'Couronnes pirates' } };
   BZ.ESSENCES = [
     { color: '#E86FA8', icon: 'flower', name: { en: 'Bloom essence', fr: 'Essence florale' } },
     { color: '#F2B233', icon: 'sun', name: { en: 'Sun essence', fr: 'Essence solaire' } },

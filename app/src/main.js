@@ -759,6 +759,7 @@
       lastFrame = performance.now();
       requestAnimationFrame(loop);
       if (BZ.Event) BZ.Event.init();
+      if (BZ.Pirate) BZ.Pirate.init();
       G.save();
       if (BZ.Platform && BZ.Platform.loaded) BZ.Platform.loaded();
       UI.splashReady(() => {

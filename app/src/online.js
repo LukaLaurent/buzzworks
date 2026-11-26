@@ -134,7 +134,7 @@
       if (BZ.Log) BZ.Log.info('gift applied ' + JSON.stringify(g).slice(0, 200));
     }
     if (n && BZ.Game) {
-      if (s !== start) { BZ.Game.main = s; if (BZ.Game.refreshScene) BZ.Game.refreshScene(); }
+      if (s !== start) { if (BZ.Game.battle) BZ.Game.battle.real = s; else { BZ.Game.main = s; if (BZ.Game.refreshScene) BZ.Game.refreshScene(); } }
       E.recalc(s);
       if (BZ.UI) { BZ.UI.structureChanged(); BZ.UI.render(); }
       BZ.Game.save();

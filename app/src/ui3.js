@@ -45,7 +45,7 @@
   function leagueView(s) {
     const L = s.league;
     const tier = BZ.LEAGUE_TIERS[L.tier || 0];
-    if ((!O.group || Date.now() - O.groupAt > 30000) && !loading) refresh('group', () => O.sync(s));
+    if ((!O.group || Date.now() - O.groupAt > 30000) && !loading) refresh('group', () => O.sync(BZ.Game.realMain()));
     const list = O.standings(O.group);
     const waiting = list.length > 0 && list.length < O.MIN;
     const me = waiting ? null : list.find(e => e.you);
@@ -107,14 +107,15 @@
       return h;
     }
     if (O.banned) return h + '<div class="card lg-cta"><div class="lg-cta-pic">' + ic('lock') + '</div><p>' + t('lg_banned') + '</p></div>';
-    h += '<div class="seg lg-seg"><button data-act="lgview" data-arg="league" class="' + (view === 'league' ? 'on' : '') + '">' + t('lg_league') + '</button><button data-act="lgview" data-arg="ranks" class="' + (view === 'ranks' ? 'on' : '') + '">' + t('lg_ranks') + '</button></div><div style="height:var(--sp-4)"></div>';
-    h += view === 'league' ? leagueView(s) : ranksView(s);
+    h += '<div class="seg lg-seg"><button data-act="lgview" data-arg="league" class="' + (view === 'league' ? 'on' : '') + '">' + t('lg_league') + '</button><button data-act="lgview" data-arg="ranks" class="' + (view === 'ranks' ? 'on' : '') + '">' + t('lg_ranks') + '</button><button data-act="lgview" data-arg="battle" class="' + (view === 'battle' ? 'on' : '') + '">' + t('bt_seg') + (BZ.Battle && BZ.Battle.pendingInvites().length ? ' <i class="seg-dot"></i>' : '') + '</button></div><div style="height:var(--sp-4)"></div>';
+    h += view === 'league' ? leagueView(s) : view === 'battle' && BZ.Battle ? BZ.Battle.view(BZ.Game.realMain()) : ranksView(s);
     return h;
   };
 
+  UI.leagueView = v => { view = v; UI.dirty('league'); UI.render(); };
   const prevAct = UI.extAct;
   UI.extAct = function (act, arg, el) {
-    if (act === 'lgview') { view = arg; UI.render(); return; }
+    if (act === 'lgview') { view = arg; UI.dirty('league'); UI.render(); return; }
     if (act === 'lqclaim') { BZ.Game.claimLQ(+arg); return; }
     if (act === 'rkfield') { field = arg; UI.render(); return; }
     if (act === 'lgretry') { O.error = ''; O.group = null; O.boards = {}; UI.render(); return; }

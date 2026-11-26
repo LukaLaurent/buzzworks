@@ -13,7 +13,7 @@
   BZ.BEES.sort((a, b) => a.r - b.r);
   BZ.BEES.forEach(b => { BZ.BEE_BY_ID[b.id] = b; });
 
-  P.SHARED = ['tickets', 'pity', 'bees', 'cores', 'coreSlots', 'parts', 'skins', 'skin', 'xp', 'level', 'pass', 'daily', 'quick', 'ads', 'ess', 'prime', 'primeStones', 'rubies', 'essenceTotal', 'essShop', 'worldsOpen', 'otherWorlds', 'flags', 'seed', 'playerName', 'league', 'quests', 'ticketBees', 'created', 'danceReady', 'cloud'];
+  P.SHARED = ['tickets', 'pity', 'bees', 'cores', 'coreSlots', 'parts', 'skins', 'skin', 'xp', 'level', 'pass', 'daily', 'quick', 'ads', 'ess', 'prime', 'primeStones', 'rubies', 'essenceTotal', 'essShop', 'worldsOpen', 'otherWorlds', 'battleEsc', 'battleHist', 'flags', 'seed', 'playerName', 'league', 'quests', 'ticketBees', 'created', 'danceReady', 'cloud'];
 
   P.XP = { buy: 1, upgrade: 4, milestone: 6, lucky: 10, quest: 50, quick: 15, swarm: 80, achievement: 8, hatch: 5, power: 5, coronation: 300, bless: 10, ticket: 6 };
   P.xpFor = L => Math.round(40 * Math.pow(L, 1.7));
@@ -72,7 +72,7 @@
 
   P.AD_CAPS = { boost: 6, offline: 3, ticket: 3, reroll: 3 };
 
-  P.essLvl = (s, id) => (s.essShop && s.essShop[id]) || 0;
+  P.essLvl = (s, id) => (!s.battle && s.essShop && s.essShop[id]) || 0;
   P.essCost = (s, id) => { const x = BZ.ESS_BY_ID[id]; return Math.ceil(x.base * Math.pow(x.growth, P.essLvl(s, id))); };
   P.essMaxed = (s, id) => BZ.ESS_BY_ID[id].max > 0 && P.essLvl(s, id) >= BZ.ESS_BY_ID[id].max;
   P.essReqMet = (s, id) => { const r = BZ.ESS_BY_ID[id].req; return !r || P.essLvl(s, r[0]) >= r[1]; };
@@ -86,13 +86,7 @@
     s._dirty = true;
     return true;
   };
-  P.crownName = (i, cap) => { const w = BZ.WORLDS[i] || BZ.WORLDS[0]; const v = BZ.n(w.crown); return !cap && BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
-  P.crownName = (i, cap) => { const w = BZ.WORLDS[i] || BZ.WORLDS[0]; const v = BZ.n(w.crown); return !cap && BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
-  P.crownName = (i, cap) => { const w = BZ.WORLDS[i] || BZ.WORLDS[0]; const v = BZ.n(w.crown); return !cap && BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
-  P.crownName = (i, cap) => { const w = BZ.WORLDS[i] || BZ.WORLDS[0]; const v = BZ.n(w.crown); return !cap && BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
-  P.crownName = (i, cap) => { const w = BZ.WORLDS[i] || BZ.WORLDS[0]; const v = BZ.n(w.crown); return !cap && BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
-  P.essName = i => { const v = BZ.n(BZ.ESSENCES[i].name); return BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
-  P.essName = i => { const v = BZ.n(BZ.ESSENCES[i].name); return BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
+  P.crownName = (i, cap) => { const g = BZ.Game && BZ.Game.main; const w = (g && g.battle && i === g.world && BZ.BATTLE_WORLD) || BZ.WORLDS[i] || BZ.WORLDS[0]; const v = BZ.n(w.crown); return !cap && BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
   P.essName = i => { const v = BZ.n(BZ.ESSENCES[i].name); return BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
   P.applyGift = function (s, d) {
     const add = (v, x) => Math.max(0, (v || 0) + x);
@@ -206,7 +200,7 @@
 
   P.mods = function (s) {
     const m = { honey: 1, luckyFreq: 1, luckyDur: 1, tap: 1, cost: 1, rj: 1, combo: 0, offlineH: 0, offline: 1, ticketFreq: 1, prodX: {} };
-    m.honey *= 1 + 0.01 * Math.max(0, (s.level || 1) - 1);
+    if (!s.battle) m.honey *= 1 + 0.01 * Math.max(0, (s.level || 1) - 1);
     m.honey *= P.essHoney(s);
     m.rj *= Math.pow(1 + BZ.ESS_BY_ID.jelly.v, P.essLvl(s, 'jelly'));
     m.luckyFreq *= 1 + BZ.ESS_BY_ID.lucky.v * P.essLvl(s, 'lucky');
@@ -219,7 +213,7 @@
     m.luckyDur *= 1 + BZ.ESS_BY_ID.chill.v * P.essLvl(s, 'chill');
     m.tap *= Math.pow(1 + BZ.ESS_BY_ID.tide.v, P.essLvl(s, 'tide'));
     m.cost *= 1 - BZ.ESS_BY_ID.heart.v * P.essLvl(s, 'heart');
-    m.honey *= Math.pow(2, s.prime || 0);
+    m.honey *= Math.pow(2, s.battle ? 0 : s.prime || 0);
     const w = E.world(s).mods;
     if (w.honey) m.honey *= w.honey;
     if (w.luckyFreq) m.luckyFreq *= w.luckyFreq;
@@ -228,7 +222,7 @@
     if (w.rj) m.rj *= w.rj;
     if (w.offline) m.offline *= w.offline;
     if (w.offlineH) m.offlineH += w.offlineH;
-    if (s.skins) {
+    if (s.skins && !s.battle) {
       m.honey *= 1 + 0.03 * P.ownedSkins(s);
       const sk = BZ.SKIN_BY_ID[s.skin];
       const b = sk && sk.boost;
@@ -271,6 +265,7 @@
 
   P.coreStats = function (s) {
     const out = { honey: 0, tap: 0, cost: 0, luckyFreq: 0, luckyDur: 0, lucky: 0, offlineH: 0, ticketFreq: 0, rj: 0, combo: 0 };
+    if (s.battle) return out;
     const n = P.coreSlotCount(s);
     (s.coreSlots || []).slice(0, n).forEach(id => {
       const c = BZ.CORE_BY_ID[id];

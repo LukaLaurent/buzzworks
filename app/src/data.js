@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '2.8.0';
+  BZ.VERSION = '2.9.0';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -244,6 +244,10 @@
   BZ.LEAGUE_QUEST_COUNT = 4;
   BZ.LEAGUE_QUEST_GROW = 0.2;
   BZ.CHANGELOG = [
+    { v: '2.9.0', items: [
+      { icon: 'battle', en: 'Hive battles! Challenge another player in the League tab, bet the same stake (Prime stones, tickets, essence, crowns or a skin) and race for crowns in a fresh arena for 15 minutes. Winner takes all.', fr: 'Combats de ruches ! Défiez un autre joueur dans l’onglet Ligue, misez la même chose (pierres Prime, tickets, essence, couronnes ou un décor) et faites la course aux couronnes dans une arène neuve pendant 15 minutes. Le gagnant remporte tout.' },
+      { icon: 'worker', en: 'Choose how the Hive mind buys producers: best value, x1, x10, x100, next milestone or max.', fr: 'Choisissez comment l’Esprit de la ruche achète les producteurs : meilleur rapport, x1, x10, x100, prochain palier ou max.' }
+    ] },
     { v: '2.8.0', items: [
       { icon: 'star', en: 'Blessings got a big update: 26 of them, from common to Legendary and the very rare Mythic ones, with mixed bonuses and new effects.', fr: 'Grosse mise à jour des bénédictions : 26 au total, de commune à Légendaire et aux très rares Mythiques, avec des bonus combinés et de nouveaux effets.' },
       { icon: 'globe', en: 'Each world is now harder than the previous one: crowns and royal jelly take more effort, but every crown gives more essence. Check the difficulty on the world map.', fr: 'Chaque monde est maintenant plus dur que le précédent : couronnes et gelée royale demandent plus d’efforts, mais chaque couronne rapporte plus d’essence. La difficulté est indiquée sur la carte.' },
@@ -401,6 +405,8 @@
     { id: 'moon', theme: 'w_moon', cost: 200, mods: { luckyFreq: 2.2, tap: 0.3, honey: 0.8 }, name: { en: 'Moon garden', fr: 'Jardin lunaire' }, crown: { en: 'Moon crowns', fr: 'Couronnes lunaires' }, hard: { rj: 0.05, crown: 100, ess: 5 } },
     { id: 'ember', theme: 'w_ember', cost: 250, mods: { rj: 2, growth: 1.165 }, name: { en: 'Ember peaks', fr: 'Pics de braise' }, crown: { en: 'Ember crowns', fr: 'Couronnes de braise' }, hard: { rj: 0.025, crown: 250, ess: 7 } }
   ];
+  BZ.BATTLE_WORLD = { id: 'arena', theme: 'w_ember', cost: 0, mods: { honey: 40, growth: 1.12 }, hard: { rj: 4, crown: 0.0001 }, name: { en: 'Battle arena', fr: 'Arène de combat' }, crown: { en: 'Battle crowns', fr: 'Couronnes de combat' } };
+  BZ.BATTLE_MIN = 15;
   BZ.ESSENCES = [
     { color: '#E86FA8', icon: 'flower', name: { en: 'Bloom essence', fr: 'Essence florale' } },
     { color: '#F2B233', icon: 'sun', name: { en: 'Sun essence', fr: 'Essence solaire' } },

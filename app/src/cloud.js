@@ -58,6 +58,18 @@
     async takeGift(id) {
       await fb.fs.deleteDoc(fb.fs.doc(fb.D, 'gifts', user.uid, 'items', id));
     },
+    battles: {
+      async create(d) { const r = await fb.fs.addDoc(fb.fs.collection(fb.D, 'battles'), d); return r.id; },
+      update: (id, d) => fb.fs.updateDoc(fb.fs.doc(fb.D, 'battles', id), d),
+      listen(cb) {
+        const f = fb.fs, uid = user.uid, docs = {};
+        const h = snap => { snap.docChanges().forEach(ch => { if (ch.type === 'removed') delete docs[ch.doc.id]; else docs[ch.doc.id] = Object.assign({}, ch.doc.data(), { id: ch.doc.id }); }); cb(Object.assign({}, docs)); };
+        const err = e => { if (BZ.Log) BZ.Log.error('battles: ' + (e && e.message)); };
+        const u1 = f.onSnapshot(f.query(f.collection(fb.D, 'battles'), f.where('a', '==', uid)), h, err);
+        const u2 = f.onSnapshot(f.query(f.collection(fb.D, 'battles'), f.where('b', '==', uid)), h, err);
+        return () => { u1(); u2(); };
+      }
+    },
     admin: {
       gift: (uid, d) => fb.fs.addDoc(fb.fs.collection(fb.D, 'gifts', uid, 'items'), Object.assign({}, d, { at: Date.now(), by: user.uid })),
       ban: (uid, name) => fb.fs.setDoc(fb.fs.doc(fb.D, 'banned', uid), { name: name || '', at: Date.now() }),

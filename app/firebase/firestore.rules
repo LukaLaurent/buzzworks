@@ -21,6 +21,30 @@ service cloud.firestore {
       allow create: if isAdmin();
     }
 
+    match /battles/{id} {
+      function party() { return signedIn() && (request.auth.uid == resource.data.a || request.auth.uid == resource.data.b); }
+      function same(k) { return request.resource.data[k] == resource.data[k]; }
+      function scoreOk(v) { return v is map && v.keys().hasOnly(['c', 'h', 'f']) && v.c is number && v.c >= 0 && v.c < 100000 && v.h is number && v.h >= 0 && v.f is bool; }
+      function liveTime() { return resource.data.status == 'live' && request.time.toMillis() < resource.data.end + 180000; }
+      allow read: if party() || isAdmin();
+      allow create: if signedIn() && !isBanned()
+        && request.resource.data.keys().hasOnly(['a', 'an', 'b', 'bn', 'stake', 'askin', 'status', 'at'])
+        && request.resource.data.a == request.auth.uid
+        && request.resource.data.b is string && request.resource.data.b != request.auth.uid
+        && request.resource.data.status == 'invite';
+      allow update: if party() && same('a') && same('b') && same('stake') && same('at') && (
+        (request.auth.uid == resource.data.a
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sa', 'status'])
+          && ((same('status') && liveTime() && scoreOk(request.resource.data.sa))
+              || (resource.data.status == 'invite' && request.resource.data.status == 'cancelled')))
+        || (request.auth.uid == resource.data.b
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sb', 'status', 'start', 'end', 'bskin'])
+          && ((same('status') && liveTime() && scoreOk(request.resource.data.sb))
+              || (resource.data.status == 'invite' && request.resource.data.status in ['live', 'declined'] && request.time.toMillis() < resource.data.at + 300000)))
+      );
+      allow delete: if isAdmin();
+    }
+
     match /saves/{uid} {
       allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
       allow delete: if signedIn() && request.auth.uid == uid;

@@ -15,7 +15,7 @@
   let tutorialStep = 0;
 
   function xp(kind, count) {
-    if (!G.main) return;
+    if (!G.main || G.main.battle) return;
     const ups = P.addXp(G.main, kind, count);
     if (ups.length) onLevelUp(ups);
   }
@@ -35,7 +35,7 @@
   }
 
   function visualSkin(s) {
-    if ((s.world || 0) > 0) return E.world(s).theme;
+    if ((s.world || 0) > 0 || s.battle) return E.world(s).theme;
     return s.skin || 'meadow';
   }
   G.refreshScene = () => Scene.setSkin(visualSkin(G.main));
@@ -242,10 +242,14 @@
       setTimeout(() => location.reload(), 3000);
     } catch (e) {}
   };
+  G.realMain = () => (G.battle ? G.battle.real : G.main);
+  G.migrateState = s => migrate(s);
   G.save = function (sync) {
     if (!G.main) return;
-    G.main.lastSave = Date.now();
-    const data = BZ.Store.serialize(G.main);
+    if (G.battle && BZ.Battle) BZ.Battle.persist();
+    const real = G.realMain();
+    real.lastSave = Date.now();
+    const data = BZ.Store.serialize(real);
     if (sync) BZ.Store.saveSync('save', data);
     else BZ.Store.save('save', data).then(ok => { if (!ok) UI.toast('info', t('error_save'), { nova: 'oops' }); });
   };
@@ -404,7 +408,7 @@
     A.play('upgrade');
     Scene.pulse(3);
     UI.toast('league', t('lq_got', { v: F.int(pts) }), { ok: true });
-    if (BZ.Online && BZ.Cloud && BZ.Cloud.signedIn() && BZ.Online.sync) BZ.Online.sync(G.main).catch(() => {});
+    if (BZ.Online && BZ.Cloud && BZ.Cloud.signedIn() && BZ.Online.sync) BZ.Online.sync(G.realMain()).catch(() => {});
     UI.dirty('league');
     UI.render();
     G.save();
@@ -589,7 +593,7 @@
 
   G.cloudSignIn = function () { if (BZ.Cloud) BZ.Cloud.signIn().then(() => { bootLastSave = 0; G.cloudSync(true, true); UI.render(); }).catch(e => { Log.error('cloud sign in: ' + (e && e.message || e)); UI.toast('info', t('cloud_err'), { nova: 'oops' }); UI.render(); }); };
   G.cloudSignOut = function () { if (BZ.Cloud) BZ.Cloud.signOut().then(() => UI.render()); };
-  G.online = function () { if (BZ.Online && BZ.Cloud.signedIn()) BZ.Online.sync(G.main).then(ok => { if (ok) { UI.dirty('league'); G.save(); } }); };
+  G.online = function () { if (BZ.Online && BZ.Cloud.signedIn()) BZ.Online.sync(G.realMain()).then(ok => { if (ok) { UI.dirty('league'); G.save(); } }); };
   let bootLastSave = 0;
   G.cloudSync = function (manual, firstPull) {
     const C = BZ.Cloud;
@@ -597,7 +601,7 @@
     const push = () => {
       G.main.lastSave = Date.now();
       G.main.cloud.at = Date.now();
-      C.push(BZ.Store.serialize(G.main)).then(() => { if (manual) UI.toast('upload', t('cloud_saved'), { ok: true }); UI.dirty('settings'); G.online(); })
+      C.push(BZ.Store.serialize(G.realMain())).then(() => { if (manual) UI.toast('upload', t('cloud_saved'), { ok: true }); UI.dirty('settings'); G.online(); })
         .catch(e => { Log.error('cloud push: ' + (e && e.message || e)); if (manual) UI.toast('info', t('cloud_err'), { nova: 'oops' }); });
     };
     if (!firstPull) { push(); return; }
@@ -732,6 +736,7 @@
       setLoad(1);
       lastFrame = performance.now();
       requestAnimationFrame(loop);
+      if (BZ.Battle) BZ.Battle.init();
       G.save();
       if (BZ.Platform && BZ.Platform.loaded) BZ.Platform.loaded();
       UI.splashReady(() => {

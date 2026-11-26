@@ -40,7 +40,7 @@
     return s;
   };
 
-  E.world = s => BZ.WORLDS[s.world || 0] || BZ.WORLDS[0];
+  E.world = s => (s.battle && BZ.BATTLE_WORLD) || BZ.WORLDS[s.world || 0] || BZ.WORLDS[0];
   E.growth = s => E.world(s).mods.growth || BZ.COST_GROWTH;
   E.qlvl = (s, id) => (s.queen && s.queen[id]) || 0;
 
@@ -87,7 +87,7 @@
   };
   E.beeBonus = function (s) {
     const out = { honey: 0, tap: 0, luckyFreq: 0, luckyDur: 0, cost: 0, offline: 0, rj: 0, combo: 0 };
-    if (!s.bees) return out;
+    if (!s.bees || s.battle) return out;
     for (const b of BZ.BEES) {
       const l = E.beeLevel(s, b.id);
       if (l) out[b.kind] += b.v * l;
@@ -490,10 +490,14 @@
       }
     }
     if (lvl >= 2 && s.auto.prod) {
+      const mode = s.auto.prodMode || 'best';
       for (let i = 0; i < 25; i++) {
         const id = E.bestBuy(s);
-        if (!id || E.unitCost(s, id) > s.honey) break;
-        E.buy(s, id, 1);
+        if (!id) break;
+        if (mode === 'best') { if (E.unitCost(s, id) > s.honey) break; E.buy(s, id, 1); continue; }
+        const n = E.buyAmount(s, id, mode);
+        if (n < 1 || E.cost(s, id, n) > s.honey) break;
+        E.buy(s, id, n);
       }
     }
     if (lvl >= 3 && s.auto.swarm) {
@@ -530,7 +534,7 @@
         s.luckyT -= dt;
         if (s.luckyT <= 0) {
           const life = s.boosts.some(b => b.id === 'luckyswarm') ? 7 : 12;
-          s.luckyOn = { t: life, max: life, red: (opts.rng || Math.random)() < (BZ.P && BZ.P.rubyChance ? BZ.P.rubyChance(s) : BZ.RUBY_CHANCE) };
+          s.luckyOn = { t: life, max: life, red: !s.battle && (opts.rng || Math.random)() < (BZ.P && BZ.P.rubyChance ? BZ.P.rubyChance(s) : BZ.RUBY_CHANCE) };
           s.luckyT = E.luckyInterval(s, opts.rng);
           E.emit(s, 'luckySpawn', s.luckyOn);
         }
@@ -540,7 +544,7 @@
         if (s.ticketOn.t <= 0) { s.ticketOn = null; E.emit(s, 'ticketGone'); }
       } else {
         s.ticketT = (s.ticketT === undefined ? 60 : s.ticketT) - dt;
-        if (s.ticketT <= 0) {
+        if (s.ticketT <= 0 && !s.battle) {
           s.ticketOn = { t: 10, max: 10 };
           s.ticketT = E.ticketInterval(s, opts.rng);
           E.emit(s, 'ticketSpawn', s.ticketOn);
@@ -600,6 +604,8 @@
   E.runProgress = (s, a) => E.RUN_TESTS[a.test](s);
   E.checkAchievements = function (s) {
     const got = [];
+    if (s.battle) return got;
+    if (s.battle) return got;
     for (const a of BZ.ACHIEVEMENTS) {
       if (s.ach[a.id]) continue;
       let ok;

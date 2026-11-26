@@ -414,7 +414,10 @@
     if (mind > 0) {
       h += '<div class="sec card"><div class="sec-title"><h3>' + t('auto') + '</h3></div>';
       h += settingSwitch('auto_upg', '', s.auto.upg, 'auto:upg');
-      if (mind >= 2) h += settingSwitch('auto_prod', '', s.auto.prod, 'auto:prod');
+      if (mind >= 2) {
+        h += settingSwitch('auto_prod', '', s.auto.prod, 'auto:prod');
+        h += '<div class="setting"><div><b>' + t('auto_mode') + '</b><small>' + t('auto_mode_d') + '</small></div><div class="seg seg-wrap">' + ['best', 1, 10, 100, 'next', 'max'].map(v => '<button data-act="prodmode" data-arg="' + v + '" class="' + (String(s.auto.prodMode || 'best') === String(v) ? 'on' : '') + '">' + (v === 'best' ? t('auto_best') : v === 'next' ? t('next') : v === 'max' ? t('max') : 'x' + v) + '</button>').join('') + '</div></div>';
+      }
       if (mind >= 3) {
         h += settingSwitch('auto_swarm', t('auto_swarm_at', { v: 'x' + s.auto.swarmAt }), s.auto.swarm, 'auto:swarm');
         h += '<div class="setting"><div><b>' + t('auto_swarm_at', { v: '' }).trim() + '</b></div><div class="seg">' + [1.5, 2, 3, 5].map(v => '<button data-act="swarmat" data-arg="' + v + '" class="' + (s.auto.swarmAt === v ? 'on' : '') + '">x' + F.num(v, { small: true }) + '</button>').join('') + '</div></div>';
@@ -580,6 +583,7 @@
       case 'coronate': G.askCoronate(); break;
       case 'queen': G.buyQueen(arg); break;
       case 'swarmat': G.main.auto.swarmAt = +arg; UI.render(); break;
+      case 'prodmode': G.main.auto.prodMode = isNaN(+arg) ? arg : +arg; BZ.Audio.play('click'); UI.render(); G.save(); break;
       case 'streak': G.claimStreak(); break;
       case 'quest': G.claimQuest(+arg); break;
       case 'dance': G.dance(); break;

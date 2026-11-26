@@ -91,10 +91,9 @@
     const N = 46, WIN = 40;
     const strip = [];
     for (let i = 0; i < N; i++) strip.push(i === WIN ? r.x : BZ.RUBY[Math.floor(Math.random() * BZ.RUBY.length)]);
-    const tot = BZ.RUBY.reduce((a, x) => a + x.w, 0);
     let h = '<div class="rr"><div class="hero"><div class="pic rr-pic">' + ic('sparkle') + '</div><h4>' + t('rr_title') + '</h4><p>' + t('rr_d') + '</p></div>';
     h += '<div class="rr-win"><div class="rr-strip">' + strip.map(x => rubyTile(x, r.world)).join('') + '</div><i class="rr-mark"></i></div>';
-    h += '<p class="rr-res">&nbsp;</p><p class="muted rr-odds">' + t('rr_odds', { p: F.pct(BZ.RUBY[0].w / tot) }) + '</p><div class="row center"><button class="btn btn-primary off" id="rrOk">' + t('rr_ok') + '</button></div></div>';
+    h += '<p class="rr-res">&nbsp;</p><div class="row center"><button class="btn btn-primary off" id="rrOk">' + t('rr_ok') + '</button></div></div>';
     let ready = false;
     UI.modal(h, false, { '#rrOk': () => { if (!ready) return; UI.closeModal(); if (done) done(); } });
     const m = document.querySelector('.rr');
@@ -133,12 +132,13 @@
     h += '<div class="ab-feats">' + feats.map(x => '<div class="ab-feat"><span>' + ic(x[0]) + '</span><small>' + t(x[1]) + '</small></div>').join('') + '</div>';
     h += '<div class="card ab-made"><div class="ab-nova">' + UI.fox('happy') + '</div><div class="txt"><b>' + t('ab_made') + '</b><small class="by">Luka LAURENT</small></div></div>';
     const ext = (BZ.CONFIG && BZ.CONFIG.platform) !== 'crazygames';
-    h += '<div class="ab-links">' + (ext ? '<a class="btn btn-primary" href="https://novafox.fr" target="_blank" rel="noopener">' + ic('globe') + t('ab_visit') + '</a><a class="btn btn-outline" href="https://github.com/LukaLaurent/buzzworks" target="_blank" rel="noopener">' + ic('copy') + t('ab_source') + '</a>' : '') + '<button class="btn btn-ghost" data-act="logs">' + ic('chart') + t('logs') + '</button></div>';
+    h += '<div class="ab-links">' + (ext ? '<a class="btn btn-primary" href="https://novafox.fr" target="_blank" rel="noopener">' + ic('globe') + t('ab_visit') + '</a><a class="btn btn-outline" href="https://github.com/LukaLaurent/buzzworks" target="_blank" rel="noopener">' + ic('copy') + t('ab_source') + '</a>' : '') + '<button class="btn btn-ghost" data-act="whatsnew">' + ic('sparkle') + t('new_btn') + '</button><button class="btn btn-ghost" data-act="logs">' + ic('chart') + t('logs') + '</button></div>';
     return h;
   };
 
   const prevAct = UI.extAct;
   UI.extAct = function (act, arg, el) {
+    if (act === 'whatsnew') { UI.whatsNew(); return; }
     if (act === 'help') { UI.modal('<div class="hero"><div class="pic">' + ic('info') + '</div></div><p style="text-align:center;line-height:1.6">' + t(arg) + '</p><div class="row center"><button class="btn btn-primary" data-close>' + t('ok') + '</button></div>', true); BZ.Audio.play('click'); return; }
     prevAct(act, arg, el);
   };

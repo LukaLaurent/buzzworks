@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '2.4.0';
+  BZ.VERSION = '2.5.0';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -241,6 +241,33 @@
     { id: 'ruby', amount: 1, pts: 350, needs: 'worlds' }
   ];
   BZ.LEAGUE_QUEST_COUNT = 4;
+  BZ.LEAGUE_QUEST_GROW = 0.2;
+  BZ.CHANGELOG = [
+    { v: '2.5.0', items: [
+      { icon: 'star', en: 'League quests now renew: claim one and a new one appears right away, a little harder each time. Farm league points all week!', fr: 'Les quêtes de ligue se renouvellent : récupérez-en une et une nouvelle apparaît aussitôt, un peu plus dure à chaque fois. Des points de ligue toute la semaine !' },
+      { icon: 'crown', en: 'Crowns now carry the name of their world (Meadow crowns, Dune crowns...), so you always know which world they open.', fr: 'Les couronnes portent maintenant le nom de leur monde (couronnes des prés, des dunes...), pour savoir quel monde elles ouvrent.' },
+      { icon: 'crown', en: 'Crowns now carry the name of their world (Meadow crowns, Dune crowns...), so you always know which world they open.', fr: 'Les couronnes portent maintenant le nom de leur monde (couronnes des prés, des dunes...), pour savoir quel monde elles ouvrent.' },
+      { icon: 'crown', en: 'Crowns now carry the name of their world (Meadow crowns, Dune crowns...), so you always know which world they open.', fr: 'Les couronnes portent maintenant le nom de leur monde (couronnes des prés, des dunes...), pour savoir quel monde elles ouvrent.' },
+      { icon: 'crown', en: 'Crowns now carry the name of their world (Meadow crowns, Dune crowns...), so you always know which world they open.', fr: 'Les couronnes portent maintenant le nom de leur monde (couronnes des prés, des dunes...), pour savoir quel monde elles ouvrent.' },
+      { icon: 'crown', en: 'Crowns now carry the name of their world (Meadow crowns, Dune crowns...), so you always know which world they open.', fr: 'Les couronnes portent maintenant le nom de leur monde (couronnes des prés, des dunes...), pour savoir quel monde elles ouvrent.' },
+      { icon: 'sparkle', en: 'This What\u2019s new button, so you never miss an update.', fr: 'Ce bouton Nouveautés, pour ne rater aucune mise à jour.' }
+    ] },
+    { v: '2.4.0', items: [
+      { icon: 'league', en: 'Weekly league quests worth 150 to 400 league points each.', fr: 'Quêtes de ligue de la semaine, de 150 à 400 points de ligue chacune.' },
+      { icon: 'gem', en: 'Red lucky bees are rarer. The Ruby lure upgrade in the Moon tree makes them come back more often.', fr: 'Les abeilles rouges sont plus rares. L\u2019Appât de rubis de l\u2019arbre lunaire les fait revenir plus souvent.' },
+      { icon: 'globe', en: 'Five new costly essence upgrades, one for each world.', fr: 'Cinq nouvelles améliorations d\u2019essence, une par monde, plus chères.' }
+    ] },
+    { v: '2.3.0', items: [
+      { icon: 'gem', en: 'Red lucky bees spin a prize wheel. Hit the jackpot to win a Prime stone!', fr: 'Les abeilles rouges lancent une roue des prix. Visez le jackpot pour gagner une pierre Prime !' },
+      { icon: 'prime', en: 'Prime now needs 50,000 of every essence and a Prime stone.', fr: 'Prime demande maintenant 50 000 de chaque essence et une pierre Prime.' }
+    ] },
+    { v: '2.2.0', items: [
+      { icon: 'globe', en: 'Every world has its own essence and its own upgrade tree.', fr: 'Chaque monde a sa propre essence et son propre arbre d\u2019améliorations.' },
+      { icon: 'prime', en: 'Prime: finish every tree, restart from scratch with honey x2 forever.', fr: 'Prime : terminez tous les arbres et recommencez avec du miel x2 pour toujours.' },
+      { icon: 'star', en: 'Mythic bees and cores, the rarest of all.', fr: 'Abeilles et noyaux mythiques, les plus rares de tous.' },
+      { icon: 'devices', en: 'Save online with Google and play on all your devices.', fr: 'Sauvegarde en ligne avec Google, pour jouer sur tous vos appareils.' }
+    ] }
+  ];
   BZ.QUEST_REWARDS = [{ egg: 3 }, { egg: 5 }, { core: 2 }];
   BZ.QUICK_POOL = [
     { id: 'tap', amounts: [60, 120] },
@@ -357,11 +384,11 @@
   BZ.CORES.forEach(c => { BZ.CORE_BY_ID[c.id] = c; });
 
   BZ.WORLDS = [
-    { id: 'meadow', theme: 'meadow', cost: 0, mods: {}, name: { en: 'Flower meadow', fr: 'Prairie fleurie' } },
-    { id: 'dunes', theme: 'w_dunes', cost: 100, mods: { growth: 1.13, luckyFreq: 0.6 }, name: { en: 'Sun dunes', fr: 'Dunes du soleil' } },
-    { id: 'glacier', theme: 'w_glacier', cost: 150, mods: { honey: 0.5, offline: 3, offlineH: 6, luckyDur: 1.5 }, name: { en: 'Glacier hive', fr: 'Ruche du glacier' } },
-    { id: 'moon', theme: 'w_moon', cost: 200, mods: { luckyFreq: 2.2, tap: 0.3, honey: 0.8 }, name: { en: 'Moon garden', fr: 'Jardin lunaire' } },
-    { id: 'ember', theme: 'w_ember', cost: 250, mods: { rj: 2, growth: 1.165 }, name: { en: 'Ember peaks', fr: 'Pics de braise' } }
+    { id: 'meadow', theme: 'meadow', cost: 0, mods: {}, name: { en: 'Flower meadow', fr: 'Prairie fleurie' }, crown: { en: 'Meadow crowns', fr: 'Couronnes des prés' } },
+    { id: 'dunes', theme: 'w_dunes', cost: 100, mods: { growth: 1.13, luckyFreq: 0.6 }, name: { en: 'Sun dunes', fr: 'Dunes du soleil' }, crown: { en: 'Dune crowns', fr: 'Couronnes des dunes' } },
+    { id: 'glacier', theme: 'w_glacier', cost: 150, mods: { honey: 0.5, offline: 3, offlineH: 6, luckyDur: 1.5 }, name: { en: 'Glacier hive', fr: 'Ruche du glacier' }, crown: { en: 'Glacier crowns', fr: 'Couronnes du glacier' } },
+    { id: 'moon', theme: 'w_moon', cost: 200, mods: { luckyFreq: 2.2, tap: 0.3, honey: 0.8 }, name: { en: 'Moon garden', fr: 'Jardin lunaire' }, crown: { en: 'Moon crowns', fr: 'Couronnes lunaires' } },
+    { id: 'ember', theme: 'w_ember', cost: 250, mods: { rj: 2, growth: 1.165 }, name: { en: 'Ember peaks', fr: 'Pics de braise' }, crown: { en: 'Ember crowns', fr: 'Couronnes de braise' } }
   ];
   BZ.ESSENCES = [
     { color: '#E86FA8', icon: 'flower', name: { en: 'Bloom essence', fr: 'Essence florale' } },

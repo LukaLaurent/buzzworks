@@ -64,7 +64,7 @@ Sign in with Google, cloud saves, weekly leagues with real players and rankings 
 
 What is stored: `saves/{uid}` (the player's save, private), `players/{uid}` (public name, level and ranking stats), `groups/{week_tier_n}` (league groups of up to 20 players with their weekly points). The game syncs every 3 minutes while signed in.
 
-League quests: once in a group, each player gets 4 harder quests for the week (for example catch 15 ticket bees, hatch 40 eggs, get crowned twice, catch a red lucky bee) worth 150 to 400 league points each.
+League quests: once in a group, each player gets 4 harder quests for the week (for example catch 15 ticket bees, hatch 40 eggs, get crowned twice, catch a red lucky bee) worth 150 to 400 league points each. Claiming one replaces it with a new quest right away, 20% harder for each quest already done that week. A What's new button appears in the top bar after each update (changelog in BZ.CHANGELOG in data.js, also reachable from About).
 
 Leagues: points only count once the player has joined this week's group, so nobody starts ahead. Points come from lucky bees, ticket bees, quests, quick tasks, swarms, milestones, upgrades, trophies and play time. Each week (Monday to Monday, local time) players join a group of up to 20 in their tier. When a new week starts, the top quarter moves up a tier and the bottom quarter moves down (groups of 4 or more). Rewards: egg tickets for everyone, royal tickets for the top 3, a core ticket on promotion. Rankings show the top 50 for honey made (all worlds), crowns, essence, bee species, level and trophies.
 

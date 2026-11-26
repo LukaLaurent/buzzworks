@@ -125,7 +125,7 @@
     const s = G.main;
     if (!P.canOpenWorld(s, idx)) { A.play('error'); return; }
     const w = BZ.WORLDS[idx];
-    UI.confirm(n(w.name), t('wd_' + w.id), t('world_open', { v: w.cost }), false, () => {
+    UI.confirm(n(w.name), t('wd_' + w.id), t('world_open', { v: w.cost, c: P.crownName(idx - 1) }), false, () => {
       if (!P.openWorld(s, idx)) return;
       A.play('swarm');
       UI.toast('globe', t('world_opened', { w: n(w.name) }), { ok: true });
@@ -330,13 +330,13 @@
     const s = G.main;
     const gain = E.pendingCrowns(s);
     if (gain < 1) { A.play('error'); return; }
-    UI.confirm(t('coronate_title'), t('coronate_text', { v: F.int(gain) }), t('coronate') + ' +' + F.int(gain), false, () => {
+    UI.confirm(t('coronate_title'), t('coronate_text', { v: F.int(gain), c: P.crownName(s.world) }), t('coronate') + ' +' + F.int(gain), false, () => {
       const g = E.coronate(s);
       if (g > 0) {
         A.play('swarm');
         vibrate([30, 50, 30]);
         Scene.pulse(6);
-        UI.toast('crown', t('coronate_done', { v: F.int(g) }), { ok: true });
+        UI.toast('crown', t('coronate_done', { v: F.int(g), c: P.crownName(s.world) }), { ok: true });
         xp('coronation');
         M.questProgress(s, 'crown', 1);
         if (s.blessOffer) setTimeout(() => UI.showBless(), 500);

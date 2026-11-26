@@ -71,6 +71,11 @@
     s._dirty = true;
     return true;
   };
+  P.crownName = (i, cap) => { const w = BZ.WORLDS[i] || BZ.WORLDS[0]; const v = BZ.n(w.crown); return !cap && BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
+  P.crownName = (i, cap) => { const w = BZ.WORLDS[i] || BZ.WORLDS[0]; const v = BZ.n(w.crown); return !cap && BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
+  P.crownName = (i, cap) => { const w = BZ.WORLDS[i] || BZ.WORLDS[0]; const v = BZ.n(w.crown); return !cap && BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
+  P.crownName = (i, cap) => { const w = BZ.WORLDS[i] || BZ.WORLDS[0]; const v = BZ.n(w.crown); return !cap && BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
+  P.crownName = (i, cap) => { const w = BZ.WORLDS[i] || BZ.WORLDS[0]; const v = BZ.n(w.crown); return !cap && BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
   P.essName = i => { const v = BZ.n(BZ.ESSENCES[i].name); return BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
   P.essName = i => { const v = BZ.n(BZ.ESSENCES[i].name); return BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
   P.essName = i => { const v = BZ.n(BZ.ESSENCES[i].name); return BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
@@ -138,6 +143,7 @@
     if (s.essenceTotal === undefined) s.essenceTotal = s.essence || 0;
     delete s.essence;
     s.prime = s.prime || 0;
+    if (s.flags && s.flags.seenVersion === undefined) s.flags.seenVersion = (s.lifetime || 0) < 1e4 ? BZ.VERSION : '';
     s.primeStones = s.primeStones || 0;
     s.rubies = s.rubies || 0;
     if (s.queen && s.queen.mind > P.mindAllowed(s)) { s.queen.mind = P.mindAllowed(s); if (!s.queen.mind) delete s.queen.mind; }

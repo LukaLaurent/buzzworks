@@ -4,7 +4,7 @@
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
   BZ.addStrings({
-    wm_back: 'Back to hive', wm_hint: 'Tap a world to see it, or travel there', wm_travel: 'Travel here', wm_here: 'You are here', wm_crowns: '{v} crowns', wm_toopen: '{v} crowns to open', wm_openwith: 'Open it with {v} crowns from {w}.', wm_needprev: 'Open {w} first.', wm_open: 'Open  ·  {v} crowns', wm_welcome: 'Welcome to', wm_how: 'Each world keeps its own honey, queen and crowns. Crowns earned in a world open the next one. Bees, cores, skins, tickets and your level are shared everywhere. Sell a world with at least {m} crowns to restart it for essence, then spend essence in the essence tree.',
+    wm_back: 'Back to hive', wm_hint: 'Tap a world to see it, or travel there', wm_travel: 'Travel here', wm_here: 'You are here', wm_crowns: '{v} {c}', wm_toopen: '{v} {c} to open', wm_openwith: 'Open it with {v} {c}, earned in {w}.', wm_needprev: 'Open {w} first.', wm_open: 'Open  ·  {v} {c}', wm_welcome: 'Welcome to', wm_how: 'Each world keeps its own honey, queen and crowns. Crowns earned in a world open the next one. Bees, cores, skins, tickets and your level are shared everywhere. Sell a world with at least {m} crowns to restart it for essence, then spend essence in the essence tree.',
     br_honey: 'Honey', br_royal: 'Royal', br_fortune: 'Fortune', tree_req: 'Needs {n} level {l}', tree_inf: 'No limit',
     es_tap: 'Sweet paws', es_tap_d: 'x1.2 tap power per level', es_colony: 'Thriving colony', es_colony_d: 'Colony bonus +0.1 per level (x1.5 up to x2)', es_wisdom: 'Queen wisdom', es_wisdom_d: 'Queen skills 5% cheaper per level', es_fortune: 'Fortune', es_fortune_d: 'Lucky effects 5% longer per level', es_map_d: 'Worlds cost 5% fewer crowns per level',
     tree_title: 'Essence trees', tree_d: 'One tree per world, paid with the essence of that world. Sell a world to earn its essence. Upgrades last forever and work in every world.', tree_locked: 'Open {w} and sell it to earn this essence', tree_prog: '{a} / {b} complete',
@@ -12,7 +12,7 @@
     pr_head: 'Prime', pr_d: 'Complete all five trees, then spend {v} of every essence and one Prime stone. Prime stones are found, very rarely, by catching red lucky bees. You get one Prime point: honey x2 forever, and it stacks. Everything restarts from a single fresh world. Bees, cores, skins, tickets, level and pass stay.', pr_have: 'Prime points: {n}  ·  honey x{x}', pr_need: 'Complete every tree first ({a} / {b})', pr_btn: 'Become Prime',
     pr_title: 'Become Prime?', pr_text: 'Worlds, crowns, essence and every essence tree restart from zero. Bees, cores, skins, tickets, level and pass stay. You reach Prime {n}: honey x{x} forever.', pr_go: 'Become Prime', pr_done: 'Prime reached: honey x{x}'
   }, {
-    wm_back: 'Retour à la ruche', wm_hint: 'Touchez un monde pour le voir, ou y voyager', wm_travel: 'Voyager ici', wm_here: 'Vous êtes ici', wm_crowns: '{v} couronnes', wm_toopen: '{v} couronnes pour ouvrir', wm_openwith: 'Ouvrez-le avec {v} couronnes de {w}.', wm_needprev: 'Ouvrez d\'abord {w}.', wm_open: 'Ouvrir  ·  {v} couronnes', wm_welcome: 'Bienvenue :', wm_how: 'Chaque monde garde son miel, sa reine et ses couronnes. Les couronnes gagnées dans un monde ouvrent le suivant. Abeilles, noyaux, décors, tickets et niveau sont partagés partout. Vendez un monde avec au moins {m} couronnes pour le recommencer contre de l\'essence, puis dépensez-la dans l\'arbre d\'essence.',
+    wm_back: 'Retour à la ruche', wm_hint: 'Touchez un monde pour le voir, ou y voyager', wm_travel: 'Voyager ici', wm_here: 'Vous êtes ici', wm_crowns: '{v} {c}', wm_toopen: '{v} {c} pour ouvrir', wm_openwith: 'Ouvrez-le avec {v} {c}, gagnées dans {w}.', wm_needprev: 'Ouvrez d\'abord {w}.', wm_open: 'Ouvrir  ·  {v} {c}', wm_welcome: 'Bienvenue :', wm_how: 'Chaque monde garde son miel, sa reine et ses couronnes. Les couronnes gagnées dans un monde ouvrent le suivant. Abeilles, noyaux, décors, tickets et niveau sont partagés partout. Vendez un monde avec au moins {m} couronnes pour le recommencer contre de l\'essence, puis dépensez-la dans l\'arbre d\'essence.',
     br_honey: 'Miel', br_royal: 'Royal', br_fortune: 'Fortune', tree_req: 'Il faut {n} niveau {l}', tree_inf: 'Sans limite',
     es_tap: 'Pattes sucrées', es_tap_d: 'Récolte x1,2 par niveau', es_colony: 'Colonie prospère', es_colony_d: 'Bonus de colonie +0,1 par niveau (x1,5 jusqu\'à x2)', es_wisdom: 'Sagesse de la reine', es_wisdom_d: 'Compétences de la reine 5 % moins chères par niveau', es_fortune: 'Fortune', es_fortune_d: 'Effets dorés 5 % plus longs par niveau', es_map_d: 'Mondes 5 % moins chers en couronnes par niveau',
     tree_title: 'Arbres d’essence', tree_d: 'Un arbre par monde, payé avec l’essence de ce monde. Vendez un monde pour gagner son essence. Les améliorations sont permanentes et valent dans tous les mondes.', tree_locked: 'Ouvrez {w} et vendez-le pour gagner cette essence', tree_prog: '{a} / {b} terminés',
@@ -86,7 +86,7 @@
       else h += '<g transform="translate(-22 -22) scale(1.8)" fill="none" stroke="#F5F3EF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + BZ.ICONS.lock + '</g>';
       h += '</g>';
       const label = n(w.name);
-      const sub = open ? (i === s.world ? t('wm_here') + '  ·  ' : '') + t('wm_crowns', { v: F.int(P.worldCrowns(s, i)) }) : t('wm_toopen', { v: F.int(P.worldCost(s, i)) });
+      const sub = open ? (i === s.world ? t('wm_here') + '  ·  ' : '') + t('wm_crowns', { v: F.int(P.worldCrowns(s, i)), c: P.crownName(i) }) : t('wm_toopen', { v: F.int(P.worldCost(s, i)), c: P.crownName(i - 1) });
       const lw = Math.max(label.length * 13, sub.length * 9) + 44;
       h += '<g class="wm-flag" transform="translate(0 150)' + (tall ? ' scale(1.35)' : '') + '"><rect x="' + (-lw / 2) + '" y="0" width="' + lw + '" height="64" rx="18"/><text text-anchor="middle" y="28">' + esc(label) + '</text><text class="sub" text-anchor="middle" y="50">' + esc(sub) + '</text></g></g>';
     });
@@ -118,16 +118,16 @@
     let h = '<div class="wm-hd"><span class="wm-sw" style="background:linear-gradient(180deg,' + sk.sky[0] + ',' + sk.sky[1] + ' 55%,' + sk.hill[0] + ' 56%,' + sk.hill[2] + ')"><i style="background:' + sk.comb + '"></i></span><div><h3>' + esc(n(w.name)) + '</h3><div class="wm-tw2">' + t('wd_' + w.id) + '</div></div><button class="wm-x" data-wm="close">' + ic('close') + '</button></div>';
     if (open) {
       const info = P.worldInfo(s, i);
-      h += '<div class="wm-stats"><div><small>' + t('wd_hps') + '</small><b>' + F.num(info.hps) + '/s</b></div><div><small>' + t('wd_crowns') + '</small><b>' + F.int(info.crowns) + '</b></div><div><small>' + t('wd_life') + '</small><b>' + F.num(info.lifetime) + '</b></div><div><small>' + t('wd_rj') + '</small><b>' + F.num(info.rj, { int: true }) + '</b></div></div>';
+      h += '<div class="wm-stats"><div><small>' + t('wd_hps') + '</small><b>' + F.num(info.hps) + '/s</b></div><div><small>' + esc(P.crownName(i, true)) + '</small><b>' + F.int(info.crowns) + '</b></div><div><small>' + t('wd_life') + '</small><b>' + F.num(info.lifetime) + '</b></div><div><small>' + t('wd_rj') + '</small><b>' + F.num(info.rj, { int: true }) + '</b></div></div>';
       const sv = P.sellValue(s, i);
       h += '<div class="wm-acts">' + (i === s.world ? '<button class="btn btn-primary off">' + ic('check') + t('wm_here') + '</button>' : '<button class="btn btn-primary" data-wm="go">' + ic('globe') + t('wm_travel') + '</button>') + '<button class="btn btn-outline' + (sv < 1 ? ' off' : '') + '" data-wm="sell">' + ic(BZ.ESSENCES[i].icon) + t('sell_other', { v: F.int(sv) + ' ' + P.essName(i) }) + '</button></div>';
-      if (sv < 1) h += '<p class="wm-line">' + t('sell_need', { v: BZ.SELL_MIN }) + '</p>';
+      if (sv < 1) h += '<p class="wm-line">' + t('sell_need', { v: BZ.SELL_MIN, c: P.crownName(i) }) + '</p>';
     } else {
       const next = i === s.worldsOpen.length;
       const prev = BZ.WORLDS[i - 1];
       const cost = P.worldCost(s, i);
-      h += '<p class="wm-line">' + ic('lock') + (next ? t('wm_openwith', { v: F.int(cost), w: n(prev.name) }) : t('wm_needprev', { w: n(prev.name) })) + '</p>';
-      h += '<div class="wm-acts"><button class="btn btn-primary' + (next && P.canOpenWorld(s, i) ? '' : ' off') + '" data-wm="open">' + ic('crown') + t('wm_open', { v: F.int(cost) }) + '</button></div>';
+      h += '<p class="wm-line">' + ic('lock') + (next ? t('wm_openwith', { v: F.int(cost), w: n(prev.name), c: P.crownName(i - 1) }) : t('wm_needprev', { w: n(prev.name) })) + '</p>';
+      h += '<div class="wm-acts"><button class="btn btn-primary' + (next && P.canOpenWorld(s, i) ? '' : ' off') + '" data-wm="open">' + ic('crown') + t('wm_open', { v: F.int(cost), c: P.crownName(i - 1) }) + '</button></div>';
     }
     return h;
   }

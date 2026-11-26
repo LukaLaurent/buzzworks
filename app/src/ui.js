@@ -396,12 +396,12 @@
     const pc = E.pendingCrowns(s);
     const showCrown = E.crownsEarned(s) > 0 || pc > 0 || (s.rjLife || 0) + pend >= BZ.CROWN_DIVISOR * 0.25;
     if (showCrown) {
-      h += '<div class="sec card crown-card"><div class="big-stat"><div class="pic crown">' + ic('crown') + '</div><div><b class="num">' + F.int(s.crowns || 0) + '</b><small>' + t('crown_title') + '  ·  ' + t('crown_bonus', { m: F.num(E.crownMult(s), { small: true }), r: F.pct(E.crownRJ(s) - 1) }) + '</small></div></div>';
-      h += '<div class="swarm-box"><small class="muted">' + (pc > 0 ? t('crown_pending', { v: F.int(pc) }) + '<br>' : '') + t('crown_next', { v: F.num(E.crownNext(s)) }) + '</small>';
+      h += '<div class="sec card crown-card"><div class="big-stat"><div class="pic crown">' + ic('crown') + '</div><div><b class="num">' + F.int(s.crowns || 0) + '</b><small>' + esc(BZ.P.crownName(s.world, true)) + '  ·  ' + t('crown_bonus', { m: F.num(E.crownMult(s), { small: true }), r: F.pct(E.crownRJ(s) - 1) }) + '</small></div></div>';
+      h += '<div class="swarm-box"><small class="muted">' + (pc > 0 ? t('crown_pending', { v: F.int(pc), c: BZ.P.crownName(s.world) }) + '<br>' : '') + t('crown_next', { v: F.num(E.crownNext(s)) }) + '</small>';
       h += '<button class="btn btn-secondary btn-block' + (pc < 1 ? ' off' : '') + '" data-act="coronate">' + ic('crown') + t('coronate') + (pc >= 1 ? '  +' + F.int(pc) : '') + '</button></div>';
       h += '<div class="perks"><div class="sec-title"><h3>' + t('perks') + '</h3></div>' + BZ.CROWN_PERKS.map(p => '<div class="perk' + ((s.crowns || 0) >= p.at ? ' on' : '') + '">' + ic((s.crowns || 0) >= p.at ? 'check' : 'lock') + '<span>' + n(p.name) + '</span><small>' + t('perk_at', { n: p.at }) + '</small></div>').join('') + '</div></div>';
     } else {
-      h += '<div class="sec card"><div class="big-stat"><div class="pic crown">' + ic('crown') + '</div><div><b>' + t('crown_title') + '</b><small>' + t('crown_locked', { v: F.num(BZ.CROWN_DIVISOR * 0.25) }) + '</small></div></div></div>';
+      h += '<div class="sec card"><div class="big-stat"><div class="pic crown">' + ic('crown') + '</div><div><b>' + esc(BZ.P.crownName(s.world, true)) + '</b><small>' + t('crown_locked', { v: F.num(BZ.CROWN_DIVISOR * 0.25) }) + '</small></div></div></div>';
     }
     const mind = E.qlvl(s, 'mind');
     if (mind > 0) {

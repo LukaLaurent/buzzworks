@@ -64,20 +64,32 @@
   Pi.tier = sc => { let k = 0; BZ.PIRATE_TIERS.forEach((x, i) => { if (sc >= x.at) k = i; }); return k; };
 
   Pi.shipSvg = function (size) {
-    return '<svg class="pi-ship-svg" viewBox="-110 -120 220 170" width="' + size + '" height="' + Math.round(size * 170 / 220) + '" aria-hidden="true">' + Pi.shipBody() + '</svg>';
+    return '<svg class="pi-ship-svg" viewBox="-160 -205 310 255" width="' + size + '" height="' + Math.round(size * 255 / 310) + '" aria-hidden="true">' + Pi.shipBody() + '</svg>';
   };
   Pi.shipBody = function () {
-    let d = '<g class="pi-rock"><path d="M-14,-110 L-14,-8" stroke="#3A2414" stroke-width="7" stroke-linecap="round"/><path d="M34,-80 L34,-8" stroke="#3A2414" stroke-width="6" stroke-linecap="round"/>';
-    d += '<path class="pi-sail" d="M-12,-104 Q22,-80 -12,-28 Q-58,-60 -12,-104 Z" fill="#20252B" stroke="#0E1114" stroke-width="3"/><path class="pi-sail b" d="M36,-76 Q60,-58 36,-24 Q10,-48 36,-76 Z" fill="#2A3038" stroke="#0E1114" stroke-width="3"/>';
-    d += '<g transform="translate(-20 -64)"><circle r="11" fill="#F5F3EF"/><circle cx="-4" cy="-2" r="2.6" fill="#20252B"/><circle cx="4" cy="-2" r="2.6" fill="#20252B"/><path d="M-4,6 h8" stroke="#20252B" stroke-width="2"/><path d="M-14,10 L14,22 M14,10 L-14,22" stroke="#F5F3EF" stroke-width="4" stroke-linecap="round"/></g>';
-    d += '<path class="pi-flag" d="M-14,-112 L14,-104 L-14,-96 Z" fill="#D64545"/>';
-    d += '<path d="M-96,-12 L96,-12 L74,30 Q0,44 -74,30 Z" fill="#7A4A26" stroke="#3A2414" stroke-width="4" stroke-linejoin="round"/><path d="M-90,-2 H90" stroke="#E0A526" stroke-width="4"/><path d="M-80,14 H80" stroke="#5C3618" stroke-width="3"/>';
-    [-54, -22, 10, 42].forEach(x => { d += '<circle cx="' + x + '" cy="8" r="5" fill="#20252B" stroke="#E0A526" stroke-width="2"/>'; });
-    d += '<path d="M-96,-12 L-108,-30 L-84,-12 Z" fill="#7A4A26" stroke="#3A2414" stroke-width="3"/><path d="M96,-12 L112,-26 L100,-6 Z" fill="#7A4A26" stroke="#3A2414" stroke-width="3"/></g>';
-    d += '<path class="pi-wave" d="M-120,34 q20,-10 40,0 t40,0 t40,0 t40,0 t40,0 t40,0" stroke="#BFE3E0" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>';
+    const sail = (x, top, bot, w, c) => '<path d="M' + (x - w) + ',' + top + ' Q' + x + ',' + (top - 10) + ' ' + (x + w) + ',' + top + ' L' + (x + w - 2) + ',' + bot + ' L' + (x + w - 12) + ',' + (bot - 8) + ' L' + (x + w - 22) + ',' + (bot + 4) + ' L' + x + ',' + (bot - 10) + ' L' + (x - w + 22) + ',' + (bot + 4) + ' L' + (x - w + 12) + ',' + (bot - 8) + ' L' + (x - w + 2) + ',' + bot + ' Z" fill="' + c + '" stroke="#1E2226" stroke-width="2"/>';
+    let d = '<g class="pi-rock">';
+    d += '<path d="M-60,-24 L-60,-170 M12,-24 L12,-192 M80,-24 L80,-150" stroke="#2A1A10" stroke-width="6" stroke-linecap="round"/>';
+    d += '<path d="M-150,-40 L12,-190 M12,-190 L132,-42 M-60,-168 L-140,-34 M80,-148 L134,-44 M-60,-150 L12,-170 L80,-132" stroke="#6A5A4A" stroke-width="1.2" fill="none" opacity="0.8"/>';
+    d += '<path d="M-62,-120 h4 M-62,-100 h4 M10,-150 h4 M10,-128 h4 M78,-110 h4" stroke="#6A5A4A" stroke-width="2"/>';
+    d += sail(-60, -158, -98, 34, '#4E545C') + sail(-60, -90, -48, 30, '#454A52') + sail(12, -180, -114, 38, '#5A5F66') + sail(12, -106, -54, 34, '#4E545C') + sail(80, -140, -86, 28, '#4E545C');
+    d += '<path d="M-18,-150 L4,-160 L30,-148" stroke="#3E434A" stroke-width="1.5" fill="none" opacity="0.7"/><path d="M-80,-136 L-60,-142 L-40,-134" stroke="#3E434A" stroke-width="1.5" fill="none" opacity="0.7"/>';
+    d += '<ellipse cx="0" cy="-148" rx="5" ry="7" fill="#15191C"/><ellipse cx="-70" cy="-128" rx="4" ry="5" fill="#15191C"/><ellipse cx="88" cy="-110" rx="4" ry="6" fill="#15191C"/><ellipse cx="26" cy="-82" rx="3" ry="4" fill="#15191C"/>';
+    d += '<g transform="translate(12 -128)" opacity="0.85"><circle r="10" fill="#C9CED3"/><circle cx="-3.5" cy="-1.5" r="2.6" fill="#2A2E33"/><circle cx="3.5" cy="-1.5" r="2.6" fill="#2A2E33"/><path d="M-12,9 L12,19 M12,9 L-12,19" stroke="#C9CED3" stroke-width="3.5" stroke-linecap="round"/></g>';
+    d += '<path d="M0,-182 h24 v8 h-24 z" fill="#2A1A10"/><path d="M-2,-182 h28" stroke="#6A5A4A" stroke-width="2"/>';
+    d += '<path class="pi-flag" d="M12,-194 L46,-186 L40,-182 L46,-178 L12,-178 Z" fill="#0E1114"/><circle cx="26" cy="-186" r="2.6" fill="#E8EAEC"/>';
+    d += '<path d="M-134,-20 L-122,-52 L-70,-52 L-66,-24 L110,-24 L134,-40 L124,-2 Q100,34 0,40 Q-100,34 -124,-2 Z" fill="#3A2416" stroke="#140A04" stroke-width="3" stroke-linejoin="round"/>';
+    d += '<path d="M-126,-32 H-68 M-120,-8 H118 M-112,18 Q0,30 108,18" stroke="#8A6A2A" stroke-width="3" fill="none"/>';
+    d += '<path d="M-116,4 Q0,14 116,4 M-96,26 Q0,34 96,26" stroke="#24150C" stroke-width="1.5" fill="none" opacity="0.8"/>';
+    d += '<path d="M-124,-52 L-128,-60 L-66,-60 L-66,-52 Z" fill="#2A1A10"/><path d="M-120,-60 v-6 M-100,-60 v-6 M-80,-60 v-6" stroke="#2A1A10" stroke-width="2"/>';
+    [-116, -100, -84].forEach(x => { d += '<rect class="pi-lt" x="' + x + '" y="-47" width="11" height="10" rx="2" fill="#FFD45E"/>'; });
+    for (let x = -90; x <= 90; x += 30) d += '<circle cx="' + x + '" cy="7" r="4.6" fill="#0B0B0B" stroke="#C9A04A" stroke-width="1.6"/>';
+    d += '<path d="M118,-30 Q138,-44 150,-36 Q140,-30 132,-20" fill="#C9A04A" stroke="#6A4A10" stroke-width="2"/>';
+    d += '<circle class="pi-lt" cx="130" cy="-50" r="5" fill="#FFD45E"/><path d="M130,-56 v-8" stroke="#2A1A10" stroke-width="2"/>';
+    d += '</g><path class="pi-wave" d="M-160,40 q22,-10 44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0 t44,0" stroke="#8FB8C4" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.65"/>';
     return d;
   };
-  Pi.SPOTS = { wide: [[190, 280], [350, 940], [560, 940], [830, 940], [1750, 760], [1790, 940]], tall: [[150, -150], [150, -30], [720, 270], [750, 1310], [720, 1420]] };
+  Pi.SPOTS = { wide: [[190, 280], [300, 950], [520, 960], [1740, 770], [1800, 950]], tall: [[150, -130], [150, -60], [735, 1370], [735, 1470]] };
   Pi.spot = function (sl, tall) {
     const list = Pi.SPOTS[tall ? 'tall' : 'wide'];
     return list[hash('spot:' + sl.w + ':' + (real() ? real().seed : 0)) % list.length];
@@ -85,10 +97,10 @@
   Pi.mapHtml = function (tall) {
     const sl = Pi.active();
     if (!sl) return '';
-    const sp = Pi.spot(sl, tall), sc = tall ? 0.9 : 0.85, flip = hash('dir:' + sl.w) % 2 ? -1 : 1;
+    const sp = Pi.spot(sl, tall), sc = tall ? 0.78 : 0.74, flip = hash('dir:' + sl.w) % 2 ? -1 : 1;
     let fog = '';
     for (let k = 0; k < 4; k++) fog += '<ellipse class="pi-fog" style="animation-delay:-' + (k * 2.2) + 's" cx="' + (-130 + k * 85) + '" cy="' + (20 - (k % 2) * 30) + '" rx="' + (90 + k * 10) + '" ry="30"/>';
-    return '<g class="wm-pirate" transform="translate(' + sp[0] + ' ' + sp[1] + ') scale(' + (sc * flip) + ' ' + sc + ')"><g class="pi-sailing"><ellipse cx="0" cy="40" rx="120" ry="16" fill="#061418" opacity="0.55"/>' + Pi.shipBody() + '</g>' + fog + '</g>';
+    return '<g class="wm-pirate" transform="translate(' + sp[0] + ' ' + sp[1] + ') scale(' + (sc * flip) + ' ' + sc + ')"><g class="pi-sailing"><ellipse cx="0" cy="42" rx="150" ry="16" fill="#061418" opacity="0.55"/>' + Pi.shipBody() + '</g>' + fog + '</g>';
   };
   Pi.cardHtml = function () {
     const sl = Pi.active();

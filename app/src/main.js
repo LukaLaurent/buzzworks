@@ -435,9 +435,8 @@
     UI.confirm(t('reset_title'), t('reset_text'), t('reset_ok'), true, async () => {
       await BZ.Store.clear();
       G.main = migrate(E.newState(0));
+      G.main.flags.ob = 0;
       G.refreshScene();
-      tutorialStep = 1;
-      UI.hint(t('tutorial_1'));
       UI.structureChanged();
       UI.show('hive');
       G.save();
@@ -721,7 +720,8 @@
         Log.info('save loaded, away ' + Math.round(away) + ' s');
       } else {
         G.main = migrate(E.newState(0));
-        tutorialStep = 1;
+        G.main.flags.ob = 0;
+        G.main.flags.seenVersion = BZ.VERSION;
         Log.info('new game');
       }
       lastLifetime = G.main.lifetime;

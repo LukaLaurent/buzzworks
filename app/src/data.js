@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '3.4.1';
+  BZ.VERSION = '3.5.0';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -250,6 +250,10 @@
   BZ.LEAGUE_QUEST_COUNT = 4;
   BZ.LEAGUE_QUEST_GROW = 0.2;
   BZ.CHANGELOG = [
+    { v: '3.5.0', items: [
+      { icon: 'star', en: 'New players now get a short guided tutorial that shows what to tap and buy first, and explains royal jelly and crowns.', fr: 'Les nouveaux joueurs ont maintenant un court tutoriel guidé qui montre quoi toucher et acheter en premier, et explique la gelée royale et les couronnes.' },
+      { icon: 'globe', en: 'Something much bigger now hides in the fog...', fr: 'Quelque chose de bien plus grand se cache maintenant dans la brume...' }
+    ] },
     { v: '3.4.1', items: [
       { icon: 'boss', en: 'Each boss can now be fought only once per player, even when playing on several devices, and its reward can only be collected once.', fr: 'Chaque boss ne peut maintenant être combattu qu’une fois par joueur, même en jouant sur plusieurs appareils, et sa récompense ne peut être récupérée qu’une fois.' },
       { icon: 'globe', en: 'The fog over the sea has thickened...', fr: 'La brume sur la mer s’est épaissie...' }

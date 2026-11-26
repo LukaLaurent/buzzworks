@@ -1295,3 +1295,21 @@ button.bee.core-card:hover { transform: translateY(-2px); }
 .pi-q .ic { width: 18px; height: 18px; }
 .pi-d { font-style: italic; color: var(--text-muted); }
 @media (prefers-reduced-motion: reduce) { .pi-fog { animation: none !important; } }
+.ob-spot { position: fixed; z-index: 90; pointer-events: none; border-radius: 14px; box-shadow: 0 0 0 9999px rgba(10, 14, 18, 0.5); border: 3px solid var(--orange); opacity: 0; transition: left 250ms var(--ease), top 250ms var(--ease), width 250ms var(--ease), height 250ms var(--ease), opacity 250ms; }
+.ob-spot.on { opacity: 1; animation: obpulse 1.6s ease-in-out infinite; }
+@keyframes obpulse { 0%, 100% { border-color: var(--orange); outline: 0 solid rgba(242, 140, 40, 0.5); } 50% { border-color: #FFD45E; outline: 8px solid rgba(242, 140, 40, 0); } }
+.ob-tip { position: fixed; z-index: 91; display: none; padding: 12px 14px 14px; border-radius: 16px; background: var(--surface); color: var(--text); border: 2px solid var(--orange); box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35); }
+.ob-tip.on { display: block; animation: obin 300ms var(--ease); }
+@keyframes obin { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.ob-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.ob-ic { display: flex; }
+.ob-head small { font-size: var(--fs-xs); color: var(--text-faint); font-weight: 600; }
+.ob-skip { margin-left: auto; border: 0; background: none; color: var(--text-muted); font: 600 12px var(--font-body); cursor: pointer; padding: 4px 6px; border-radius: 8px; }
+.ob-skip:hover { color: var(--text); background: var(--surface-2); }
+.ob-tip p { font-size: var(--fs-sm); line-height: 1.5; }
+.ob-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+.ob-arrow { position: absolute; top: -9px; left: var(--ax, 50%); width: 16px; height: 16px; margin-left: -8px; background: var(--surface); border-left: 2px solid var(--orange); border-top: 2px solid var(--orange); transform: rotate(45deg); }
+.ob-tip.up .ob-arrow { top: auto; bottom: -9px; transform: rotate(225deg); }
+.pi-lt { animation: lt 1.4s ease-in-out infinite alternate; }
+@keyframes lt { from { opacity: 0.55; } to { opacity: 1; } }
+.pi-bar-pic { width: 52px; }

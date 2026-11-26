@@ -12,7 +12,7 @@
   );
   BZ.BEES.forEach(b => { BZ.BEE_BY_ID[b.id] = b; });
 
-  P.SHARED = ['tickets', 'pity', 'bees', 'cores', 'coreSlots', 'parts', 'skins', 'skin', 'xp', 'level', 'pass', 'daily', 'quick', 'ads', 'ess', 'prime', 'essenceTotal', 'essShop', 'worldsOpen', 'otherWorlds', 'flags', 'seed', 'playerName', 'league', 'quests', 'ticketBees', 'created', 'danceReady', 'cloud'];
+  P.SHARED = ['tickets', 'pity', 'bees', 'cores', 'coreSlots', 'parts', 'skins', 'skin', 'xp', 'level', 'pass', 'daily', 'quick', 'ads', 'ess', 'prime', 'primeStones', 'rubies', 'essenceTotal', 'essShop', 'worldsOpen', 'otherWorlds', 'flags', 'seed', 'playerName', 'league', 'quests', 'ticketBees', 'created', 'danceReady', 'cloud'];
 
   P.XP = { buy: 1, upgrade: 4, milestone: 6, lucky: 10, quest: 50, quick: 15, swarm: 80, achievement: 8, hatch: 5, power: 5, coronation: 300, bless: 10, ticket: 6 };
   P.xpFor = L => Math.round(40 * Math.pow(L, 1.7));
@@ -78,12 +78,26 @@
   P.treeDoneCount = (s, w) => BZ.ESSENCE_SHOP.filter(x => (w === undefined || x.w === w) && P.essMaxed(s, x.id)).length;
   P.treeDone = s => P.treeDoneCount(s) === P.treeCount(s);
   P.primeCost = s => Math.ceil(BZ.PRIME_COST * Math.pow(BZ.PRIME_GROWTH, s.prime || 0));
-  P.canPrime = s => P.treeDone(s) && s.ess.every(v => v >= P.primeCost(s));
+  P.canPrime = s => P.treeDone(s) && (s.primeStones || 0) >= 1 && s.ess.every(v => v >= P.primeCost(s));
+  P.rubyRoll = function (s, r) {
+    const rnd = r || Math.random;
+    const tot = BZ.RUBY.reduce((a, x) => a + x.w, 0);
+    let v = rnd() * tot, x = BZ.RUBY[BZ.RUBY.length - 1];
+    for (const it of BZ.RUBY) { v -= it.w; if (v <= 0) { x = it; break; } }
+    s.rubies = (s.rubies || 0) + 1;
+    let got = [];
+    if (x.id === 'stone') s.primeStones = (s.primeStones || 0) + 1;
+    else if (x.id === 'ess') { s.ess[s.world] = (s.ess[s.world] || 0) + x.v; s.essenceTotal = (s.essenceTotal || 0) + x.v; }
+    else got = P.grant(s, { [x.id]: x.v });
+    s._dirty = true;
+    return { x, got, world: s.world };
+  };
   P.doPrime = function (s) {
     if (!P.canPrime(s)) return null;
     const keep = {};
     for (const k of P.SHARED) keep[k] = s[k];
     keep.prime = (s.prime || 0) + 1;
+    keep.primeStones = (s.primeStones || 0) - 1;
     keep.ess = BZ.ESSENCES.map(() => 0);
     keep.essShop = {};
     keep.worldsOpen = [0];
@@ -123,6 +137,8 @@
     if (s.essenceTotal === undefined) s.essenceTotal = s.essence || 0;
     delete s.essence;
     s.prime = s.prime || 0;
+    s.primeStones = s.primeStones || 0;
+    s.rubies = s.rubies || 0;
     if (s.queen && s.queen.mind > P.mindAllowed(s)) { s.queen.mind = P.mindAllowed(s); if (!s.queen.mind) delete s.queen.mind; }
     s.worldsOpen = s.worldsOpen || [0];
     s.otherWorlds = s.otherWorlds || {};

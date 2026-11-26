@@ -226,7 +226,7 @@
     c.fillStyle = 'rgba(255,255,255,0.75)';
     c.beginPath(); c.ellipse(-s * 0.2, -s * 0.9, s * 0.55, s * 0.9 * flap, -0.4, 0, Math.PI * 2); c.fill();
     c.beginPath(); c.ellipse(s * 0.25, -s * 0.85, s * 0.45, s * 0.75 * flap, 0.3, 0, Math.PI * 2); c.fill();
-    const body = b.golden ? '#FFD45E' : b.c0 || '#F2C14E';
+    const body = b.red ? '#E8403C' : b.golden ? '#FFD45E' : b.c0 || '#F2C14E';
     const ink = b.c1 || '#20252B';
     c.fillStyle = body;
     c.beginPath(); c.ellipse(0, 0, s * 1.1, s * 0.78, 0, 0, Math.PI * 2); c.fill();
@@ -262,13 +262,13 @@
     }
   }
 
-  Scene.spawnLucky = function (life, kind) {
+  Scene.spawnLucky = function (life, kind, red) {
     kind = kind || 'lucky';
     const fromLeft = Math.random() < 0.5;
     flyers[kind] = {
       kind, x: fromLeft ? -40 : W + 40, y: H * (0.25 + Math.random() * 0.4),
       vx: 0, vy: 0, t: 0, life, max: life, fromLeft,
-      size: Math.max(9, comb.r * (kind === 'ticket' ? 0.36 : 0.42)), golden: kind === 'lucky', trail: [], tx: W * (0.2 + Math.random() * 0.6), ty: H * (0.2 + Math.random() * 0.5), retarget: 0
+      size: Math.max(9, comb.r * (kind === 'ticket' ? 0.36 : 0.42)), golden: kind === 'lucky', red: !!red, trail: [], tx: W * (0.2 + Math.random() * 0.6), ty: H * (0.2 + Math.random() * 0.5), retarget: 0
     };
   };
   Scene.removeLucky = function (caught, kind) {
@@ -369,8 +369,8 @@
     c.save();
     c.globalAlpha = alpha;
     const rg = c.createRadialGradient(L.x, L.y, 0, L.x, L.y, L.size * 4.2);
-    rg.addColorStop(0, 'rgba(255,220,110,0.75)');
-    rg.addColorStop(1, 'rgba(255,220,110,0)');
+    rg.addColorStop(0, L.red ? 'rgba(240,70,90,0.85)' : 'rgba(255,220,110,0.75)');
+    rg.addColorStop(1, L.red ? 'rgba(240,70,90,0)' : 'rgba(255,220,110,0)');
     c.fillStyle = rg;
     c.beginPath(); c.arc(L.x, L.y, L.size * 4.2, 0, Math.PI * 2); c.fill();
     c.strokeStyle = 'rgba(255,255,255,0.9)';
@@ -380,8 +380,8 @@
       const r1 = L.size * 2.1, r2 = L.size * 2.9;
       c.beginPath(); c.moveTo(L.x + Math.cos(a) * r1, L.y + Math.sin(a) * r1); c.lineTo(L.x + Math.cos(a) * r2, L.y + Math.sin(a) * r2); c.stroke();
     }
-    drawBee(c, { x: L.x, y: L.y, vx: L.vx, t: L.t, size: L.size, golden: true }, pulse);
-    c.fillStyle = '#FFF4C8';
+    drawBee(c, { x: L.x, y: L.y, vx: L.vx, t: L.t, size: L.size, golden: true, red: L.red }, pulse);
+    c.fillStyle = L.red ? '#FFD45E' : '#FFF4C8';
     const cr = L.size * 0.55;
     c.beginPath();
     c.moveTo(L.x - cr, L.y - L.size * 1.1);

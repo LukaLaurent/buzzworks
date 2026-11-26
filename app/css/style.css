@@ -865,3 +865,22 @@ button.bee.core-card:hover { transform: translateY(-2px); }
 .wm-pcost span .ic { width: 14px; height: 14px; color: var(--ec); }
 .wm-pcost span.ok { border-color: var(--ec); }
 @media (max-width: 520px) { .wm-tree { grid-template-columns: 1fr; } .wm-etab small { display: none; } }
+
+.rr-pic { background: #E8403C !important; color: #FFD45E !important; }
+.rr-win { position: relative; overflow: hidden; border-radius: var(--r-md); background: var(--surface-2); border: 1px solid var(--border); padding: var(--sp-3) 0; margin-top: var(--sp-3); -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); }
+.rr-strip { display: flex; gap: 10px; padding-left: 10px; width: max-content; transition: transform 4.6s cubic-bezier(0.08, 0.7, 0.12, 1); will-change: transform; }
+.rr-t { width: 96px; flex-shrink: 0; height: 104px; border-radius: 14px; background: color-mix(in srgb, var(--rc) 14%, var(--surface)); border: 2px solid color-mix(in srgb, var(--rc) 45%, transparent); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 6px; text-align: center; transition: transform 300ms var(--ease), box-shadow 300ms; }
+.rr-t span { width: 40px; height: 40px; border-radius: 12px; background: var(--rc); color: #fff; display: flex; align-items: center; justify-content: center; }
+.rr-t span .ic { width: 22px; height: 22px; }
+.rr-t small { font-size: 11px; font-weight: 600; line-height: 1.2; color: var(--text); }
+.rr-t.st { box-shadow: 0 0 14px color-mix(in srgb, var(--rc) 55%, transparent); }
+.rr-t.win { transform: scale(1.08); box-shadow: 0 0 0 3px var(--rc), 0 0 24px color-mix(in srgb, var(--rc) 70%, transparent); }
+.rr-mark { position: absolute; top: 0; bottom: 0; left: 50%; width: 0; pointer-events: none; }
+.rr-mark::before, .rr-mark::after { content: ''; position: absolute; left: 50%; margin-left: -9px; border: 9px solid transparent; filter: drop-shadow(0 0 4px #E8403C); }
+.rr-mark::before { top: 0; border-top-color: #E8403C; }
+.rr-mark::after { bottom: 0; border-bottom-color: #E8403C; }
+.rr-res { text-align: center; margin-top: var(--sp-3); min-height: 24px; }
+.rr-res .jp { color: #F0509E; font: 700 20px var(--font-head); animation: mythic 1.2s ease-in-out infinite; }
+.rr-odds { text-align: center; font-size: var(--fs-xs); margin-top: var(--sp-1); }
+.rr.jackpot .rr-win { border-color: #F0509E; box-shadow: 0 0 30px rgba(240, 80, 158, 0.45); }
+@media (prefers-reduced-motion: reduce) { .rr-strip { transition-duration: 1.2s; } }

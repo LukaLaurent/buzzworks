@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '2.2.1';
+  BZ.VERSION = '2.3.0';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -381,7 +381,16 @@
   ];
   BZ.ESS_BY_ID = {};
   BZ.ESSENCE_SHOP.forEach(x => { BZ.ESS_BY_ID[x.id] = x; });
-  BZ.PRIME_COST = 250;
+  BZ.PRIME_COST = 50000;
+  BZ.RUBY_CHANCE = 0.06;
+  BZ.RUBY = [
+    { id: 'stone', w: 3, v: 1, icon: 'gem', color: '#F0509E' },
+    { id: 'core', w: 12, v: 2, icon: 'ticket', color: '#8E6AC8' },
+    { id: 'royal', w: 15, v: 3, icon: 'crown', color: '#E0A526' },
+    { id: 'egg', w: 30, v: 6, icon: 'ticket', color: '#F28C28' },
+    { id: 'ess', w: 25, v: 150, icon: 'sparkle', color: '#7FC8E8' },
+    { id: 'part', w: 15, v: 1, icon: 'palette', color: '#527C82' }
+  ];
   BZ.PRIME_GROWTH = 2;
   BZ.SELL_MIN = 5;
 

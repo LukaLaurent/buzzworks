@@ -42,7 +42,8 @@ With the local server, saves go to `data/save.json` and `data/settings.json`, wi
 | Ember peaks | 250 crowns of the Moon garden | double royal jelly, steeper prices |
 
 - **Essence trees**: each world has its own essence (Bloom, Sun, Frost, Moon, Ember). Sell an open world with 5 crowns or more earned in it to restart it for that world's essence, then spend it in that world's tree (button on the world map). Every tree has 4 upgrades with a level cap, so finishing them all means playing and selling every world.
-- **Prime**: once all five trees are complete, spend 250 of every essence (doubles each time) to gain a Prime point. Honey x2 per point, stacking. Worlds, crowns, essence and trees restart from one fresh world; bees, cores, skins, tickets, level and pass stay.
+- **Prime**: once all five trees are complete, spend 50 K of every essence (doubles each time) and one Prime stone to gain a Prime point. Honey x2 per point, stacking. Worlds, crowns, essence and trees restart from one fresh world; bees, cores, skins, tickets, level and pass stay.
+- **Red lucky bees**: once worlds are open, 6% of lucky bees are red. Catching one spins a reel: Prime stone 3%, 6 egg tickets 30%, 150 essence of the current world 25%, 3 royal tickets 15%, a skin part 15%, 2 core tickets 12%.
 - **Mythic**: a fifth rarity above legendary. 3 mythic bees and 2 mythic cores, at 0.04% (standard egg), 0.2% (royal egg) and 0.1% (core summoning) per hatch, outside the pity system.
 - **Stats tab**: every multiplier (honey, taps, lucky bees, royal jelly, prices, away time) broken down by source, plus general stats.
 - **Ads**: optional rewarded ads for x2 honey for 30 min (6 a day), 2 egg tickets (3 a day), away earnings x2 (3 a day) and blessing rerolls (3 a day). The free Bee dance gives x2 for 20 min every 4 h.

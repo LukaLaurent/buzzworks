@@ -484,7 +484,7 @@
         achQueue.push(Object.assign({ run: true }, d));
         if (achQueue.length === 1) setTimeout(flushAch, 60);
         break;
-      case 'luckySpawn': Scene.spawnLucky(d.t); A.play('luckySpawn'); break;
+      case 'luckySpawn': Scene.spawnLucky(d.t, 'lucky', d.red); A.play('luckySpawn'); break;
       case 'luckyGone': Scene.removeLucky(false); break;
       case 'ticketSpawn': Scene.spawnLucky(d.t, 'ticket'); break;
       case 'ticketGone': Scene.removeLucky(false, 'ticket'); break;
@@ -530,6 +530,19 @@
       return;
     }
     if (!s.luckyOn) return;
+    if (s.luckyOn.red) {
+      s.luckyOn = null;
+      s.lucky++; s.runLucky++;
+      Scene.removeLucky(true);
+      A.play('lucky');
+      vibrate([10, 30, 10, 30, 10]);
+      E.emit(s, 'lucky', { id: 'ruby' });
+      const r = P.rubyRoll(s);
+      Log.info('ruby roll ' + r.x.id);
+      G.save();
+      UI.rubyRoll(r, () => { A.play(r.x.id === 'stone' ? 'swarm' : 'upgrade'); if (r.x.id === 'stone') Scene.pulse(10); UI.dirty('bees'); UI.dirty('workshop'); UI.render(); });
+      return;
+    }
     const res = E.catchLucky(s, null);
     Scene.removeLucky(true);
     A.play('lucky');

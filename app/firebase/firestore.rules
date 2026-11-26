@@ -4,9 +4,26 @@ service cloud.firestore {
 
     function signedIn() { return request.auth != null; }
     function isNum(v) { return v is number && v >= 0; }
+    function isAdmin() { return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)); }
+    function isBanned() { return signedIn() && exists(/databases/$(database)/documents/banned/$(request.auth.uid)); }
+
+    match /admins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+    }
+
+    match /banned/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    match /gifts/{uid}/items/{id} {
+      allow read, delete: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create: if isAdmin();
+    }
 
     match /saves/{uid} {
-      allow read, delete: if signedIn() && request.auth.uid == uid;
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow delete: if signedIn() && request.auth.uid == uid;
       allow write: if signedIn() && request.auth.uid == uid
         && request.resource.data.keys().hasOnly(['data', 'at'])
         && request.resource.data.data is string
@@ -15,8 +32,9 @@ service cloud.firestore {
 
     match /players/{uid} {
       allow read: if true;
-      allow delete: if signedIn() && request.auth.uid == uid;
-      allow write: if signedIn() && request.auth.uid == uid
+      allow delete: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow update: if isAdmin();
+      allow write: if signedIn() && request.auth.uid == uid && !isBanned()
         && request.resource.data.keys().hasOnly(['name', 'tier', 'v', 'honey', 'crowns', 'essence', 'bees', 'level', 'trophies', 'at'])
         && request.resource.data.name is string
         && request.resource.data.name.size() > 0
@@ -38,11 +56,12 @@ service cloud.firestore {
           && e.l is number && e.l >= 1;
       }
       allow read: if true;
-      allow create: if signedIn()
+      allow update, delete: if isAdmin();
+      allow create: if signedIn() && !isBanned()
         && request.resource.data.keys().hasOnly(['week', 'tier', 'scores'])
         && request.resource.data.scores.keys().hasOnly([request.auth.uid])
         && entryOk(request.resource.data.scores[request.auth.uid]);
-      allow update: if signedIn()
+      allow update: if signedIn() && !isBanned()
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['scores'])
         && request.resource.data.scores.diff(resource.data.scores).affectedKeys().hasOnly([request.auth.uid])
         && request.resource.data.scores.size() <= 20

@@ -38,6 +38,46 @@
     signedIn: () => !!user,
     uid: () => (user && user.uid) || '',
     who: () => (user && (user.email || user.displayName)) || '',
+    email: () => (user && user.emailVerified !== false && user.email) || '',
+    async isAdmin() {
+      if (!user) return false;
+      const snap = await fb.fs.getDoc(fb.fs.doc(fb.D, 'admins', user.uid));
+      return snap.exists();
+    },
+    async banned() {
+      if (!user) return false;
+      const snap = await fb.fs.getDoc(fb.fs.doc(fb.D, 'banned', user.uid));
+      return snap.exists();
+    },
+    async gifts() {
+      if (!user) return [];
+      const f = fb.fs;
+      const snap = await f.getDocs(f.collection(fb.D, 'gifts', user.uid, 'items'));
+      return snap.docs.map(d => Object.assign({}, d.data(), { id: d.id }));
+    },
+    async takeGift(id) {
+      await fb.fs.deleteDoc(fb.fs.doc(fb.D, 'gifts', user.uid, 'items', id));
+    },
+    admin: {
+      gift: (uid, d) => fb.fs.addDoc(fb.fs.collection(fb.D, 'gifts', uid, 'items'), Object.assign({}, d, { at: Date.now(), by: user.uid })),
+      ban: (uid, name) => fb.fs.setDoc(fb.fs.doc(fb.D, 'banned', uid), { name: name || '', at: Date.now() }),
+      unban: uid => fb.fs.deleteDoc(fb.fs.doc(fb.D, 'banned', uid)),
+      async bannedList() { const snap = await fb.fs.getDocs(fb.fs.collection(fb.D, 'banned')); return snap.docs.map(d => Object.assign({ uid: d.id }, d.data())); },
+      dropPlayer: uid => fb.fs.deleteDoc(fb.fs.doc(fb.D, 'players', uid)),
+      rename: (uid, name) => fb.fs.updateDoc(fb.fs.doc(fb.D, 'players', uid), { name }),
+      async save(uid) {
+        const snap = await fb.fs.getDoc(fb.fs.doc(fb.D, 'saves', uid));
+        if (!snap.exists()) return null;
+        try { return JSON.parse(snap.data().data); } catch (e) { return null; }
+      },
+      async groupsOf(uid) {
+        const f = fb.fs;
+        const snap = await f.getDocs(f.query(f.collection(fb.D, 'groups'), f.where('scores.' + uid + '.p', '>=', 0)));
+        return snap.docs.map(d => Object.assign({ gid: d.id }, d.data()));
+      },
+      setPoints: (gid, uid, p) => fb.fs.updateDoc(fb.fs.doc(fb.D, 'groups', gid), { ['scores.' + uid + '.p']: p }),
+      kick: (gid, uid) => fb.fs.updateDoc(fb.fs.doc(fb.D, 'groups', gid), { ['scores.' + uid]: fb.fs.deleteField() })
+    },
     async signIn() {
       await Cloud.init();
       const p = new fb.auth.GoogleAuthProvider();

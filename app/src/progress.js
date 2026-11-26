@@ -79,6 +79,25 @@
   P.essName = i => { const v = BZ.n(BZ.ESSENCES[i].name); return BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
   P.essName = i => { const v = BZ.n(BZ.ESSENCES[i].name); return BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
   P.essName = i => { const v = BZ.n(BZ.ESSENCES[i].name); return BZ.F.lang === 'fr' ? v[0].toLowerCase() + v.slice(1) : v; };
+  P.applyGift = function (s, d) {
+    const add = (v, x) => Math.max(0, (v || 0) + x);
+    const num = v => (typeof v === 'number' && isFinite(v) ? v : 0);
+    for (const k of ['egg', 'royal', 'core']) if (num(d[k])) s.tickets[k] = add(s.tickets[k], num(d[k]));
+    if (num(d.primeStones)) s.primeStones = add(s.primeStones, num(d.primeStones));
+    if (Array.isArray(d.ess)) d.ess.forEach((v, i) => { v = num(v); if (!v || i >= s.ess.length) return; s.ess[i] = add(s.ess[i], v); if (v > 0) s.essenceTotal = (s.essenceTotal || 0) + v; });
+    if (num(d.honey) > 0) E.gainHoney(s, num(d.honey));
+    else if (num(d.honey) < 0) s.honey = add(s.honey, num(d.honey));
+    if (num(d.rj)) s.rj = add(s.rj, num(d.rj));
+    if (num(d.crowns)) s.crowns = add(s.crowns, num(d.crowns));
+    if (num(d.levels)) { s.level = Math.max(1, (s.level || 1) + Math.round(num(d.levels))); s.xp = 0; }
+    if (num(d.passXp)) { P.passRoll(s); s.pass.xp = add(s.pass.xp, num(d.passXp)); }
+    if (num(d.league)) s.league.points = add(s.league.points, num(d.league));
+    if (num(d.parts) > 0) for (let i = 0; i < Math.min(200, num(d.parts)); i++) P.addPart(s);
+    if (d.lgReset) s.league.points = 0;
+    if (d.lgKick) { s.league.gid = ''; s.league.points = 0; }
+    if (d.rename) s.playerName = '';
+    s._dirty = true;
+  };
   P.treeCount = (s, w) => BZ.ESSENCE_SHOP.filter(x => w === undefined || x.w === w).length;
   P.treeDoneCount = (s, w) => BZ.ESSENCE_SHOP.filter(x => (w === undefined || x.w === w) && P.essMaxed(s, x.id)).length;
   P.treeDone = s => P.treeDoneCount(s) === P.treeCount(s);

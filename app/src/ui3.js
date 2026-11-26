@@ -106,6 +106,7 @@
       h += '<div class="card lg-cta"><div class="lg-cta-pic">' + ic('league') + '</div><p>' + t('lg_signin_d') + '</p><div class="lg-cta-list">' + [['league', 'lg_cta_1'], ['star', 'lg_cta_2'], ['ticket', 'lg_cta_3']].map(x => '<span>' + ic(x[0]) + t(x[1]) + '</span>').join('') + '</div><div class="lg-cta-tiers">' + BZ.LEAGUE_TIERS.map(x => '<i style="background:' + x.color + '" title="' + esc(n(x.name)) + '"></i>').join('') + '</div><button class="btn btn-primary btn-lg g-btn" data-act="cloudin">' + ic('user') + t('cloud_signin') + '</button></div>';
       return h;
     }
+    if (O.banned) return h + '<div class="card lg-cta"><div class="lg-cta-pic">' + ic('lock') + '</div><p>' + t('lg_banned') + '</p></div>';
     h += '<div class="seg lg-seg"><button data-act="lgview" data-arg="league" class="' + (view === 'league' ? 'on' : '') + '">' + t('lg_league') + '</button><button data-act="lgview" data-arg="ranks" class="' + (view === 'ranks' ? 'on' : '') + '">' + t('lg_ranks') + '</button></div><div style="height:var(--sp-4)"></div>';
     h += view === 'league' ? leagueView(s) : ranksView(s);
     return h;

@@ -725,7 +725,7 @@
       }
       document.addEventListener('pointerdown', () => A.unlock(), { once: true });
       if (BZ.Cloud && BZ.Cloud.configured()) {
-        BZ.Cloud.onChange = () => { UI.dirty('settings'); UI.dirty('league'); };
+        BZ.Cloud.onChange = () => { UI.dirty('settings'); UI.dirty('league'); UI.dirty('about'); if (BZ.Dev) BZ.Dev.check(); };
         BZ.Cloud.init().then(ok => { if (ok && BZ.Cloud.signedIn()) G.cloudSync(false, true); UI.dirty('settings'); UI.dirty('league'); }).catch(e => Log.error('cloud init: ' + (e && e.message || e)));
       }
       await (document.fonts && document.fonts.ready ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 2500))]) : Promise.resolve());

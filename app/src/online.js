@@ -101,6 +101,9 @@
     if (!C.signedIn() || O.busy) return false;
     O.busy = true;
     try {
+      if (await C.banned().catch(() => false)) { O.banned = true; O.error = ''; return false; }
+      O.banned = false;
+      await O.applyGifts(s);
       M.leagueRoll(s);
       const L = s.league;
       if (L.prev && L.prev.gid) await finalize(s);
@@ -117,6 +120,20 @@
       if (BZ.Log) BZ.Log.error('online sync: ' + O.error);
       return false;
     } finally { O.busy = false; }
+  };
+
+  O.applyGifts = async function (s) {
+    const list = await BZ.Cloud.gifts().catch(() => []);
+    let n = 0;
+    for (const g of list) {
+      try { await BZ.Cloud.takeGift(g.id); } catch (e) { continue; }
+      P.applyGift(s, g);
+      n++;
+      if (BZ.UI && BZ.UI.toast) BZ.UI.toast('gift', g.note ? BZ.t('dev_gift') + ': ' + String(g.note).slice(0, 80) : BZ.t('dev_gift'), { ok: true, long: true });
+      if (BZ.Log) BZ.Log.info('gift applied ' + JSON.stringify(g).slice(0, 200));
+    }
+    if (n) { E.recalc(s); if (BZ.UI) { BZ.UI.structureChanged(); BZ.UI.render(); } if (BZ.Game) BZ.Game.save(); }
+    return n;
   };
 
   O.board = async function (s, field) {

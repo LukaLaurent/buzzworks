@@ -55,7 +55,7 @@ service cloud.firestore {
         return d.keys().hasOnly(['n', 'p', 'l', 'at'])
           && d.n is string && d.n.size() > 0 && d.n.size() <= 18
           && !d.n.matches('(?si).*(<|>|https?:|www[.]).*')
-          && d.p is number && d.p >= 0 && d.p < 1e30
+          && d.p is number && d.p >= 0 && d.p < 1000000000000000000000000000000.0
           && d.l is int && d.l >= 1 && d.l < 100000
           && d.at is number;
       }

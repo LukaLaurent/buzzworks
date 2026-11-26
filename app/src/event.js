@@ -12,7 +12,7 @@
     ev_signin: 'Sign in with Google to fight the boss and join the ranking.', ev_leave: 'Leave', ev_leave_t: 'Leave the fight?', ev_leave_d: 'Your damage is kept, but you cannot fight this boss again.',
     ev_go_t: '{b} appears!', ev_go_d: 'A fresh hive for 10 minutes. Make as much honey as you can: every drop hits the boss.', ev_over_t: 'The fight is over!', ev_over_d: 'You dealt {v} damage and reached level {l}. Your ranking reward arrives when the boss leaves.',
     ev_res_t: 'Last boss: rank {r}', ev_res_d: 'You finished {r} out of {n} hives against {b}.', ev_blocked: 'Not available during the boss fight', ev_hp: '{v} HP left',
-    ev_mine: 'Your best against this boss', ev_instant: 'Fight reward', ev_ends: 'Next boss in {t}', ev_bub_go: 'Fight!', ev_bub_t: '{b} is here! Tap to fight', ev_bub_soon: 'Next boss in {t}',
+    ev_mine: 'Your best against this boss', ev_offline: 'Could not reach the server. Check your connection and try again.', ev_instant: 'Fight reward', ev_ends: 'Next boss in {t}', ev_bub_go: 'Fight!', ev_bub_t: '{b} is here! Tap to fight', ev_bub_soon: 'Next boss in {t}',
     hb_mystic: 'Mystic', ticket_mystic: 'Mystic eggs', r_mystic: '+{v} mystic eggs', mystic_t: 'Mystic egg', mystic_d: 'Always hatches a mythic bee. Won against the boss or, very rarely, from a red lucky bee.',
     hb_legend: 'Legendary', ticket_legend: 'Legendary eggs', r_legend: '+{v} legendary eggs', legend_t: 'Legendary egg', legend_d: 'Always hatches a legendary bee. Won against the boss or from a red lucky bee.',
     rr_luck: 'Lucky hatch {v} min', rr_xp2: 'Double XP {v} min', rr_lg2: 'League rush {v} min', rr_legend: 'Legendary egg', rr_mystic: 'Mystic egg'
@@ -25,7 +25,7 @@
     ev_signin: 'Connectez-vous avec Google pour affronter le boss et entrer dans le classement.', ev_leave: 'Quitter', ev_leave_t: 'Quitter le combat ?', ev_leave_d: 'Vos dégâts sont gardés, mais vous ne pourrez plus affronter ce boss.',
     ev_go_t: '{b} apparaît !', ev_go_d: 'Une ruche neuve pendant 10 minutes. Produisez un maximum de miel : chaque goutte frappe le boss.', ev_over_t: 'Le combat est terminé !', ev_over_d: 'Vous avez infligé {v} dégâts et atteint le niveau {l}. Votre récompense de classement arrive au départ du boss.',
     ev_res_t: 'Dernier boss : rang {r}', ev_res_d: 'Vous finissez {r} sur {n} ruches contre {b}.', ev_blocked: 'Indisponible pendant le combat de boss', ev_hp: 'Encore {v} PV',
-    ev_mine: 'Votre meilleur score contre ce boss', ev_instant: 'Récompense de combat', ev_ends: 'Prochain boss dans {t}', ev_bub_go: 'Combat !', ev_bub_t: '{b} est là ! Touchez pour combattre', ev_bub_soon: 'Prochain boss dans {t}',
+    ev_mine: 'Votre meilleur score contre ce boss', ev_offline: 'Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.', ev_instant: 'Récompense de combat', ev_ends: 'Prochain boss dans {t}', ev_bub_go: 'Combat !', ev_bub_t: '{b} est là ! Touchez pour combattre', ev_bub_soon: 'Prochain boss dans {t}',
     hb_mystic: 'Mystique', ticket_mystic: 'Œufs mystiques', r_mystic: '+{v} œufs mystiques', mystic_t: 'Œuf mystique', mystic_d: 'Donne toujours une abeille mythique. À gagner contre le boss ou, très rarement, avec une abeille dorée rouge.',
     hb_legend: 'Légendaire', ticket_legend: 'Œufs légendaires', r_legend: '+{v} œufs légendaires', legend_t: 'Œuf légendaire', legend_d: 'Donne toujours une abeille légendaire. À gagner contre le boss ou avec une abeille dorée rouge.',
     rr_luck: 'Éclosion chanceuse {v} min', rr_xp2: 'XP double {v} min', rr_lg2: 'Ruée de ligue {v} min', rr_legend: 'Œuf légendaire', rr_mystic: 'Œuf mystique'
@@ -66,7 +66,23 @@
   Ev.owedDue = e => (e.owed || []).filter(x => Ev.due(x.day));
   Ev.boss = day => { let h = 0; for (const ch of day || Ev.day()) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return BZ.BOSSES[h % BZ.BOSSES.length]; };
   Ev.state = s => { s.event = Object.assign({ day: '', done: 0, best: 0, lvl: 0, claimed: '' }, s.event || {}); return s.event; };
-  Ev.canPlay = s => { const e = Ev.state(s); return e.day !== Ev.day() || !e.done; };
+  Ev.canPlay = s => { const e = Ev.state(s), d = Ev.day(); if (Ev.mineDay === d && Ev.mine) return false; return e.day !== d || !e.done; };
+  Ev.mineDay = ''; Ev.mine = null;
+  Ev.checkMine = async function (force) {
+    const d = Ev.day();
+    if (!cloudOk() || (!force && Ev.mineDay === d)) return Ev.mine;
+    const r = await BZ.Cloud.boss.mine(d);
+    Ev.mineDay = d; Ev.mine = r;
+    const s = real();
+    if (r && s) {
+      const e = Ev.state(s);
+      if (e.day !== d) { if (e.day && e.best > 0 && e.claimed !== e.day) e.owed = (e.owed || []).filter(x => x.day !== e.day).concat([{ day: e.day, best: e.best }]).slice(-6); e.day = d; e.best = 0; e.lvl = 0; e.claimed = ''; }
+      e.done = 1;
+      if ((r.p || 0) > (e.best || 0)) { e.best = r.p; e.lvl = Ev.level(r.p); }
+      UI.dirty('event');
+    }
+    return r;
+  };
   Ev.level = d => Math.max(0, Math.floor(Math.log10(Math.max(1, d)) - 5));
   Ev.hpFrac = d => { const l = Ev.level(d), lo = l === 0 ? 0 : Math.pow(10, l + 5), hi = Math.pow(10, l + 6); return Math.max(0, Math.min(1, 1 - (d - lo) / (hi - lo))); };
   Ev.hpLeft = d => Math.max(0, Math.pow(10, Ev.level(d) + 6) - d);
@@ -118,11 +134,24 @@
     return ns;
   };
 
-  Ev.start = function () {
+  Ev.start = async function () {
     const g = G(), s = real();
-    if (g.battle || !cloudOk()) return;
+    if (g.battle || !cloudOk() || Ev.starting) return;
     if (!Ev.canPlay(s)) return UI.toast('boss', t('ev_done'));
-    const day = Ev.day(), e = Ev.state(s);
+    const day = Ev.day();
+    Ev.starting = true;
+    try {
+      const mine = await Ev.checkMine(true);
+      if (mine || !Ev.canPlay(s)) { UI.toast('boss', t('ev_done')); return; }
+      await BZ.Cloud.boss.setScore(day, { n: (BZ.ChatFilter.name(BZ.Online.name(s)).replace(/[*]+/g, '').trim() || 'Player').slice(0, 18), p: 0, l: Math.max(1, Math.min(99999, Math.floor(s.level || 1))) });
+      Ev.mineDay = day; Ev.mine = { p: 0 };
+    } catch (err) {
+      if (BZ.Log) BZ.Log.error('boss start: ' + (err && err.message));
+      UI.toast('info', t('ev_offline'));
+      return;
+    } finally { Ev.starting = false; }
+    if (G().battle || Ev.day() !== day) return;
+    const e = Ev.state(s);
     if (e.day !== day) { if (e.day && e.best > 0 && e.claimed !== e.day) e.owed = (e.owed || []).filter(x => x.day !== e.day).concat([{ day: e.day, best: e.best }]).slice(-6); e.day = day; e.best = 0; e.lvl = 0; }
     e.done = 1;
     const boss = Ev.boss(day);
@@ -278,8 +307,12 @@
     try {
       const day = item.day;
       const r = await BZ.Cloud.boss.rank(day, item.best);
+      let taken = false;
+      try { await BZ.Cloud.boss.claim(day); }
+      catch (cerr) { if (cerr && cerr.code === 'permission-denied') taken = true; else throw cerr; }
       if (item.cur) { if (e.claimed === day) return; e.claimed = day; }
       else { if (!(e.owed || []).some(x => x.day === day)) return; e.owed = e.owed.filter(x => x.day !== day); }
+      if (taken) { G().save(); UI.dirty('event'); if (BZ.Log) BZ.Log.info('boss reward ' + day + ' already claimed on another device'); return; }
       const got = P.grant(s, reward(r.rank, r.total));
       e.last = { day, rank: r.rank, total: r.total };
       G().save();
@@ -318,6 +351,7 @@
     }
     bubble();
     if (cloudOk()) {
+      if (Ev.mineDay !== Ev.day() && !Ev.mineBusy && now() - (Ev.mineTry || 0) > 30000) { Ev.mineBusy = true; Ev.mineTry = now(); Ev.checkMine().catch(() => {}).finally(() => { Ev.mineBusy = false; }); }
       if (Ev.pending) { const d = Ev.pending; Ev.pending = null; const s = real(); if (Ev.state(s).day === d) push(d, Ev.state(s).best, s); }
       if (Math.floor(now() / 1000) % 10 === 0) Ev.claim();
     }

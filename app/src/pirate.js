@@ -4,14 +4,14 @@
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
   BZ.addStrings({
-    pi_name: 'Pirate ship', pi_sub: 'Leaves in {t}', pi_d: 'Pirates have anchored near your worlds! Board their ship for a 5 minute fight in a fresh hive. The more honey you make, the more of their treasure you grab: legendary and mystic eggs, a Prime stone if you are lucky, half of your honey, and a x10 boost.',
-    pi_board: 'Board the ship', pi_go_t: 'All hands on deck!', pi_go_d: 'You have 5 minutes in a fresh hive. Every drop of honey loots the pirate hold.', pi_bar: 'Pirate raid',
+    pi_name: 'The Black Sail', pi_sub: 'Vanishes in {t}', pi_d: 'It drifts out of the fog and never stays long. Those who board it rarely come back empty handed.',
+    pi_board: 'Board', pi_go_t: 'The fog closes behind you', pi_go_d: 'Five minutes. Make honey, take what you can.', pi_hint: 'What may lie in the hold', pi_bar: 'Pirate raid',
     pi_tier: 'Loot {n} / {m}', pi_next: 'Next loot at {v}', pi_maxed: 'Hold emptied!', pi_over_t: 'Raid over!', pi_over_d: 'You looted {v} honey worth of treasure.', pi_t0: 'A few coins', pi_t1: 'Deckhand chest', pi_t2: 'Officer chest', pi_t3: 'Captain chest', pi_t4: 'The whole hold',
     pi_gone: 'The pirate ship sailed away', pi_used: 'You already raided this ship', pi_chance: '{p} chance',
     pi_l0: 'Under {v}', pi_l: 'From {v}', pi_honey: 'Half of your honey', pi_rewards: 'Treasure by honey made'
   }, {
-    pi_name: 'Bateau pirate', pi_sub: 'Repart dans {t}', pi_d: 'Des pirates ont jeté l’ancre près de vos mondes ! Abordez leur navire pour un combat de 5 minutes dans une ruche neuve. Plus vous produisez de miel, plus vous pillez leur trésor : œufs légendaires et mystiques, une pierre Prime avec de la chance, la moitié de votre miel et un boost x10.',
-    pi_board: 'Aborder le navire', pi_go_t: 'Tout le monde sur le pont !', pi_go_d: 'Vous avez 5 minutes dans une ruche neuve. Chaque goutte de miel pille la cale des pirates.', pi_bar: 'Raid pirate',
+    pi_name: 'La Voile noire', pi_sub: 'Disparaît dans {t}', pi_d: 'Il surgit de la brume et ne reste jamais longtemps. Ceux qui montent à bord en reviennent rarement les mains vides.',
+    pi_board: 'Monter à bord', pi_go_t: 'La brume se referme derrière vous', pi_go_d: 'Cinq minutes. Produisez du miel, prenez ce que vous pouvez.', pi_hint: 'Ce que la cale pourrait cacher', pi_bar: 'Raid pirate',
     pi_tier: 'Butin {n} / {m}', pi_next: 'Butin suivant à {v}', pi_maxed: 'Cale vidée !', pi_over_t: 'Raid terminé !', pi_over_d: 'Vous avez pillé l’équivalent de {v} de miel.', pi_t0: 'Quelques pièces', pi_t1: 'Coffre du mousse', pi_t2: 'Coffre de l’officier', pi_t3: 'Coffre du capitaine', pi_t4: 'Toute la cale',
     pi_gone: 'Le bateau pirate est reparti', pi_used: 'Vous avez déjà pillé ce navire', pi_chance: '{p} de chance',
     pi_l0: 'Moins de {v}', pi_l: 'À partir de {v}', pi_honey: 'La moitié de votre miel', pi_rewards: 'Trésor selon le miel produit'
@@ -77,27 +77,28 @@
     d += '<path class="pi-wave" d="M-120,34 q20,-10 40,0 t40,0 t40,0 t40,0 t40,0 t40,0" stroke="#BFE3E0" stroke-width="5" fill="none" stroke-linecap="round" opacity="0.8"/>';
     return d;
   };
-  Pi.mapHtml = function (x, y, sc) {
+  Pi.SPOTS = { wide: [[190, 280], [350, 940], [560, 940], [830, 940], [1750, 760], [1790, 940]], tall: [[150, -150], [150, -30], [720, 270], [750, 1310], [720, 1420]] };
+  Pi.spot = function (sl, tall) {
+    const list = Pi.SPOTS[tall ? 'tall' : 'wide'];
+    return list[hash('spot:' + sl.w + ':' + (real() ? real().seed : 0)) % list.length];
+  };
+  Pi.mapHtml = function (tall) {
     const sl = Pi.active();
     if (!sl) return '';
-    return '<g class="wm-pirate" transform="translate(' + x + ' ' + y + ') scale(' + sc + ')"><g class="pi-sailing"><ellipse cx="0" cy="40" rx="120" ry="16" fill="#0B2229" opacity="0.45"/>' + Pi.shipBody() + '</g></g>';
+    const sp = Pi.spot(sl, tall), sc = tall ? 0.9 : 0.85, flip = hash('dir:' + sl.w) % 2 ? -1 : 1;
+    let fog = '';
+    for (let k = 0; k < 4; k++) fog += '<ellipse class="pi-fog" style="animation-delay:-' + (k * 2.2) + 's" cx="' + (-130 + k * 85) + '" cy="' + (20 - (k % 2) * 30) + '" rx="' + (90 + k * 10) + '" ry="30"/>';
+    return '<g class="wm-pirate" transform="translate(' + sp[0] + ' ' + sp[1] + ') scale(' + (sc * flip) + ' ' + sc + ')"><g class="pi-sailing"><ellipse cx="0" cy="40" rx="120" ry="16" fill="#061418" opacity="0.55"/>' + Pi.shipBody() + '</g>' + fog + '</g>';
   };
   Pi.cardHtml = function () {
     const sl = Pi.active();
     if (!sl) return '<div class="wm-hd"><div><h3>' + t('pi_name') + '</h3></div><button class="wm-x" data-wm="close">' + ic('close') + '</button></div><p class="wm-line">' + t('pi_gone') + '</p>';
     let h = '<div class="wm-hd"><span class="wm-sw pi-sw">' + Pi.shipSvg(52) + '</span><div><h3>' + t('pi_name') + '</h3><div class="wm-tw2 num" data-t="' + sl.end + '" data-tfmt="pi_sub">' + esc(t('pi_sub', { t: F.time(Math.max(0, sl.end - now()) / 1000) })) + '</div></div><button class="wm-x" data-wm="close">' + ic('close') + '</button></div>';
     h += '<p class="wm-line pi-d">' + t('pi_d') + '</p>';
-    h += '<div class="pi-tiers">' + BZ.PIRATE_TIERS.slice(1).map((x, i) => '<div><small>' + esc(t('pi_l', { v: F.num(x.at) })) + '</small><span>' + rewardChips(x) + '</span></div>').join('') + '</div>';
+    h += '<div class="pi-hint"><small>' + t('pi_hint') + '</small><span>' + BZ.eggSvg('mystic', 22) + BZ.eggSvg('legend', 22) + '<i class="pi-q">' + ic('gem') + '</i><i class="pi-q">' + ic('bolt') + '</i><i class="pi-q">' + ic('drop') + '</i></span></div>';
     h += '<div class="wm-acts"><button class="btn btn-primary" data-pi="board">' + ic('boss') + t('pi_board') + '</button></div>';
     return h;
   };
-  function rewardChips(x) {
-    let h = UI.rewardChips(Object.assign({}, x.r, { half: undefined }));
-    if (x.r.half) h += '<span class="rw bst">' + ic('drop') + esc(t('pi_honey')) + '</span>';
-    if (x.mystic) h += '<span class="rw tk-mystic">' + BZ.eggSvg('mystic', 18) + esc(t('pi_chance', { p: F.pct(x.mystic) })) + '</span>';
-    if (x.stone) h += '<span class="rw rwstone">' + ic('gem') + esc(t('pi_chance', { p: F.pct(x.stone) })) + '</span>';
-    return h;
-  }
 
   Pi.start = function () {
     const g = G(), s = real();

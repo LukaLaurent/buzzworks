@@ -145,7 +145,7 @@
       const lw = Math.max(label.length * 13, sub.length * 9) + 44;
       h += '<g class="wm-flag" transform="translate(0 150)' + (tall ? ' scale(1.35)' : '') + '"><rect x="' + (-lw / 2) + '" y="0" width="' + lw + '" height="64" rx="18"/><text text-anchor="middle" y="28">' + esc(label) + '</text><text class="sub" text-anchor="middle" y="50">' + esc(sub) + '</text></g></g>';
     });
-    if (BZ.Pirate) h += BZ.Pirate.mapHtml(tall ? 610 : 640, tall ? 1480 : 930, tall ? 0.9 : 0.85);
+    if (BZ.Pirate) h += BZ.Pirate.mapHtml(tall);
     const last = BZ.WORLDS[BZ.WORLDS.length - 1];
     h += '<path class="wm-route wm-route-demon" d="M' + X(last) + ',' + Y(last) + ' Q' + ((X(last) + DX()) / 2 + 60) + ',' + ((Y(last) + DY()) / 2 + 40) + ' ' + DX() + ',' + DY() + '"/>' + demonHtml();
     h += '<g id="wmBee" style="display:none"><ellipse cx="-6" cy="-12" rx="9" ry="13" fill="#F5F3EF" opacity="0.9"/><ellipse cx="6" cy="-12" rx="8" ry="12" fill="#F5F3EF" opacity="0.9"/><ellipse cx="0" cy="0" rx="20" ry="14" fill="#F2C14E"/><rect x="-8" y="-14" width="5" height="28" fill="#20252B"/><rect x="3" y="-14" width="5" height="28" fill="#20252B"/><circle cx="20" cy="-2" r="9" fill="#20252B"/></g>';

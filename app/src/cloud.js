@@ -68,6 +68,11 @@
     },
     boss: {
       setScore: (day, e) => fb.fs.setDoc(fb.fs.doc(fb.D, 'boss', day, 'scores', user.uid), Object.assign({}, e, { at: Date.now() })),
+      async mine(day) {
+        const snap = await fb.fs.getDoc(fb.fs.doc(fb.D, 'boss', day, 'scores', user.uid));
+        return snap.exists() ? snap.data() : null;
+      },
+      claim: day => fb.fs.setDoc(fb.fs.doc(fb.D, 'boss', day, 'claims', user.uid), { at: fb.fs.serverTimestamp() }),
       async top(day, k) {
         const f = fb.fs;
         const snap = await f.getDocs(f.query(f.collection(fb.D, 'boss', day, 'scores'), f.orderBy('p', 'desc'), f.limit(k || 50)));

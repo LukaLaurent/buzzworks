@@ -1264,13 +1264,13 @@ button.bee.core-card:hover { transform: translateY(-2px); }
 .wm-pirate .pi-wave, .pi-ship-svg .pi-wave { animation: piwave 1.6s linear infinite; }
 .pi-flag { transform-box: fill-box; transform-origin: 0 50%; animation: piflag 0.9s ease-in-out infinite alternate; }
 .wm-pirate:hover .pi-rock { filter: drop-shadow(0 0 14px rgba(255, 212, 94, 0.8)); }
-@keyframes pisail { from { transform: translateX(-140px); } to { transform: translateX(140px); } }
+@keyframes pisail { from { transform: translateX(-60px); } to { transform: translateX(60px); } }
 @keyframes pirock { from { transform: rotate(-4deg) translateY(-2px); } to { transform: rotate(4deg) translateY(3px); } }
 @keyframes piwave { from { transform: translateX(0); } to { transform: translateX(-40px); } }
 @keyframes piflag { from { transform: scaleX(0.75); } to { transform: scaleX(1.1); } }
 .pi-ship-svg { overflow: visible; }
 .pi-ship-svg .pi-rock { transform-box: fill-box; transform-origin: 50% 90%; animation: pirock 2.6s ease-in-out infinite alternate; }
-.pi-sw { background: linear-gradient(180deg, #7FB8D0, #2E6F86) !important; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.pi-sw { background: linear-gradient(180deg, #33424A, #0B1418) !important; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 .pi-d { line-height: 1.55; }
 .pi-tiers { display: flex; flex-direction: column; gap: 6px; margin: var(--sp-2) 0 var(--sp-3); }
 .pi-tiers > div { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); flex-wrap: wrap; padding: 6px 10px; border-radius: 10px; background: var(--surface-2); }
@@ -1283,3 +1283,15 @@ button.bee.core-card:hover { transform: translateY(-2px); }
 .pi-pop { margin-bottom: 0; }
 .pi-big .pi-pop { filter: drop-shadow(0 0 18px rgba(255, 212, 94, 0.7)); }
 @media (prefers-reduced-motion: reduce) { .wm-pirate .pi-sailing, .pi-rock, .pi-wave, .pi-flag { animation: none !important; } }
+
+.pi-fog { fill: #C9D6DC; opacity: 0.22; filter: blur(6px); animation: pifog 9s ease-in-out infinite alternate; pointer-events: none; }
+@keyframes pifog { from { transform: translateX(-30px); opacity: 0.14; } to { transform: translateX(30px); opacity: 0.3; } }
+.wm-pirate .pi-sailing { filter: saturate(0.7) brightness(0.85); }
+.wm-pirate:hover .pi-sailing { filter: saturate(0.9) brightness(1); }
+.pi-hint { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3); margin: var(--sp-2) 0 var(--sp-3); padding: 10px 12px; border-radius: 12px; background: linear-gradient(135deg, #1A2630, #0E161C); border: 1px solid rgba(255, 255, 255, 0.08); }
+.pi-hint small { font-size: var(--fs-xs); color: #A3AAB1; font-style: italic; }
+.pi-hint span { display: flex; align-items: center; gap: 8px; }
+.pi-q { display: flex; color: #C9D6DC; opacity: 0.75; }
+.pi-q .ic { width: 18px; height: 18px; }
+.pi-d { font-style: italic; color: var(--text-muted); }
+@media (prefers-reduced-motion: reduce) { .pi-fog { animation: none !important; } }

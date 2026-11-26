@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '3.4.0';
+  BZ.VERSION = '3.4.1';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -250,6 +250,10 @@
   BZ.LEAGUE_QUEST_COUNT = 4;
   BZ.LEAGUE_QUEST_GROW = 0.2;
   BZ.CHANGELOG = [
+    { v: '3.4.1', items: [
+      { icon: 'boss', en: 'Each boss can now be fought only once per player, even when playing on several devices, and its reward can only be collected once.', fr: 'Chaque boss ne peut maintenant être combattu qu’une fois par joueur, même en jouant sur plusieurs appareils, et sa récompense ne peut être récupérée qu’une fois.' },
+      { icon: 'globe', en: 'The fog over the sea has thickened...', fr: 'La brume sur la mer s’est épaissie...' }
+    ] },
     { v: '3.4.0', items: [
       { icon: 'globe', en: 'Strange sails have been seen near your worlds... Keep an eye on the sea in the world map.', fr: 'D’étranges voiles ont été aperçues près de vos mondes... Surveillez la mer sur la carte du monde.' },
       { icon: 'settings', en: 'The automation settings are easier to read.', fr: 'Les réglages d’automatisation sont plus lisibles.' }

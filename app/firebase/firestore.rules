@@ -43,6 +43,14 @@ service cloud.firestore {
         && getAfter(/databases/$(database)/documents/feedmeta/$(request.auth.uid)).data.last == request.time;
     }
 
+    match /boss/{day}/claims/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow create: if signedIn() && request.auth.uid == uid && !isBanned()
+        && request.resource.data.keys().hasOnly(['at'])
+        && request.resource.data.at == request.time
+        && exists(/databases/$(database)/documents/boss/$(day)/scores/$(uid));
+    }
+
     match /boss/{day}/scores/{uid} {
       function slotStart() {
         let p = day.split('-');

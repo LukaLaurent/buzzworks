@@ -38,20 +38,34 @@
   P.FEATURED_EPIC = ['emerald', 'cuckoo', 'frost', 'ruby'];
 
   P.BLESSINGS = [
-    { id: 'bloom', r: 0, honey: 0.4 },
-    { id: 'quick', r: 0, luckyFreq: 0.2 },
-    { id: 'paws', r: 0, tap: 1 },
-    { id: 'thrift', r: 0, cost: 0.08 },
-    { id: 'elixir', r: 0, luckyDur: 0.25 },
-    { id: 'focus', r: 1, focus: 4 },
-    { id: 'jelly', r: 1, rj: 0.15 },
-    { id: 'rhythm', r: 1, combo: 0.5 },
-    { id: 'nectar', r: 1, honey: 0.8 },
-    { id: 'ticket', r: 1, ticketFreq: 0.5 },
-    { id: 'crown', r: 2, honey: 1.5 },
-    { id: 'golden', r: 2, luckyFreq: 0.5 },
-    { id: 'royal', r: 2, rj: 0.3 }
+    { id: 'bloom', r: 0, honey: 0.25 },
+    { id: 'quick', r: 0, luckyFreq: 0.15 },
+    { id: 'paws', r: 0, tap: 0.6 },
+    { id: 'thrift', r: 0, cost: 0.05 },
+    { id: 'elixir', r: 0, luckyDur: 0.2 },
+    { id: 'dew', r: 0, offlineH: 1 },
+    { id: 'spark', r: 0, combo: 0.25 },
+    { id: 'focus', r: 1, focus: 3 },
+    { id: 'jelly', r: 1, rj: 0.12 },
+    { id: 'rhythm', r: 1, combo: 0.5, tap: 0.3 },
+    { id: 'nectar', r: 1, honey: 0.6 },
+    { id: 'ticket', r: 1, ticketFreq: 0.4 },
+    { id: 'breeze', r: 1, luckyFreq: 0.25, luckyDur: 0.25 },
+    { id: 'workers', r: 1, honey: 0.2, tap: 1 },
+    { id: 'crown', r: 2, honey: 1.2 },
+    { id: 'golden', r: 2, luckyFreq: 0.45 },
+    { id: 'royal', r: 2, rj: 0.25 },
+    { id: 'beam', r: 2, focus: 6 },
+    { id: 'harvest', r: 2, honey: 0.6, rj: 0.12 },
+    { id: 'nap', r: 2, offlineH: 4, honey: 0.3 },
+    { id: 'sunburst', r: 3, honey: 3 },
+    { id: 'grace', r: 3, rj: 0.6, honey: 0.5 },
+    { id: 'storm', r: 3, luckyFreq: 1, luckyDur: 0.5, ticketFreq: 0.5 },
+    { id: 'bargain', r: 3, cost: 0.2, honey: 0.5 },
+    { id: 'celestial', r: 4, honey: 8, rj: 1 },
+    { id: 'goldenage', r: 4, honey: 2, tap: 3, luckyFreq: 2 }
   ];
+  P.BLESS_ODDS = [0, 0.3, 0.1, 0.025, 0.004];
   P.BLESS_BY_ID = {};
   P.BLESSINGS.forEach(b => { P.BLESS_BY_ID[b.id] = b; });
   P.BLESS_AT = [1e5, 1e9, 1e13, 1e17];
@@ -107,15 +121,19 @@
   P.primeCost = s => Math.ceil(BZ.PRIME_COST * Math.pow(BZ.PRIME_GROWTH, s.prime || 0));
   P.canPrime = s => P.treeDone(s) && (s.primeStones || 0) >= 1 && s.ess.every(v => v >= P.primeCost(s));
   P.rubyChance = s => BZ.RUBY_CHANCE + BZ.ESS_BY_ID.ruby.v * P.essLvl(s, 'ruby');
+  P.rubyPool = s => BZ.RUBY.filter(x => !x.worlds || (s.worldsOpen || [0]).length >= x.worlds);
   P.rubyRoll = function (s, r) {
     const rnd = r || Math.random;
-    const tot = BZ.RUBY.reduce((a, x) => a + x.w, 0);
-    let v = rnd() * tot, x = BZ.RUBY[BZ.RUBY.length - 1];
-    for (const it of BZ.RUBY) { v -= it.w; if (v <= 0) { x = it; break; } }
+    const pool = P.rubyPool(s);
+    const tot = pool.reduce((a, x) => a + x.w, 0);
+    let v = rnd() * tot, x = pool[pool.length - 1];
+    for (const it of pool) { v -= it.w; if (v <= 0) { x = it; break; } }
     s.rubies = (s.rubies || 0) + 1;
     let got = [];
     if (x.id === 'stone') s.primeStones = (s.primeStones || 0) + 1;
     else if (x.id === 'ess') { s.ess[s.world] = (s.ess[s.world] || 0) + x.v; s.essenceTotal = (s.essenceTotal || 0) + x.v; }
+    else if (x.boost) E.addBoost(s, x.boost);
+    else if (x.id === 'warp') got = P.grant(s, { warp: x.v * 60 });
     else got = P.grant(s, { [x.id]: x.v });
     s._dirty = true;
     return { x, got, world: s.world };
@@ -165,7 +183,8 @@
     if (s.essenceTotal === undefined) s.essenceTotal = s.essence || 0;
     delete s.essence;
     s.prime = s.prime || 0;
-    if (s.flags && s.flags.seenVersion === undefined) s.flags.seenVersion = (s.lifetime || 0) < 1e4 ? BZ.VERSION : '';
+    s.flags = s.flags || {};
+    if (s.flags.seenVersion === undefined) s.flags.seenVersion = (s.lifetime || 0) < 1e4 ? BZ.VERSION : '';
     s.primeStones = s.primeStones || 0;
     s.rubies = s.rubies || 0;
     if (s.queen && s.queen.mind > P.mindAllowed(s)) { s.queen.mind = P.mindAllowed(s); if (!s.queen.mind) delete s.queen.mind; }
@@ -245,6 +264,7 @@
       if (b.combo) m.combo += b.combo;
       if (b.ticketFreq) m.ticketFreq *= 1 + b.ticketFreq;
       if (b.focus && entry.target) m.prodX[entry.target] = (m.prodX[entry.target] || 1) * b.focus;
+      if (b.offlineH) m.offlineH += b.offlineH;
     }
     return m;
   };
@@ -492,7 +512,8 @@
     let guard = 0;
     while (picks.length < 3 && guard++ < 200) {
       const roll = Math.random();
-      const r = roll < 0.12 ? 2 : roll < 0.45 ? 1 : 0;
+      const O = P.BLESS_ODDS;
+      const r = roll < O[4] ? 4 : roll < O[4] + O[3] ? 3 : roll < O[4] + O[3] + O[2] ? 2 : roll < O[4] + O[3] + O[2] + O[1] ? 1 : 0;
       const pool = P.BLESSINGS.filter(b => b.r === r && !taken.has(b.id) && !picks.some(p => p.id === b.id));
       if (!pool.length) continue;
       const b = pool[Math.floor(Math.random() * pool.length)];
@@ -587,7 +608,8 @@
     if (!w) return 0;
     const earned = (w.crowns || 0) + (w.crownsSpent || 0);
     if (earned < BZ.SELL_MIN) return 0;
-    return Math.floor(Math.pow(earned, 1.15) * (1 + 0.25 * (idx === undefined ? s.world : idx)));
+    const hw = BZ.WORLDS[idx === undefined ? s.world : idx].hard;
+    return Math.floor(Math.pow(earned, 1.15) * ((hw && hw.ess) || 1));
   };
   P.worldInfo = function (s, idx) {
     const w = P.worldState(s, idx);

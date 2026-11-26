@@ -24,7 +24,7 @@
     hatch: 'Hatchery', hb_std: 'Standard egg', hb_royal: 'Royal egg', featured: 'Featured', featured_d: '{b} rate up  ·  ends in {t}', pull1: 'Hatch 1', pull10: 'Hatch 10', rates: 'Rates', pity_left: 'Legendary guaranteed within {n} hatches', guarantee_on: 'Next legendary is the featured bee', fifty: 'A legendary has a 50% chance to be the featured bee. If not, the next one is.', hatch_results: 'Results', new_tag: 'New', need_tickets: 'Not enough tickets', std_d: 'Hatch a random bee with an egg ticket', ad_tickets: '+2 egg tickets',
     bless_title: 'Choose a blessing', bless_sub: 'It lasts until your next swarm', bless_reroll: 'Reroll', bless_now: 'Blessings this swarm', bless_pending: 'Blessing ready', bless_none: 'Blessings appear at the start of each swarm and at big honey milestones.',
     bl_bloom: 'Blooming fields', bl_quick: 'Quick wings', bl_paws: 'Strong paws', bl_thrift: 'Bargain wax', bl_elixir: 'Long dance', bl_focus: 'Focus', bl_jelly: 'Jelly harvest', bl_rhythm: 'Rhythm', bl_nectar: 'Nectar flow', bl_ticket: 'Ticket wind', bl_crown: 'Crown blessing', bl_golden: 'Golden hour', bl_royal: 'Royal favor',
-    bd_honey: '+{v} honey', bd_luckyFreq: 'Lucky bees {v} more often', bd_tap: 'Taps x{v}', bd_cost: 'Producers {v} cheaper', bd_luckyDur: 'Lucky effects {v} longer', bd_focus: '{p} x{v}', bd_rj: '+{v} royal jelly', bd_combo: '+{v} max combo', bd_ticketFreq: 'Ticket bees {v} more often',
+    bd_honey: '+{v} honey', bd_luckyFreq: 'Lucky bees {v} more often', bd_tap: 'Taps x{v}', bd_cost: 'Producers {v} cheaper', bd_luckyDur: 'Lucky effects {v} longer', bd_focus: '{p} x{v}', bd_rj: '+{v} royal jelly', bd_combo: '+{v} max combo', bd_ticketFreq: 'Ticket bees {v} more often', bd_offlineH: '+{v} h away earnings', bl_dew: 'Morning dew', bl_spark: 'Spark', bl_breeze: 'Lucky breeze', bl_workers: 'Busy workers', bl_beam: 'Sunbeam', bl_harvest: 'Great harvest', bl_nap: 'Sweet dreams', bl_sunburst: 'Sunburst', bl_grace: 'Queen\u2019s grace', bl_storm: 'Fortune storm', bl_bargain: 'Royal bargain', bl_celestial: 'Celestial hive', bl_goldenage: 'Golden age',
     ad_skip: 'No ads for you: reward granted', ad_left: '{n} left today', ad_none: 'No more ads today', watch_ad: 'Watch ad',
     ad_boost: 'x2 honey for 30 min', collect_ad: 'Collect x2 (ad)', dance_wait: 'Bee dance ready in {t}',
     promo_featured: 'Featured: {b}', promo_featured_d: 'Royal egg rate up this week', promo_pass: 'Hive pass  ·  tier {n}', promo_pass_d: 'Rewards waiting to be claimed', promo_bless: 'Blessing ready', promo_bless_d: 'Pick one of three bonuses', promo_tickets: '{n} egg tickets', promo_tickets_d: 'Hatch them in the Bees tab', promo_quick: 'Quick task done', promo_quick_d: 'Claim it in the Daily tab', promo_world: 'A new world can open', promo_world_d: 'Spend crowns in the Worlds tab',
@@ -60,7 +60,7 @@
     hatch: 'Couvoir', hb_std: 'Œuf standard', hb_royal: 'Œuf royal', featured: 'En vedette', featured_d: '{b} en vedette  ·  fin dans {t}', pull1: 'Éclore 1', pull10: 'Éclore 10', rates: 'Taux', pity_left: 'Légendaire garantie d\'ici {n} éclosions', guarantee_on: 'La prochaine légendaire sera l\'abeille en vedette', fifty: 'Une légendaire a 50 % de chances d\'être l\'abeille en vedette. Sinon, la suivante l\'est.', hatch_results: 'Résultats', new_tag: 'Nouveau', need_tickets: 'Pas assez de tickets', std_d: 'Faites éclore une abeille au hasard avec un ticket d\'œuf', ad_tickets: '+2 tickets d\'œuf',
     bless_title: 'Choisissez une bénédiction', bless_sub: 'Elle dure jusqu\'au prochain essaim', bless_reroll: 'Relancer', bless_now: 'Bénédictions de cet essaim', bless_pending: 'Bénédiction prête', bless_none: 'Les bénédictions arrivent au début de chaque essaim et aux grands paliers de miel.',
     bl_bloom: 'Champs en fleurs', bl_quick: 'Ailes rapides', bl_paws: 'Pattes fortes', bl_thrift: 'Cire bon marché', bl_elixir: 'Longue danse', bl_focus: 'Concentration', bl_jelly: 'Récolte de gelée', bl_rhythm: 'Rythme', bl_nectar: 'Flot de nectar', bl_ticket: 'Vent de tickets', bl_crown: 'Bénédiction de la couronne', bl_golden: 'Heure dorée', bl_royal: 'Faveur royale',
-    bd_honey: '+{v} de miel', bd_luckyFreq: 'Abeilles dorées {v} plus fréquentes', bd_tap: 'Touchers x{v}', bd_cost: 'Producteurs {v} moins chers', bd_luckyDur: 'Effets dorés {v} plus longs', bd_focus: '{p} x{v}', bd_rj: '+{v} de gelée royale', bd_combo: '+{v} au combo maximum', bd_ticketFreq: 'Abeilles à ticket {v} plus fréquentes',
+    bd_honey: '+{v} de miel', bd_luckyFreq: 'Abeilles dorées {v} plus fréquentes', bd_tap: 'Touchers x{v}', bd_cost: 'Producteurs {v} moins chers', bd_luckyDur: 'Effets dorés {v} plus longs', bd_focus: '{p} x{v}', bd_rj: '+{v} de gelée royale', bd_combo: '+{v} au combo maximum', bd_ticketFreq: 'Abeilles à ticket {v} plus fréquentes', bd_offlineH: '+{v} h de gains en absence', bl_dew: 'Rosée du matin', bl_spark: 'Étincelle', bl_breeze: 'Brise dorée', bl_workers: 'Ouvrières zélées', bl_beam: 'Rayon de soleil', bl_harvest: 'Grande récolte', bl_nap: 'Doux rêves', bl_sunburst: 'Éclat solaire', bl_grace: 'Grâce de la reine', bl_storm: 'Tempête de fortune', bl_bargain: 'Marché royal', bl_celestial: 'Ruche céleste', bl_goldenage: 'Âge d\u2019or',
     ad_skip: 'Pas de pub pour vous : récompense donnée', ad_left: 'encore {n} aujourd\'hui', ad_none: 'Plus de pub aujourd\'hui', watch_ad: 'Voir une pub',
     ad_boost: 'Miel x2 pendant 30 min', collect_ad: 'Récupérer x2 (pub)', dance_wait: 'Danse des abeilles prête dans {t}',
     promo_featured: 'En vedette : {b}', promo_featured_d: 'Œuf royal boosté cette semaine', promo_pass: 'Pass de la ruche  ·  palier {n}', promo_pass_d: 'Des récompenses vous attendent', promo_bless: 'Bénédiction prête', promo_bless_d: 'Choisissez un bonus parmi trois', promo_tickets: '{n} tickets d\'œuf', promo_tickets_d: 'Faites-les éclore dans l\'onglet Abeilles', promo_quick: 'Tâche rapide terminée', promo_quick_d: 'Récupérez-la dans l\'onglet Jour', promo_world: 'Un nouveau monde peut s\'ouvrir', promo_world_d: 'Dépensez des couronnes dans l\'onglet Mondes',
@@ -112,18 +112,20 @@
 
   function blessDesc(e) {
     const b = P.BLESS_BY_ID[e.id];
-    if (b.honey) return t('bd_honey', { v: F.pct(b.honey) });
-    if (b.luckyFreq) return t('bd_luckyFreq', { v: F.pct(b.luckyFreq) });
-    if (b.tap) return t('bd_tap', { v: 1 + b.tap });
-    if (b.cost) return t('bd_cost', { v: F.pct(b.cost) });
-    if (b.luckyDur) return t('bd_luckyDur', { v: F.pct(b.luckyDur) });
-    if (b.focus) return t('bd_focus', { p: n(BZ.PRODUCERS.find(p => p.id === e.target).name), v: b.focus });
-    if (b.rj) return t('bd_rj', { v: F.pct(b.rj) });
-    if (b.combo) return t('bd_combo', { v: F.num(b.combo) });
-    if (b.ticketFreq) return t('bd_ticketFreq', { v: F.pct(b.ticketFreq) });
-    return '';
+    const out = [];
+    if (b.honey) out.push(t('bd_honey', { v: F.pct(b.honey) }));
+    if (b.focus) out.push(t('bd_focus', { p: n(BZ.PRODUCERS.find(p => p.id === e.target).name), v: b.focus }));
+    if (b.rj) out.push(t('bd_rj', { v: F.pct(b.rj) }));
+    if (b.tap) out.push(t('bd_tap', { v: F.num(1 + b.tap, { small: true }) }));
+    if (b.luckyFreq) out.push(t('bd_luckyFreq', { v: F.pct(b.luckyFreq) }));
+    if (b.luckyDur) out.push(t('bd_luckyDur', { v: F.pct(b.luckyDur) }));
+    if (b.ticketFreq) out.push(t('bd_ticketFreq', { v: F.pct(b.ticketFreq) }));
+    if (b.cost) out.push(t('bd_cost', { v: F.pct(b.cost) }));
+    if (b.combo) out.push(t('bd_combo', { v: F.num(b.combo, { small: true }) }));
+    if (b.offlineH) out.push(t('bd_offlineH', { v: b.offlineH }));
+    return out.join('  ·  ');
   }
-  const BLESS_ICON = { bloom: 'flower', quick: 'sparkle', paws: 'tap', thrift: 'drop', elixir: 'clock', focus: 'star', jelly: 'jelly', rhythm: 'music', nectar: 'drop', ticket: 'ticket', crown: 'crown', golden: 'sparkle', royal: 'jelly' };
+  const BLESS_ICON = { bloom: 'flower', quick: 'sparkle', paws: 'tap', thrift: 'drop', elixir: 'clock', dew: 'drop', spark: 'music', focus: 'star', jelly: 'jelly', rhythm: 'music', nectar: 'drop', ticket: 'ticket', breeze: 'sparkle', workers: 'worker', crown: 'crown', golden: 'sparkle', royal: 'jelly', beam: 'star', harvest: 'jelly', nap: 'clock', sunburst: 'sun', grace: 'crown', storm: 'bolt', bargain: 'shop', celestial: 'celestial', goldenage: 'gem' };
   UI.blessDesc = blessDesc;
 
   function coreText(c, lvl) {
@@ -311,7 +313,7 @@
   UI.showBless = function () {
     const s = G.main;
     if (!s.blessOffer) return;
-    const RC = ['#9AA4AE', '#4C7CC4', '#8E6AC8'];
+    const RC = ['#9AA4AE', '#4C7CC4', '#8E6AC8', '#E0A526', '#F0509E'];
     let h = '<h4 style="text-align:center">' + t('bless_title') + '</h4><p style="text-align:center">' + t('bless_sub') + '</p><div class="bless-grid">';
     s.blessOffer.forEach((e, i) => {
       const b = P.BLESS_BY_ID[e.id];
@@ -416,6 +418,7 @@
     flags.bees = (s.tickets.egg || 0) > 0 || (s.tickets.royal || 0) > 0;
     flags.workshop = (s.tickets.core || 0) > 0;
     flags.worlds = P.canOpenWorld(s, P.nextWorld(s));
+    flags.league = !!(BZ.Cloud && BZ.Cloud.signedIn()) && BZ.Meta.lqList(s).some(q => !q.claimed && BZ.Meta.questDone(q));
     for (const k in flags) if (!P.unlocked(s, k)) flags[k] = false;
   };
 

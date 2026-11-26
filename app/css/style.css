@@ -1001,3 +1001,12 @@ button.bee.core-card:hover { transform: translateY(-2px); }
 .gd-goal .ic { width: 16px; height: 16px; color: var(--gc); }
 .gd-nav { margin-top: var(--sp-4); justify-content: space-between; }
 @media (max-width: 420px) { .gd-dot { width: 32px; height: 32px; } .gd-dot .ic { width: 15px; height: 15px; } .gd-card { padding: var(--sp-4); } }
+
+.bless.r3 { box-shadow: 0 0 18px color-mix(in srgb, var(--rc) 55%, transparent); }
+.bless.r4 { box-shadow: 0 0 26px color-mix(in srgb, var(--rc) 80%, transparent); animation: hatch 400ms var(--ease) both, mythic 1.6s ease-in-out 400ms infinite; }
+.bless small { line-height: 1.35; }
+
+.wm-diff { display: flex; align-items: center; gap: 4px; margin-top: 12px; flex-wrap: wrap; }
+.wm-diff i { width: 16px; height: 6px; border-radius: 3px; background: #343B44; }
+.wm-diff i.on { background: #F28C28; }
+.wm-diff small { color: #A3AAB1; font-size: 12px; flex: 1 0 100%; margin-top: 4px; line-height: 1.4; }

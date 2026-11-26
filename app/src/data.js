@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '2.7.0';
+  BZ.VERSION = '2.8.0';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -239,11 +239,17 @@
     { id: 'hatch', amount: 40, pts: 200 },
     { id: 'swarm', amount: 6, pts: 300, needs: 'swarm' },
     { id: 'crown', amount: 2, pts: 400, needs: 'crown' },
-    { id: 'ruby', amount: 1, pts: 350, needs: 'worlds' }
+    { id: 'ruby', amount: 1, pts: 350 }
   ];
   BZ.LEAGUE_QUEST_COUNT = 4;
   BZ.LEAGUE_QUEST_GROW = 0.2;
   BZ.CHANGELOG = [
+    { v: '2.8.0', items: [
+      { icon: 'star', en: 'Blessings got a big update: 26 of them, from common to Legendary and the very rare Mythic ones, with mixed bonuses and new effects.', fr: 'Grosse mise à jour des bénédictions : 26 au total, de commune à Légendaire et aux très rares Mythiques, avec des bonus combinés et de nouveaux effets.' },
+      { icon: 'globe', en: 'Each world is now harder than the previous one: crowns and royal jelly take more effort, but every crown gives more essence. Check the difficulty on the world map.', fr: 'Chaque monde est maintenant plus dur que le précédent : couronnes et gelée royale demandent plus d’efforts, mais chaque couronne rapporte plus d’essence. La difficulté est indiquée sur la carte.' },
+      { icon: 'gem', en: 'Red lucky bees can now show up from the very start, and their wheel has new prizes: double honey, a lucky swarm and an hour of honey. Essence prizes start once the second world is open.', fr: 'Les abeilles dorées rouges peuvent maintenant apparaître dès le début, et leur roue a de nouveaux prix : miel double, essaim doré et une heure de miel. Les prix d\u2019essence arrivent une fois le deuxième monde ouvert.' },
+      { icon: 'league', en: 'An orange dot on the League tab when a league quest is ready to claim.', fr: 'Une pastille orange sur l’onglet Ligue quand une quête de ligue est prête.' }
+    ] },
     { v: '2.7.0', items: [
       { icon: 'star', en: 'New How to play guide, from your first drop of honey all the way to Prime. Find it in the top bar or in About.', fr: 'Nouveau guide Comment jouer, de la première goutte de miel jusqu’à Prime. Dans la barre du haut ou dans À propos.' },
       { icon: 'tap', en: 'Right click on a producer to buy it too.', fr: 'Un clic droit sur un producteur l’achète aussi.' },
@@ -390,10 +396,10 @@
 
   BZ.WORLDS = [
     { id: 'meadow', theme: 'meadow', cost: 0, mods: {}, name: { en: 'Flower meadow', fr: 'Prairie fleurie' }, crown: { en: 'Meadow crowns', fr: 'Couronnes des prés' } },
-    { id: 'dunes', theme: 'w_dunes', cost: 100, mods: { growth: 1.13, luckyFreq: 0.6 }, name: { en: 'Sun dunes', fr: 'Dunes du soleil' }, crown: { en: 'Dune crowns', fr: 'Couronnes des dunes' } },
-    { id: 'glacier', theme: 'w_glacier', cost: 150, mods: { honey: 0.5, offline: 3, offlineH: 6, luckyDur: 1.5 }, name: { en: 'Glacier hive', fr: 'Ruche du glacier' }, crown: { en: 'Glacier crowns', fr: 'Couronnes du glacier' } },
-    { id: 'moon', theme: 'w_moon', cost: 200, mods: { luckyFreq: 2.2, tap: 0.3, honey: 0.8 }, name: { en: 'Moon garden', fr: 'Jardin lunaire' }, crown: { en: 'Moon crowns', fr: 'Couronnes lunaires' } },
-    { id: 'ember', theme: 'w_ember', cost: 250, mods: { rj: 2, growth: 1.165 }, name: { en: 'Ember peaks', fr: 'Pics de braise' }, crown: { en: 'Ember crowns', fr: 'Couronnes de braise' } }
+    { id: 'dunes', theme: 'w_dunes', cost: 100, mods: { growth: 1.13, luckyFreq: 0.6 }, name: { en: 'Sun dunes', fr: 'Dunes du soleil' }, crown: { en: 'Dune crowns', fr: 'Couronnes des dunes' }, hard: { rj: 0.5, crown: 4, ess: 2 } },
+    { id: 'glacier', theme: 'w_glacier', cost: 150, mods: { honey: 0.5, offline: 3, offlineH: 6, luckyDur: 1.5 }, name: { en: 'Glacier hive', fr: 'Ruche du glacier' }, crown: { en: 'Glacier crowns', fr: 'Couronnes du glacier' }, hard: { rj: 0.1, crown: 40, ess: 3.5 } },
+    { id: 'moon', theme: 'w_moon', cost: 200, mods: { luckyFreq: 2.2, tap: 0.3, honey: 0.8 }, name: { en: 'Moon garden', fr: 'Jardin lunaire' }, crown: { en: 'Moon crowns', fr: 'Couronnes lunaires' }, hard: { rj: 0.05, crown: 100, ess: 5 } },
+    { id: 'ember', theme: 'w_ember', cost: 250, mods: { rj: 2, growth: 1.165 }, name: { en: 'Ember peaks', fr: 'Pics de braise' }, crown: { en: 'Ember crowns', fr: 'Couronnes de braise' }, hard: { rj: 0.025, crown: 250, ess: 7 } }
   ];
   BZ.ESSENCES = [
     { color: '#E86FA8', icon: 'flower', name: { en: 'Bloom essence', fr: 'Essence florale' } },
@@ -435,11 +441,14 @@
   BZ.RUBY_CHANCE = 0.02;
   BZ.RUBY = [
     { id: 'stone', w: 3, v: 1, icon: 'gem', color: '#F0509E' },
-    { id: 'core', w: 12, v: 2, icon: 'ticket', color: '#8E6AC8' },
-    { id: 'royal', w: 15, v: 3, icon: 'crown', color: '#E0A526' },
-    { id: 'egg', w: 30, v: 6, icon: 'ticket', color: '#F28C28' },
-    { id: 'ess', w: 25, v: 150, icon: 'sparkle', color: '#7FC8E8' },
-    { id: 'part', w: 15, v: 1, icon: 'palette', color: '#527C82' }
+    { id: 'core', w: 10, v: 2, icon: 'ticket', color: '#8E6AC8' },
+    { id: 'royal', w: 12, v: 3, icon: 'crown', color: '#E0A526' },
+    { id: 'egg', w: 22, v: 6, icon: 'ticket', color: '#F28C28' },
+    { id: 'ess', w: 18, v: 150, icon: 'sparkle', color: '#7FC8E8', worlds: 2 },
+    { id: 'part', w: 10, v: 1, icon: 'palette', color: '#527C82' },
+    { id: 'x2', w: 12, v: 30, icon: 'bolt', color: '#F2B233', boost: 'x2' },
+    { id: 'swarm', w: 7, v: 2, icon: 'sparkle', color: '#FFD45E', boost: 'luckyswarm' },
+    { id: 'warp', w: 6, v: 60, icon: 'clock', color: '#6BC496' }
   ];
   BZ.PRIME_GROWTH = 2;
   BZ.SELL_MIN = 5;

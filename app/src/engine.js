@@ -100,13 +100,15 @@
   E.crownMult = s => 1 + BZ.CROWN_BONUS * Math.sqrt(s.crowns || 0);
   E.crownRJ = s => 1 + BZ.CROWN_RJ * Math.sqrt(s.crowns || 0);
   E.crownsEarned = s => (s.crowns || 0) + (s.crownsSpent || 0) - (s.crownsBonus || 0);
+  E.hard = s => E.world(s).hard || {};
+  E.crownDiv = s => BZ.CROWN_DIVISOR * (E.hard(s).crown || 1);
   E.pendingCrowns = function (s) {
-    const total = Math.floor(Math.sqrt(((s.rjLife || 0) + E.pendingRJ(s)) / BZ.CROWN_DIVISOR));
+    const total = Math.floor(Math.sqrt(((s.rjLife || 0) + E.pendingRJ(s)) / E.crownDiv(s)));
     return Math.max(0, total - E.crownsEarned(s));
   };
   E.crownNext = function (s) {
     const c = E.crownsEarned(s) + E.pendingCrowns(s) + 1;
-    return c * c * BZ.CROWN_DIVISOR;
+    return c * c * E.crownDiv(s);
   };
   E.mods = s => (BZ.P && BZ.P.mods) ? BZ.P.mods(s) : null;
 
@@ -359,7 +361,7 @@
   E.pendingRJ = function (s) {
     if (s.runHoney < BZ.RJ_MIN) return 0;
     const w = E.rjWisdom(s);
-    return Math.floor(BZ.RJ_SCALE * Math.pow(s.runHoney / BZ.RJ_DIVISOR, BZ.RJ_POWER) * w);
+    return Math.floor(BZ.RJ_SCALE * Math.pow(s.runHoney / BZ.RJ_DIVISOR, BZ.RJ_POWER) * w * (E.hard(s).rj || 1));
   };
   E.rjWisdom = function (s) {
     const pm = E.mods(s);
@@ -528,7 +530,7 @@
         s.luckyT -= dt;
         if (s.luckyT <= 0) {
           const life = s.boosts.some(b => b.id === 'luckyswarm') ? 7 : 12;
-          s.luckyOn = { t: life, max: life, red: !!(s.flags && s.flags.worlds) && (opts.rng || Math.random)() < (BZ.P && BZ.P.rubyChance ? BZ.P.rubyChance(s) : BZ.RUBY_CHANCE) };
+          s.luckyOn = { t: life, max: life, red: (opts.rng || Math.random)() < (BZ.P && BZ.P.rubyChance ? BZ.P.rubyChance(s) : BZ.RUBY_CHANCE) };
           s.luckyT = E.luckyInterval(s, opts.rng);
           E.emit(s, 'luckySpawn', s.luckyOn);
         }

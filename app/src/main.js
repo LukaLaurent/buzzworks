@@ -219,6 +219,27 @@
     Log.info('setting ' + key + ' = ' + val);
   };
 
+  let updating = false;
+  G.checkVersion = async function () {
+    if (updating || !G.main) return;
+    try {
+      const r = await fetch('src/data.js?v=' + Date.now(), { cache: 'no-store' });
+      if (!r.ok) return;
+      const m = (await r.text()).match(/VERSION = '([^']+)'/);
+      if (!m || m[1] === BZ.VERSION) return;
+      let tried = null;
+      try { tried = sessionStorage.getItem('buzzworks.reloadFor'); } catch (e) {}
+      if (tried === m[1]) return;
+      updating = true;
+      try { sessionStorage.setItem('buzzworks.reloadFor', m[1]); } catch (e) {}
+      G.save(true);
+      Log.info('new version ' + m[1] + ', reloading');
+      UI.modal('<div class="hero"><div class="pic">' + BZ.icon('sparkle') + '</div><h4>' + t('upd_title') + '</h4><p>' + t('upd_text', { v: m[1] }) + '</p></div>', false);
+      const urls = [...document.querySelectorAll('script[src], link[rel="stylesheet"][href]')].map(x => x.src || x.href).filter(u => u.startsWith(location.origin));
+      await Promise.all(urls.map(u => fetch(u, { cache: 'reload' }).catch(() => {})));
+      setTimeout(() => location.reload(), 3000);
+    } catch (e) {}
+  };
   G.save = function (sync) {
     if (!G.main) return;
     G.main.lastSave = Date.now();
@@ -668,6 +689,11 @@
       });
       root.addEventListener('pagehide', () => G.save(true));
       if (BZ.Store.server) setInterval(() => { fetch('/api/ping').catch(() => {}); }, 60000);
+      else if ((BZ.CONFIG && BZ.CONFIG.platform) !== 'crazygames' && location.protocol.startsWith('http')) {
+        setInterval(G.checkVersion, 5 * 60000);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) G.checkVersion(); });
+        setTimeout(G.checkVersion, 20000);
+      }
       document.addEventListener('pointerdown', () => A.unlock(), { once: true });
       if (BZ.Cloud && BZ.Cloud.configured()) {
         BZ.Cloud.onChange = () => { UI.dirty('settings'); UI.dirty('league'); };

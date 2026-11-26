@@ -12,7 +12,7 @@
     lg_banned: 'Les fonctions en ligne sont désactivées pour ce compte. Votre progression est conservée et vous pouvez continuer à jouer.'
   });
 
-  const D = BZ.Dev = { ok: false, email: null, admin: null, tab: 'me', players: null, banned: null, sel: null, selSave: null, selGroups: null, msg: '', busy: false };
+  const D = BZ.Dev = { op: 'closeWorld', pop: 'closeWorld', ok: false, email: null, admin: null, tab: 'me', players: null, banned: null, sel: null, selSave: null, selGroups: null, msg: '', busy: false };
 
   async function sha(text) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
@@ -47,10 +47,34 @@
     if (key.startsWith('ess')) { const a = [0, 0, 0, 0, 0]; a[+key.slice(3)] = amt; return { ess: a }; }
     return { [key]: amt };
   }
+  const OPS = [
+    ['openWorld', 'Open a world'], ['closeWorld', 'Close a world'], ['resetWorld', 'Reset a world (stays open)'], ['setCrowns', 'Set crowns of a world'],
+    ['addBee', 'Give a bee'], ['removeBee', 'Remove a bee'], ['addCore', 'Give a hive core'], ['removeCore', 'Remove a hive core'],
+    ['addSkin', 'Give a skin'], ['removeSkin', 'Remove a skin'], ['setPrime', 'Set Prime points'], ['setLevel', 'Set player level'],
+    ['resetPity', 'Reset hatch pity'], ['resetPass', 'Reset pass progress'], ['newQuests', 'New daily quests'], ['newLq', 'New league quests'],
+    ['clearBoosts', 'Remove active boosts'], ['maxTrees', 'Max every essence tree'], ['resetTrees', 'Reset every essence tree']
+  ];
+  function targets(kind) {
+    const k = kind.split('+')[0];
+    if (k === 'world') return BZ.WORLDS.map((w, i) => [i, BZ.n(w.name)]);
+    if (k === 'bee') return BZ.BEES.map(b => [b.id, BZ.n(b.name) + '  ·  ' + BZ.n(BZ.RARITIES[b.r].name)]);
+    if (k === 'core') return BZ.CORES.map(c => [c.id, BZ.n(c.name) + '  ·  ' + BZ.n(BZ.RARITIES[c.r].name)]);
+    if (k === 'skin') return BZ.SKINS.filter(x => !x.world && x.id !== 'meadow').map(x => [x.id, BZ.n(x.name)]);
+    return [];
+  }
+  function opForm(pre, cur, btn) {
+    const kind = P.DEV_OPS[cur] || '';
+    const tg = targets(kind);
+    let h = '<div class="dev-row"><select id="' + pre + 'Op" class="dev-in" data-devop="' + pre + '">' + OPS.map(o => '<option value="' + o[0] + '"' + (o[0] === cur ? ' selected' : '') + '>' + o[1] + '</option>').join('') + '</select>';
+    if (tg.length) h += '<select id="' + pre + 'Tgt" class="dev-in">' + tg.map(x => '<option value="' + esc(x[0]) + '">' + esc(x[1]) + '</option>').join('') + '</select>';
+    if (kind.includes('amt')) h += '<input id="' + pre + 'OAmt" class="dev-in" placeholder="Amount" value="1">';
+    return h + '<button class="btn btn-primary btn-sm" data-dev="' + btn + '">Apply</button></div>';
+  }
   const val = id => { const el = document.getElementById(id); return el ? el.value : ''; };
 
   function meTab(s) {
     let h = '<div class="dev-card"><h5>' + ic('gift') + 'Give or take (this save)</h5><div class="dev-row">' + resSelect('devRes') + '<input id="devAmt" class="dev-in" placeholder="Amount: 10, 5k, 2m, 1e15" value="10"><button class="btn btn-primary btn-sm" data-dev="give">Give</button><button class="btn btn-outline btn-sm" data-dev="take">Take</button></div></div>';
+    h += '<div class="dev-card"><h5>' + ic('globe') + 'Worlds and collection</h5>' + opForm('devM', D.op, 'op') + '<small class="dev-hint">Closing the world you are in sends you back to the first world. The first world cannot be closed.</small></div>';
     const quick = [
       ['lucky', 'sparkle', 'Spawn lucky bee'], ['red', 'gem', 'Spawn red lucky bee'], ['ticketbee', 'ticket', 'Spawn ticket bee'],
       ['bless', 'star', 'Blessing offer'], ['boost', 'bolt', 'x2 honey 30 min'], ['skip', 'clock', 'Skip 1 hour'],
@@ -74,6 +98,7 @@
     let h = '<div class="dev-card dev-sel"><div class="dev-selh"><div><b>' + esc(p.name || '?') + '</b><small>' + esc(p.uid) + '</small></div><button class="wm-x dev-x" data-dev="unpick">' + ic('close') + '</button></div>';
     h += '<div class="dev-stats">' + [['Level', F.int(p.level || 1)], ['Honey', F.num(p.honey || 0)], ['Crowns', F.int(p.crowns || 0)], ['Essence', F.int(p.essence || 0)], ['Bees', F.int(p.bees || 0)], ['League tier', BZ.n((BZ.LEAGUE_TIERS[p.tier || 0] || BZ.LEAGUE_TIERS[0]).name)], ['Last seen', p.at ? new Date(p.at).toLocaleString() : '?']].map(x => '<span><small>' + x[0] + '</small><b>' + esc(x[1]) + '</b></span>').join('') + '</div>';
     h += '<h6>Give or take</h6><div class="dev-row">' + resSelect('devGRes') + '<input id="devGAmt" class="dev-in" placeholder="Amount" value="10"></div><div class="dev-row"><input id="devGNote" class="dev-in dev-wide" maxlength="80" placeholder="Message shown to the player (optional)"><button class="btn btn-primary btn-sm" data-dev="pgive">Give</button><button class="btn btn-outline btn-sm" data-dev="ptake">Take</button></div><small class="dev-hint">Delivered the next time the player syncs online (every 3 minutes while playing).</small>';
+    h += '<h6>Worlds and collection</h6>' + opForm('devP', D.pop, 'pop');
     const banned = (D.banned || []).some(b => b.uid === p.uid);
     h += '<h6>Moderation</h6><div class="dev-grid">' +
       '<button class="btn btn-outline btn-sm" data-dev="psave">' + ic('chart') + 'View save</button>' +
@@ -197,7 +222,7 @@
     if (a === 'copysave') return run('Copy save', async () => { await navigator.clipboard.writeText(JSON.stringify(BZ.Store.serialize(s))); return 'Save copied to the clipboard'; });
     if (a === 'sync') return run('Sync', async () => { const ok = await BZ.Online.sync(s); return ok ? 'Synced online' : 'Sync did not finish: ' + (BZ.Online.error || (BZ.Online.banned ? 'banned' : 'busy')); });
     if (a === 'update') { BZ.Game.checkVersion(); return say('Checked. A refresh banner appears only if a newer version is online.'); }
-    if (a === 'selfgift') return run('Test gift', async () => { await C.admin.gift(C.uid(), { egg: 1, note: 'Test gift' }); const n = await BZ.Online.applyGifts(s); return n ? 'Test gift sent and received (+1 egg ticket)' : 'Gift sent, but could not be read back. Check the rules.'; });
+    if (a === 'selfgift') return run('Test gift', async () => { await C.admin.gift(C.uid(), { egg: 1, note: 'Test gift' }); await BZ.Online.applyGifts(s); return BZ.Online.giftCount ? 'Test gift sent and received (+1 egg ticket)' : 'Gift sent, but could not be read back. Check the rules.'; });
   }
 
   async function act(a, arg) {
@@ -215,6 +240,14 @@
         return done((a === 'give' ? 'Gave ' : 'Took ') + F.num(amt) + ' ' + RES.find(r => r[0] === key)[1].toLowerCase());
       }
       case 'q': return quick(arg);
+      case 'op': {
+        const op = val('devMOp'), kind = P.DEV_OPS[op] || '';
+        if (kind.includes('amt') && val('devMOAmt') === '') return say('Enter an amount');
+        if (op === 'resetWorld' || op === 'closeWorld') { if (!confirm(OPS.find(o => o[0] === op)[1] + ': ' + BZ.n(BZ.WORLDS[+val('devMTgt')].name) + '?')) return; }
+        const ns = P.applyOp(s, op, val('devMTgt'), parseAmt(val('devMOAmt')));
+        if (ns !== s) { BZ.Game.main = ns; BZ.Game.refreshScene(); }
+        return done(OPS.find(o => o[0] === op)[1] + ': done');
+      }
       case 't': return tool(arg);
       case 'copy': try { await navigator.clipboard.writeText(arg); say('Copied'); } catch (e) { say('Could not copy: ' + arg); } return;
       case 'recheck': return run('Check rights', async () => { D.admin = await C.isAdmin().catch(() => false); return D.admin ? 'Admin rights found' : 'Still no admin rights'; });
@@ -231,6 +264,14 @@
         const g = toGift(key, a === 'pgive' ? amt : -amt);
         if (note) g.note = note;
         return run((a === 'pgive' ? 'Give to ' : 'Take from ') + p.name, async () => { await A.gift(p.uid, g); return (a === 'pgive' ? 'Gift sent to ' : 'Removal sent to ') + p.name; });
+      }
+      case 'pop': {
+        const op = val('devPOp'), kind = P.DEV_OPS[op] || '';
+        const g = { op, target: val('devPTgt'), amt: parseAmt(val('devPOAmt')) };
+        const note = val('devGNote').trim();
+        if (note) g.note = note;
+        if (kind.includes('amt') && val('devPOAmt') === '') return say('Enter an amount');
+        return run(OPS.find(o => o[0] === op)[1] + ' for ' + p.name, async () => { await A.gift(p.uid, g); return OPS.find(o => o[0] === op)[1] + ': sent to ' + p.name; });
       }
       case 'psave': return run('Load save', async () => { D.selSave = (await A.save(p.uid)) || false; return 'Save loaded'; });
       case 'prename': return run('Reset name', async () => { const nm = 'Bee ' + (1000 + Math.floor(Math.random() * 9000)); await A.rename(p.uid, nm).catch(() => {}); await A.gift(p.uid, { rename: 1 }); p.name = nm; return 'Name reset to ' + nm; });
@@ -260,4 +301,13 @@
     act(el.dataset.dev, el.dataset.arg);
   }, true);
   document.addEventListener('input', e => { if (e.target && e.target.id === 'devSearch') filter(); });
+  document.addEventListener('change', e => {
+    const el = e.target;
+    if (!el || !el.dataset || !el.dataset.devop) return;
+    if (el.dataset.devop === 'devM') D.op = el.value; else D.pop = el.value;
+    const k = el.dataset.devop;
+    D.render();
+    const t = document.getElementById(k + 'Tgt');
+    if (t) t.selectedIndex = 0;
+  });
 })(window);

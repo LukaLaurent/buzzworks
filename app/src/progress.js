@@ -97,6 +97,8 @@
     if (d.lgKick) { s.league.gid = ''; s.league.points = 0; }
     if (d.rename) s.playerName = '';
     s._dirty = true;
+    if (d.op && P.DEV_OPS[d.op] !== undefined) { const ns = P.applyOp(s, d.op, d.target, num(d.amt)); ns._dirty = true; return ns; }
+    return s;
   };
   P.treeCount = (s, w) => BZ.ESSENCE_SHOP.filter(x => w === undefined || x.w === w).length;
   P.treeDoneCount = (s, w) => BZ.ESSENCE_SHOP.filter(x => (w === undefined || x.w === w) && P.essMaxed(s, x.id)).length;
@@ -564,7 +566,7 @@
   P.worldCost = (s, idx) => Math.max(1, Math.ceil(BZ.WORLDS[idx].cost * (1 - BZ.ESS_BY_ID.map.v * P.essLvl(s, 'map'))));
   P.canOpenWorld = function (s, idx) {
     const w = BZ.WORLDS[idx];
-    if (!w || s.worldsOpen.includes(idx) || idx !== s.worldsOpen.length) return false;
+    if (!w || s.worldsOpen.includes(idx) || idx !== P.nextWorld(s)) return false;
     const prev = P.worldState(s, idx - 1);
     return !!prev && (prev.crowns || 0) >= P.worldCost(s, idx);
   };
@@ -595,6 +597,55 @@
     tmp.buffs = []; tmp.boosts = [];
     E.recalc(tmp);
     return { hps: tmp._c.baseHps, crowns: w.crowns || 0, earned: (w.crowns || 0) + (w.crownsSpent || 0), lifetime: w.lifetime || 0, run: w.runHoney || 0, rj: w.rj || 0 };
+  };
+  P.nextWorld = s => { const i = BZ.WORLDS.findIndex((w, k) => !s.worldsOpen.includes(k)); return i < 0 ? BZ.WORLDS.length : i; };
+  P.resetWorld = function (s, idx) {
+    if (idx === s.world) return P.freshWorld(s, s.world);
+    if (!s.worldsOpen.includes(idx)) return s;
+    const fresh = P.strip(E.newState(idx));
+    fresh.world = idx;
+    s.otherWorlds[idx] = fresh;
+    return s;
+  };
+  P.closeWorld = function (s, idx) {
+    if (!idx || !s.worldsOpen.includes(idx)) return s;
+    let ns = s;
+    if (idx === s.world) ns = P.travel(s, 0) || s;
+    delete ns.otherWorlds[idx];
+    ns.worldsOpen = ns.worldsOpen.filter(k => k !== idx);
+    ns._dirty = true;
+    return ns;
+  };
+  P.DEV_OPS = {
+    openWorld: 'world', closeWorld: 'world', resetWorld: 'world', setCrowns: 'world+amt',
+    addBee: 'bee+amt', removeBee: 'bee', addCore: 'core+amt', removeCore: 'core', addSkin: 'skin', removeSkin: 'skin',
+    setPrime: 'amt', setLevel: 'amt', resetPity: '', resetPass: '', newQuests: '', newLq: '', clearBoosts: '', maxTrees: '', resetTrees: ''
+  };
+  P.applyOp = function (s, op, tg, amt) {
+    amt = typeof amt === 'number' && isFinite(amt) ? amt : 0;
+    const wi = +tg;
+    switch (op) {
+      case 'openWorld': if (BZ.WORLDS[wi] && !s.worldsOpen.includes(wi)) { s.worldsOpen.push(wi); s.worldsOpen.sort((a, b) => a - b); s.flags.worlds = 1; } return s;
+      case 'closeWorld': return P.closeWorld(s, wi);
+      case 'resetWorld': return P.resetWorld(s, wi);
+      case 'setCrowns': { const w = P.worldState(s, wi); if (w) w.crowns = Math.max(0, Math.round(amt)); return s; }
+      case 'addBee': if (BZ.BEE_BY_ID[tg]) s.bees[tg] = (s.bees[tg] || 0) + Math.max(1, Math.round(amt) || 1); return s;
+      case 'removeBee': delete s.bees[tg]; return s;
+      case 'addCore': if (BZ.CORE_BY_ID[tg]) s.cores[tg] = (s.cores[tg] || 0) + Math.max(1, Math.round(amt) || 1); return s;
+      case 'removeCore': delete s.cores[tg]; s.coreSlots = (s.coreSlots || []).filter(id => id !== tg); return s;
+      case 'addSkin': if (BZ.SKIN_BY_ID[tg]) s.skins[tg] = 1; return s;
+      case 'removeSkin': if (tg !== 'meadow') { delete s.skins[tg]; if (s.skin === tg) s.skin = 'meadow'; } return s;
+      case 'setPrime': s.prime = Math.max(0, Math.round(amt)); return s;
+      case 'setLevel': s.level = Math.max(1, Math.round(amt)); s.xp = 0; return s;
+      case 'resetPity': for (const k in s.pity) s.pity[k] = k === 'guarantee' ? false : 0; return s;
+      case 'resetPass': s.pass = { season: s.pass.season, xp: 0, got: {}, inf: 0 }; return s;
+      case 'newQuests': s.daily.questDay = ''; BZ.Meta.questGen(s); return s;
+      case 'newLq': if (s.league) { s.league.lq = null; BZ.Meta.lqGen(s); } return s;
+      case 'clearBoosts': s.boosts = []; return s;
+      case 'maxTrees': BZ.ESSENCE_SHOP.forEach(x => { s.essShop[x.id] = x.max; }); return s;
+      case 'resetTrees': s.essShop = {}; return s;
+    }
+    return s;
   };
   P.sellWorld = function (s, idx) {
     if (idx === undefined) idx = s.world;

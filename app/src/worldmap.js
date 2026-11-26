@@ -123,7 +123,7 @@
       h += '<div class="wm-acts">' + (i === s.world ? '<button class="btn btn-primary off">' + ic('check') + t('wm_here') + '</button>' : '<button class="btn btn-primary" data-wm="go">' + ic('globe') + t('wm_travel') + '</button>') + '<button class="btn btn-outline' + (sv < 1 ? ' off' : '') + '" data-wm="sell">' + ic(BZ.ESSENCES[i].icon) + t('sell_other', { v: F.int(sv) + ' ' + P.essName(i) }) + '</button></div>';
       if (sv < 1) h += '<p class="wm-line">' + t('sell_need', { v: BZ.SELL_MIN, c: P.crownName(i) }) + '</p>';
     } else {
-      const next = i === s.worldsOpen.length;
+      const next = i === P.nextWorld(s);
       const prev = BZ.WORLDS[i - 1];
       const cost = P.worldCost(s, i);
       h += '<p class="wm-line">' + ic('lock') + (next ? t('wm_openwith', { v: F.int(cost), w: n(prev.name), c: P.crownName(i - 1) }) : t('wm_needprev', { w: n(prev.name) })) + '</p>';

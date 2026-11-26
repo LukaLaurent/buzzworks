@@ -103,7 +103,7 @@
     try {
       if (await C.banned().catch(() => false)) { O.banned = true; O.error = ''; return false; }
       O.banned = false;
-      await O.applyGifts(s);
+      s = await O.applyGifts(s);
       M.leagueRoll(s);
       const L = s.league;
       if (L.prev && L.prev.gid) await finalize(s);
@@ -125,15 +125,22 @@
   O.applyGifts = async function (s) {
     const list = await BZ.Cloud.gifts().catch(() => []);
     let n = 0;
+    const start = s;
     for (const g of list) {
       try { await BZ.Cloud.takeGift(g.id); } catch (e) { continue; }
-      P.applyGift(s, g);
+      s = P.applyGift(s, g) || s;
       n++;
       if (BZ.UI && BZ.UI.toast) BZ.UI.toast('gift', g.note ? BZ.t('dev_gift') + ': ' + String(g.note).slice(0, 80) : BZ.t('dev_gift'), { ok: true, long: true });
       if (BZ.Log) BZ.Log.info('gift applied ' + JSON.stringify(g).slice(0, 200));
     }
-    if (n) { E.recalc(s); if (BZ.UI) { BZ.UI.structureChanged(); BZ.UI.render(); } if (BZ.Game) BZ.Game.save(); }
-    return n;
+    if (n && BZ.Game) {
+      if (s !== start) { BZ.Game.main = s; if (BZ.Game.refreshScene) BZ.Game.refreshScene(); }
+      E.recalc(s);
+      if (BZ.UI) { BZ.UI.structureChanged(); BZ.UI.render(); }
+      BZ.Game.save();
+    }
+    O.giftCount = n;
+    return s;
   };
 
   O.board = async function (s, field) {

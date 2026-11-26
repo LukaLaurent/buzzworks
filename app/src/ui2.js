@@ -357,7 +357,7 @@
     if (P.unlocked(s, 'bees') && s.tickets.egg >= 1) out.push({ id: 'tk', c: 'p-starter', icon: 'ticket', a: t('promo_tickets', { n: s.tickets.egg }), b: t('promo_tickets_d'), act: 'go:bees' });
     if (P.unlocked(s, 'bees') && s.tickets.royal >= 1) { const f = BZ.BEE_BY_ID[P.featured()]; out.push({ id: 'feat', c: 'p-feat', bee: f, a: t('promo_featured', { b: n(f.name) }), b: t('promo_featured_d'), act: 'go:bees' }); }
     if (P.unlocked(s, 'pass') && P.passReady(s)) out.push({ id: 'pass', c: 'p-pass', icon: 'ticket', a: t('promo_pass', { n: P.passTier(s) }), b: t('promo_pass_d'), act: 'go:pass' });
-    if (P.unlocked(s, 'worlds') && P.canOpenWorld(s, s.worldsOpen.length)) out.push({ id: 'world', c: 'p-vip', icon: 'globe', a: t('promo_world'), b: t('promo_world_d'), act: 'go:worlds' });
+    if (P.unlocked(s, 'worlds') && P.canOpenWorld(s, P.nextWorld(s))) out.push({ id: 'world', c: 'p-vip', icon: 'globe', a: t('promo_world'), b: t('promo_world_d'), act: 'go:worlds' });
     return out;
   }
   UI.promoHtml = () => UI.wnBarHtml() + '<div class="promo" id="promo"></div>';
@@ -411,7 +411,7 @@
     flags.pass = P.passReady(s);
     flags.bees = (s.tickets.egg || 0) > 0 || (s.tickets.royal || 0) > 0;
     flags.workshop = (s.tickets.core || 0) > 0;
-    flags.worlds = P.canOpenWorld(s, s.worldsOpen.length);
+    flags.worlds = P.canOpenWorld(s, P.nextWorld(s));
     for (const k in flags) if (!P.unlocked(s, k)) flags[k] = false;
   };
 

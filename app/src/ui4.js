@@ -132,7 +132,7 @@
     h += '<div class="ab-feats">' + feats.map(x => '<div class="ab-feat"><span>' + ic(x[0]) + '</span><small>' + t(x[1]) + '</small></div>').join('') + '</div>';
     h += '<div class="card ab-made"><div class="ab-nova">' + UI.fox('happy') + '</div><div class="txt"><b>' + t('ab_made') + '</b><small class="by">Luka LAURENT</small></div></div>';
     const ext = (BZ.CONFIG && BZ.CONFIG.platform) !== 'crazygames';
-    h += '<div class="ab-links">' + (ext ? '<a class="btn btn-primary" href="https://novafox.fr" target="_blank" rel="noopener">' + ic('globe') + t('ab_visit') + '</a>' : '') + '<button class="btn btn-ghost" data-act="whatsnew">' + ic('sparkle') + t('new_btn') + '</button>' + (BZ.Dev && BZ.Dev.ok ? '<button class="btn btn-outline dev-open" data-dev="open">' + ic('settings') + 'Developer options</button>' : '') + '</div>';
+    h += '<div class="ab-links">' + (ext ? '<a class="btn btn-primary" href="https://novafox.fr" target="_blank" rel="noopener">' + ic('globe') + t('ab_visit') + '</a>' : '') + '<button class="btn btn-ghost" data-gd="open">' + ic('star') + t('gd_tab') + '</button><button class="btn btn-ghost" data-act="whatsnew">' + ic('sparkle') + t('new_btn') + '</button>' + (BZ.Dev && BZ.Dev.ok ? '<button class="btn btn-outline dev-open" data-dev="open">' + ic('settings') + 'Developer options</button>' : '') + '</div>';
     if (BZ.Dev) BZ.Dev.check();
     return h;
   };

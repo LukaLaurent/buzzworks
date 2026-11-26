@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '2.6.0';
+  BZ.VERSION = '2.7.0';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -244,6 +244,11 @@
   BZ.LEAGUE_QUEST_COUNT = 4;
   BZ.LEAGUE_QUEST_GROW = 0.2;
   BZ.CHANGELOG = [
+    { v: '2.7.0', items: [
+      { icon: 'star', en: 'New How to play guide, from your first drop of honey all the way to Prime. Find it in the top bar or in About.', fr: 'Nouveau guide Comment jouer, de la première goutte de miel jusqu’à Prime. Dans la barre du haut ou dans À propos.' },
+      { icon: 'tap', en: 'Right click on a producer to buy it too.', fr: 'Un clic droit sur un producteur l’achète aussi.' },
+      { icon: 'check', en: 'Fixed buttons that stopped working under the notifications, and Mythic bees now come after Legendary ones.', fr: 'Correction des boutons qui ne répondaient plus sous les notifications, et les abeilles mythiques passent après les légendaires.' }
+    ] },
     { v: '2.6.0', items: [
       { icon: 'infinite', en: 'The pass now has an endless last tier. Past tier 50, keep filling it for 3 egg tickets and 5 minutes of double honey, again and again.', fr: 'Le pass a maintenant un dernier palier sans fin. Après le palier 50, continuez à le remplir pour 3 tickets d\u2019œuf et 5 minutes de miel double, encore et encore.' },
       { icon: 'sparkle', en: 'A cleaner What\u2019s new banner that shows up once after each update.', fr: 'Une bannière Nouveautés plus discrète, qui apparaît une fois après chaque mise à jour.' }

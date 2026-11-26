@@ -94,6 +94,13 @@
     $('menuBtn').onclick = () => drawer(true);
     $('scrim').onclick = () => drawer(false);
     $('panel').addEventListener('click', onPanelClick);
+    $('panel').addEventListener('contextmenu', e => {
+      const el = e.target.closest('[data-act="buy"]');
+      if (!el) return;
+      e.preventDefault();
+      BZ.Audio.unlock();
+      G.buyProducer(el.dataset.arg, buyMode, el);
+    });
     $('panel').addEventListener('change', onPanelChange);
     $('panel').addEventListener('input', onPanelInput);
     $('modal').addEventListener('click', e => { if (e.target.id === 'modal' && UI.modalDismiss) UI.closeModal(); });

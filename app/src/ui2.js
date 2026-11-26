@@ -395,6 +395,10 @@
     const desk = innerWidth > 999;
     if (wt) { const want = unseen && desk; if ((wt.style.display !== 'none') !== want) { wt.style.display = want ? '' : 'none'; UI.fitTabs(); } }
     if (wb) { const want = unseen && (!desk || (bar && bar.classList.contains('t-menu'))); if ((wb.style.display !== 'none') !== want) wb.style.display = want ? '' : 'none'; }
+    const gOn = !s.flags.guideHidden;
+    const gt = $('gdTab'), gb = $('gdBar');
+    if (gt) { const want = gOn && desk; if ((gt.style.display !== 'none') !== want) { gt.style.display = want ? '' : 'none'; UI.fitTabs(); } }
+    if (gb) { const want = gOn && (!desk || (bar && bar.classList.contains('t-menu'))); if ((gb.style.display !== 'none') !== want) gb.style.display = want ? '' : 'none'; }
     const bb = $('blessBtn');
     if (bb) bb.style.display = s.blessOffer ? '' : 'none';
     const ab = $('adBtn');
@@ -458,8 +462,8 @@
     if (cc) { cc.innerHTML = UI.gLogo + '<span class="gl">' + t('cloud_cta') + '</span><i class="gdot"></i>'; cc.title = t('cloud_signin'); cc.onclick = () => UI.cloudInvite(); }
   };
   UI.gLogo = '<svg class="glogo" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
-  UI.wnTabHtml = () => '<span class="wn-tab" id="wnTab" style="display:none"><button class="wn-open" data-wn="open" title="' + t('wn_tab') + '">' + ic('sparkle') + '<span class="tl">' + t('wn_tab') + '</span><small>' + BZ.VERSION + '</small></button><button class="wn-x" data-wn="x" title="' + t('wn_hide') + '">' + ic('close') + '</button></span>';
-  UI.wnBarHtml = () => '<div class="wn-bar" id="wnBar" style="display:none"><button class="slide wn-slide" data-wn="open"><span class="spic">' + ic('sparkle') + '</span><span class="stxt"><b>' + t('new_title', { v: BZ.VERSION }) + '</b><small>' + t('wn_bar_d') + '</small></span></button><button class="wn-x" data-wn="x" title="' + t('wn_hide') + '">' + ic('close') + '</button></div>';
+  UI.wnTabHtml = () => (UI.guideTabHtml ? UI.guideTabHtml() : '') + '<span class="wn-tab" id="wnTab" style="display:none"><button class="wn-open" data-wn="open" title="' + t('wn_tab') + '">' + ic('sparkle') + '<span class="tl">' + t('wn_tab') + '</span><small>' + BZ.VERSION + '</small></button><button class="wn-x" data-wn="x" title="' + t('wn_hide') + '">' + ic('close') + '</button></span>';
+  UI.wnBarHtml = () => (UI.guideBarHtml ? UI.guideBarHtml() : '') + '<div class="wn-bar" id="wnBar" style="display:none"><button class="slide wn-slide" data-wn="open"><span class="spic">' + ic('sparkle') + '</span><span class="stxt"><b>' + t('new_title', { v: BZ.VERSION }) + '</b><small>' + t('wn_bar_d') + '</small></span></button><button class="wn-x" data-wn="x" title="' + t('wn_hide') + '">' + ic('close') + '</button></div>';
   UI.whatsNew = function () {
     const s = G.main;
     const L = BZ.F.lang === 'fr' ? 'fr' : 'en';

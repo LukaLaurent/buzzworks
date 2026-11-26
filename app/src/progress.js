@@ -10,6 +10,7 @@
     { id: 'crystal', r: 3, kind: 'cost', v: 0.05, c: ['#BFE6F2', '#3D6A7A'], limited: true, name: { en: 'Crystal bee', fr: 'Abeille de cristal' } },
     { id: 'sunflare', r: 3, kind: 'honey', v: 0.2, c: ['#FFB938', '#7A3A00'], limited: true, pass: true, name: { en: 'Sunflare bee', fr: 'Abeille éruption' } }
   );
+  BZ.BEES.sort((a, b) => a.r - b.r);
   BZ.BEES.forEach(b => { BZ.BEE_BY_ID[b.id] = b; });
 
   P.SHARED = ['tickets', 'pity', 'bees', 'cores', 'coreSlots', 'parts', 'skins', 'skin', 'xp', 'level', 'pass', 'daily', 'quick', 'ads', 'ess', 'prime', 'primeStones', 'rubies', 'essenceTotal', 'essShop', 'worldsOpen', 'otherWorlds', 'flags', 'seed', 'playerName', 'league', 'quests', 'ticketBees', 'created', 'danceReady', 'cloud'];

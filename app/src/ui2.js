@@ -393,9 +393,10 @@
   UI.extFrame = function (now) {
     const s = G.main;
     const need = P.xpFor(s.level);
-    const lv = '<span class="ring" style="--p:' + (s.xp / need * 360).toFixed(0) + 'deg"><span>' + s.level + '</span></span>';
+    const pct = Math.max(0, Math.min(1, s.xp / need));
+    const lv = '<span class="ring" style="--p:' + (pct * 360).toFixed(0) + 'deg"><span>' + ic('star') + '</span></span><span class="num">' + F.int(s.level) + '</span>';
     const cl = $('chipLevel');
-    if (cl && cl._v !== lv) { cl._v = lv; cl.innerHTML = lv; }
+    if (cl && cl._v !== lv) { cl._v = lv; cl.innerHTML = lv; cl.title = t('level', { n: s.level }) + '  ·  ' + Math.floor(pct * 100) + '%'; }
     const tk = ic('ticket') + '<span class="num">' + F.int(s.tickets.egg) + '</span>';
     const ct = $('chipTickets');
     if (ct && ct._v !== tk) { ct._v = tk; ct.innerHTML = tk; }

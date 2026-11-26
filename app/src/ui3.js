@@ -36,8 +36,10 @@
   }
   function fmtField(f, v) { return f === 'honey' ? F.num(v || 0) : F.int(v || 0); }
 
+  const tried = {};
   function refresh(kind, fn) {
-    if (loading === kind) return;
+    if (loading === kind || Date.now() - (tried[kind] || 0) < 5000) return;
+    tried[kind] = Date.now();
     loading = kind;
     fn().catch(e => { O.error = String(e && e.message || e); }).then(() => { loading = ''; if (UI.page() === 'league') UI.render(); });
   }

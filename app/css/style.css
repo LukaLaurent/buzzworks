@@ -1197,3 +1197,34 @@ button.bee.core-card:hover { transform: translateY(-2px); }
 .wm-sw-demon i { background: #FF6A1F !important; box-shadow: 0 0 8px #FF6A1F; }
 .wm-demon-d { line-height: 1.55; }
 @media (prefers-reduced-motion: reduce) { .ev-bub, .ev-bub-ring, .egg-myst, .egg-spark, .wm-dglow, .wm-dember, .wm-soon, .wm-deyes, .wm-route-demon { animation: none !important; } }
+.chip.lvl { gap: 6px; padding: 0 var(--sp-3) 0 4px; }
+.chip.lvl .ring { width: 26px; height: 26px; flex-shrink: 0; }
+.chip.lvl .ring span { width: 20px; height: 20px; color: var(--orange); }
+.chip.lvl .ring .ic { width: 12px; height: 12px; fill: currentColor; stroke-width: 1.4; }
+.chip.lvl > .num { font-weight: 700; min-width: 14px; text-align: center; }
+.chip.lvl:hover { border-color: var(--orange); }
+.fb-modal { max-width: 480px; }
+.fb .hero { margin-bottom: var(--sp-3); }
+.fb-pic { background: var(--teal) !important; color: var(--on-teal) !important; }
+.fb-seg { display: flex; margin-bottom: var(--sp-3); }
+.fb-seg button { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.fb-seg .ic { width: 16px; height: 16px; }
+.fb-txt { width: 100%; min-height: 120px; resize: vertical; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font: inherit; font-size: var(--fs-sm); line-height: 1.5; box-sizing: border-box; }
+.fb-txt:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px var(--orange-soft); }
+.fb-count { display: block; text-align: right; color: var(--text-faint); font-size: var(--fs-xs); margin: 4px 2px var(--sp-3); }
+.fb-wait { display: flex; align-items: center; gap: 6px; justify-content: center; color: var(--warning); font-size: var(--fs-sm); font-weight: 600; margin-bottom: var(--sp-3); }
+.fb-wait .ic { width: 16px; height: 16px; }
+.dev-fb { border-left: 4px solid #D64545; }
+.dev-fb.idea { border-left-color: var(--teal); }
+.dev-fb-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.dev-fb-top small { color: var(--text-faint); font-size: var(--fs-xs); }
+.dev-fb-k { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(214, 69, 69, 0.15); color: #D64545; }
+.dev-fb.idea .dev-fb-k { background: var(--teal-soft); color: var(--teal); }
+.dev-fb-k .ic { width: 13px; height: 13px; }
+.dev-fb-del { margin-left: auto; border: 0; background: none; color: var(--text-muted); cursor: pointer; padding: 6px; border-radius: 8px; display: flex; }
+.dev-fb-del:hover { color: #D64545; background: rgba(214, 69, 69, 0.12); }
+.dev-fb-del .ic { width: 18px; height: 18px; }
+.dev-fb-txt { margin: 8px 0 6px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: var(--fs-sm); line-height: 1.5; }
+.dev-fb-uid { border: 0; background: none; padding: 0; color: var(--text-faint); font-size: 11px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; font-family: var(--font-mono); }
+.dev-fb-uid .ic { width: 12px; height: 12px; }
+.chip.lvl .ring .ic { color: var(--orange); stroke: var(--orange); }

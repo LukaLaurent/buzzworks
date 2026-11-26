@@ -557,6 +557,7 @@
       h += C.signedIn() ? '<div class="btns"><button class="btn btn-outline btn-sm" data-act="cloudsync">' + ic('upload') + t('cloud_sync') + '</button><button class="btn btn-ghost btn-sm" data-act="cloudout">' + t('cloud_signout') + '</button></div>' : '<button class="btn btn-primary btn-sm g-btn" data-act="cloudin">' + ic('user') + t('cloud_signin') + '</button>';
       h += '</div></div>';
     }
+    if (BZ.Feedback && BZ.Feedback.available()) h += '<div class="card"><div class="setting"><div><b>' + t('fb_card') + '</b><small>' + t('fb_card_d') + '</small></div><button class="btn btn-outline btn-sm" data-fb="open">' + ic('bug') + t('fb_btn') + '</button></div></div>';
     h += '<div class="card"><div class="setting"><div><b>' + t('set_reset') + '</b></div><button class="btn btn-danger btn-sm" data-act="reset">' + ic('trash') + t('reset_ok') + '</button></div></div>';
     return h;
   }

@@ -21,6 +21,28 @@ service cloud.firestore {
       allow create: if isAdmin();
     }
 
+    match /feedmeta/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow create, update: if signedIn() && request.auth.uid == uid && !isBanned()
+        && request.resource.data.keys().hasOnly(['last'])
+        && request.resource.data.last == request.time
+        && (resource == null || request.time > resource.data.last + duration.value(15, 'm'));
+    }
+
+    match /feedback/{id} {
+      allow read, delete: if isAdmin();
+      allow create: if signedIn() && !isBanned()
+        && request.resource.data.keys().hasOnly(['uid', 'n', 'l', 'kind', 'txt', 'v', 'at'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.kind in ['bug', 'idea']
+        && request.resource.data.txt is string && request.resource.data.txt.size() >= 10 && request.resource.data.txt.size() <= 600
+        && request.resource.data.n is string && request.resource.data.n.size() > 0 && request.resource.data.n.size() <= 18
+        && request.resource.data.l is int && request.resource.data.l >= 1 && request.resource.data.l < 100000
+        && request.resource.data.v is string && request.resource.data.v.size() <= 12
+        && request.resource.data.at == request.time
+        && getAfter(/databases/$(database)/documents/feedmeta/$(request.auth.uid)).data.last == request.time;
+    }
+
     match /boss/{day}/scores/{uid} {
       function slotStart() {
         let p = day.split('-');

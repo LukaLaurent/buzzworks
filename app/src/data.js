@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '3.1.0';
+  BZ.VERSION = '3.2.0';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -249,6 +249,10 @@
   BZ.LEAGUE_QUEST_COUNT = 4;
   BZ.LEAGUE_QUEST_GROW = 0.2;
   BZ.CHANGELOG = [
+    { v: '3.2.0', items: [
+      { icon: 'bug', en: 'Found a bug or have an idea? Send it from the About tab or the Settings tab with the new Bug or idea button.', fr: 'Un bug ou une idée ? Envoyez-le depuis l’onglet À propos ou Paramètres avec le nouveau bouton Bug ou idée.' },
+      { icon: 'star', en: 'The level button at the top got a cleaner look with your progress around a star.', fr: 'Le bouton de niveau en haut a un look plus net, avec votre progression autour d’une étoile.' }
+    ] },
     { v: '3.1.0', items: [
       { icon: 'boss', en: 'A boss bubble now floats over your hive when a boss is ready, or shows the countdown when the next one is close. Tap it to fight.', fr: 'Une bulle de boss flotte maintenant sur votre ruche quand un boss est prêt, ou affiche le compte à rebours quand le prochain approche. Touchez-la pour combattre.' },
       { icon: 'gift', en: 'Legendary and mystic eggs got their own shiny egg look.', fr: 'Les œufs légendaires et mystiques ont maintenant leur propre look d’œuf brillant.' },

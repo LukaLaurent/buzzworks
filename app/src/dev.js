@@ -127,6 +127,19 @@
     return h;
   }
 
+  function feedbackTab() {
+    if (!D.admin) return setupCard();
+    if (!D.feedback && !D.busy && !D.fbTried) { D.fbTried = true; setTimeout(() => act('fbload'), 0); }
+    const list = D.feedback || [];
+    const kinds = [['all', 'All'], ['bug', 'Bugs'], ['idea', 'Ideas']];
+    const fk = D.fbKind || 'all';
+    let h = '<div class="dev-card"><h5>' + ic('info') + 'Bugs and suggestions</h5><div class="dev-row"><div class="seg">' + kinds.map(k => '<button data-dev="fbkind" data-arg="' + k[0] + '" class="' + (fk === k[0] ? 'on' : '') + '">' + k[1] + ' ' + (k[0] === 'all' ? list.length : list.filter(x => x.kind === k[0]).length) + '</button>').join('') + '</div><button class="btn btn-primary btn-sm" data-dev="fbload">' + ic('download') + (D.feedback ? 'Reload' : 'Load') + '</button></div></div>';
+    const shown = list.filter(x => fk === 'all' || x.kind === fk);
+    if (D.feedback && !shown.length) h += '<div class="dev-card"><p class="dev-hint">Nothing here yet.</p></div>';
+    h += shown.map(x => '<div class="dev-card dev-fb ' + (x.kind === 'idea' ? 'idea' : 'bug') + '"><div class="dev-fb-top"><span class="dev-fb-k">' + ic(x.kind === 'idea' ? 'idea' : 'bug') + (x.kind === 'idea' ? 'Idea' : 'Bug') + '</span><b>' + esc(x.n || '?') + '</b><small>lvl ' + F.int(x.l || 1) + '  ·  v' + esc(x.v || '?') + '  ·  ' + (x.at ? esc(new Date(x.at).toLocaleString()) : '?') + '</small><button class="dev-fb-del" data-dev="fbdel" data-arg="' + esc(x.id) + '" title="Delete">' + ic('trash') + '</button></div><p class="dev-fb-txt">' + esc(x.txt || '') + '</p><button class="dev-fb-uid" data-dev="copy" data-arg="' + esc(x.uid || '') + '">' + ic('user') + esc(x.uid || '') + '</button></div>').join('');
+    return h;
+  }
+
   function toolsTab() {
     const C = BZ.Cloud;
     let h = '<div class="dev-card"><h5>' + ic('settings') + 'Tools</h5><div class="dev-grid">' +
@@ -143,11 +156,11 @@
 
   function html() {
     const s = BZ.Game.main;
-    const tabs = [['me', 'My save'], ['people', 'Players'], ['tools', 'Tools']];
+    const tabs = [['me', 'My save'], ['people', 'Players'], ['feedback', 'Feedback' + (D.feedback ? ' (' + D.feedback.length + ')' : '')], ['tools', 'Tools']];
     let h = '<div class="dev"><div class="dev-head"><h4>' + ic('settings') + 'Developer options</h4><button class="wm-x dev-x" data-dev="close">' + ic('close') + '</button></div>';
     h += '<div class="seg dev-seg">' + tabs.map(x => '<button data-dev="tab" data-arg="' + x[0] + '" class="' + (D.tab === x[0] ? 'on' : '') + '">' + x[1] + '</button>').join('') + '</div>';
     if (D.msg) h += '<div class="dev-msg">' + esc(D.msg) + '</div>';
-    h += D.tab === 'me' ? meTab(s) : D.tab === 'people' ? peopleTab() : toolsTab();
+    h += D.tab === 'me' ? meTab(s) : D.tab === 'people' ? peopleTab() : D.tab === 'feedback' ? feedbackTab() : toolsTab();
     return h + '</div>';
   }
 
@@ -235,6 +248,9 @@
       case 'open': return D.open();
       case 'close': return UI.closeModal();
       case 'tab': D.tab = arg; D.msg = ''; return D.render();
+      case 'fbload': return run('Load feedback', async () => { D.feedback = await A.feedback(); return D.feedback.length + ' messages'; });
+      case 'fbkind': D.fbKind = arg; return D.render();
+      case 'fbdel': return run('Delete', async () => { await A.delFeedback(arg); D.feedback = (D.feedback || []).filter(x => x.id !== arg); return 'Message deleted'; });
       case 'give': case 'take': {
         const amt = parseAmt(val('devAmt')), key = val('devRes');
         if (!amt) return say('Enter an amount');

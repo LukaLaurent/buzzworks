@@ -58,6 +58,14 @@
     async takeGift(id) {
       await fb.fs.deleteDoc(fb.fs.doc(fb.D, 'gifts', user.uid, 'items', id));
     },
+    feedback: {
+      send(d) {
+        const f = fb.fs, b = f.writeBatch(fb.D), ts = f.serverTimestamp();
+        b.set(f.doc(f.collection(fb.D, 'feedback')), Object.assign({ uid: user.uid }, d, { at: ts }));
+        b.set(f.doc(fb.D, 'feedmeta', user.uid), { last: ts });
+        return b.commit();
+      }
+    },
     boss: {
       setScore: (day, e) => fb.fs.setDoc(fb.fs.doc(fb.D, 'boss', day, 'scores', user.uid), Object.assign({}, e, { at: Date.now() })),
       async top(day, k) {
@@ -90,6 +98,12 @@
         return snap.docs.map(d => Object.assign({ gid: d.id }, d.data()));
       },
       setPoints: (gid, uid, p) => fb.fs.updateDoc(fb.fs.doc(fb.D, 'groups', gid), { ['scores.' + uid + '.p']: p }),
+      async feedback() {
+        const f = fb.fs;
+        const snap = await f.getDocs(f.query(f.collection(fb.D, 'feedback'), f.orderBy('at', 'desc'), f.limit(200)));
+        return snap.docs.map(d => { const x = d.data(); return { id: d.id, uid: x.uid, n: x.n, l: x.l, kind: x.kind, txt: x.txt, v: x.v, at: x.at && x.at.toMillis ? x.at.toMillis() : 0 }; });
+      },
+      delFeedback: id => fb.fs.deleteDoc(fb.fs.doc(fb.D, 'feedback', id)),
       kick: (gid, uid) => fb.fs.updateDoc(fb.fs.doc(fb.D, 'groups', gid), { ['scores.' + uid]: fb.fs.deleteField() })
     },
     async signIn() {

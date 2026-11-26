@@ -14,7 +14,6 @@
     { id: 'worlds', icon: 'globe' },
     { id: 'league', icon: 'league' },
     { id: 'event', icon: 'boss' },
-    { id: 'community', icon: 'chat' },
     { id: 'trophies', icon: 'trophy' },
     { id: 'stats', icon: 'chart' },
     { id: 'settings', icon: 'settings' },
@@ -120,7 +119,7 @@
     if (tabs.scrollWidth > tabs.clientWidth + 1) bar.classList.add('t-menu');
   };
 
-  const visibleTabs = () => TABS.filter(x => !['league', 'event', 'community'].includes(x.id) || (BZ.Cloud && BZ.Cloud.configured()));
+  const visibleTabs = () => TABS.filter(x => !['league', 'event'].includes(x.id) || (BZ.Cloud && BZ.Cloud.configured()));
   UI.buildChrome = function () {
     const TABS = visibleTabs();
     $('brand').innerHTML = BZ.appIconSvg(28) + '<div><span>Buzz</span><b>works</b></div>';

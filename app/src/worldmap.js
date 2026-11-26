@@ -22,6 +22,49 @@
   });
 
   const POS = { meadow: [330, 560, 290, 1190], dunes: [650, 300, 620, 940], glacier: [900, 610, 280, 700], moon: [1170, 290, 620, 460], ember: [1330, 640, 320, 240] };
+  const DEMON = [1700, 300, 1.3, 610, -150, 1.1];
+  BZ.addStrings({
+    wm_demon: 'Demon realm', wm_soon: 'Coming soon', wm_demon_sub: 'A new world is being forged', wm_demon_d: 'Deep under the ember peaks, something wakes up. A sixth world made of fire and shadow is on its way, with darker bees, fiercer bosses and a brand new essence. Keep your hive ready!'
+  }, {
+    wm_demon: 'Royaume démoniaque', wm_soon: 'Bientôt', wm_demon_sub: 'Un nouveau monde se forge', wm_demon_d: 'Sous les pics de braise, quelque chose se réveille. Un sixième monde de feu et d’ombre arrive, avec des abeilles plus sombres, des boss plus féroces et une toute nouvelle essence. Gardez votre ruche prête !'
+  });
+  const DX = () => DEMON[tall ? 3 : 0], DY = () => DEMON[tall ? 4 : 1], DS = () => DEMON[tall ? 5 : 2];
+  function demonHtml() {
+    let d = '<g class="wm-demon" transform="translate(' + DX() + ' ' + DY() + ') scale(' + DS() + ')"><circle class="wm-dglow" r="300" fill="url(#wmdglow)"/><g class="wm-dbody">';
+    const b = blob(190, 140, 13);
+    d += '<path d="' + b + '" fill="#1A0507" transform="scale(1.09)"/><path d="' + b + '" fill="#5A1414" transform="scale(1.04)"/><path d="' + b + '" fill="url(#wmdl)"/>';
+    d += '<path class="wm-lava" d="M-165,45 Q-110,10 -60,52 T40,62 T165,22" stroke="#FF6A1F" stroke-width="8" fill="none" stroke-linecap="round"/><path class="wm-lava" d="M-130,-40 Q-100,-10 -70,-35" stroke="#FF8A3D" stroke-width="5" fill="none" stroke-linecap="round"/><path class="wm-lava" d="M120,-20 Q140,10 165,0" stroke="#FF8A3D" stroke-width="5" fill="none" stroke-linecap="round"/>';
+    [[-150, -10], [148, -40], [-115, 85], [118, 88], [-30, 112], [52, 108]].forEach(q => { d += '<path d="M' + (q[0] - 13) + ',' + (q[1] + 18) + ' L' + q[0] + ',' + (q[1] - 28) + ' L' + (q[0] + 13) + ',' + (q[1] + 18) + ' Z" fill="#14040A"/>'; });
+    d += '<path d="M-95,25 L-82,-58 L-118,-160 L-46,-88 L-26,-102 L26,-102 L46,-88 L118,-160 L82,-58 L95,25 Z" fill="#1E0608" stroke="#FF6A1F" stroke-opacity="0.45" stroke-width="3" stroke-linejoin="round"/>';
+    d += '<path d="M-95,25 L-82,-58 L-46,-88 L-26,-102 L0,-60 L-30,25 Z" fill="#2E0A0E" opacity="0.8"/>';
+    d += '<g class="wm-deyes"><path d="M-56,-50 L-16,-38 L-23,-24 L-52,-34 Z" fill="#FFD23F"/><path d="M56,-50 L16,-38 L23,-24 L52,-34 Z" fill="#FFD23F"/></g>';
+    d += '<path class="wm-lava" d="M-44,-4 L-31,10 L-18,-3 L-5,11 L8,-3 L21,10 L34,-4 L44,2" stroke="#FF6A1F" stroke-width="5" fill="none" stroke-linejoin="round"/>';
+    for (let k = 0; k < 9; k++) d += '<circle class="wm-dember" style="animation-delay:-' + (k * 0.45).toFixed(2) + 's" cx="' + (-140 + k * 35) + '" cy="' + (20 + (k % 3) * 20) + '" r="' + (3 + (k % 3)) + '"/>';
+    d += '</g>';
+    const soon = t('wm_soon').toUpperCase();
+    const rw = Math.max(300, soon.length * 25 + 70);
+    d += '<g transform="translate(0 78) rotate(-7)"><g class="wm-soon"><rect x="' + (-rw / 2) + '" y="-32" width="' + rw + '" height="64" rx="14" fill="url(#wmsoon)" stroke="#20252B" stroke-width="4"/><path d="M' + (-rw / 2 + 14) + ',-22 H' + (rw / 2 - 14) + '" stroke="#FFF4C8" stroke-opacity="0.6" stroke-width="3" stroke-linecap="round"/><text text-anchor="middle" y="12">' + esc(soon) + '</text></g></g>';
+    const label = t('wm_demon'), sub = t('wm_demon_sub');
+    const lw = Math.max(label.length * 13, sub.length * 9) + 44;
+    d += '<g class="wm-flag" transform="translate(0 168)' + (tall ? ' scale(1.2)' : '') + '"><rect x="' + (-lw / 2) + '" y="0" width="' + lw + '" height="64" rx="18"/><text text-anchor="middle" y="28">' + esc(label) + '</text><text class="sub" text-anchor="middle" y="50">' + esc(sub) + '</text></g>';
+    return d + '</g>';
+  }
+  function demonCard() {
+    return '<div class="wm-hd"><span class="wm-sw wm-sw-demon"><i></i></span><div><h3>' + esc(t('wm_demon')) + '</h3><div class="wm-tw2">' + esc(t('wm_demon_sub')) + '</div></div><button class="wm-x" data-wm="close">' + ic('close') + '</button></div><p class="wm-line wm-demon-d">' + esc(t('wm_demon_d')) + '</p><div class="wm-acts"><button class="btn btn-primary off">' + ic('lock') + esc(t('wm_soon')) + '</button></div>';
+  }
+  function demonSelect() {
+    if (busy) return;
+    sel = null;
+    ov.querySelectorAll('.wm-isle').forEach(g => { g.classList.remove('sel'); g.classList.add('dim'); });
+    ov.querySelector('.wm-hint').style.opacity = 0;
+    const cam = ov.querySelector('#wmCam');
+    const z = 1.25, cx = tall ? 450 : 800, cy = tall ? 700 : 430;
+    if (cam) cam.style.transform = 'translate(' + (cx - DX() * z) + 'px,' + (cy - DY() * z) + 'px) scale(' + z + ')';
+    const card = ov.querySelector('.wm-card');
+    card.innerHTML = demonCard();
+    card.classList.add('on');
+    BZ.Audio.play('click');
+  }
   let ov = null, svg = null, sel = null, busy = false, tall = false, key = '', timer = 0;
   const X = w => POS[w.id][tall ? 2 : 0];
   const Y = w => POS[w.id][tall ? 3 : 1];
@@ -66,10 +109,10 @@
     const s = BZ.Game.main;
     tall = innerHeight > innerWidth * 1.1;
     const VW = tall ? 900 : 1600, VH = tall ? 1600 : 900;
-    svg.setAttribute('viewBox', tall ? '-20 -40 940 1760' : '-30 -40 1660 1060');
+    svg.setAttribute('viewBox', tall ? '-20 -540 940 2260' : '-30 -40 2000 1060');
     let h = '<defs>';
     BZ.WORLDS.forEach((w, i) => { const sk = BZ.SKIN_BY_ID[w.theme]; h += '<linearGradient id="wml' + i + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + sk.hill[0] + '"/><stop offset="1" stop-color="' + sk.hill[2] + '"/></linearGradient>'; });
-    h += '<radialGradient id="wmsea" cx="50%" cy="45%" r="75%"><stop offset="0" stop-color="#1F5A66"/><stop offset="1" stop-color="#0B2229"/></radialGradient><radialGradient id="wmglow"><stop offset="0" stop-color="#F28C28" stop-opacity="0.55"/><stop offset="1" stop-color="#F28C28" stop-opacity="0"/></radialGradient></defs>';
+    h += '<radialGradient id="wmsea" cx="50%" cy="45%" r="75%"><stop offset="0" stop-color="#1F5A66"/><stop offset="1" stop-color="#0B2229"/></radialGradient><radialGradient id="wmdl" cx="50%" cy="40%" r="65%"><stop offset="0" stop-color="#8A2216"/><stop offset="0.6" stop-color="#4A0E10"/><stop offset="1" stop-color="#22070A"/></radialGradient><radialGradient id="wmdglow"><stop offset="0" stop-color="#FF3B1F" stop-opacity="0.5"/><stop offset="1" stop-color="#FF3B1F" stop-opacity="0"/></radialGradient><linearGradient id="wmsoon" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD27A"/><stop offset="0.5" stop-color="#F28C28"/><stop offset="1" stop-color="#E8603C"/></linearGradient><radialGradient id="wmglow"><stop offset="0" stop-color="#F28C28" stop-opacity="0.55"/><stop offset="1" stop-color="#F28C28" stop-opacity="0"/></radialGradient></defs>';
     h += '<rect x="-3000" y="-3000" width="' + (VW + 6000) + '" height="' + (VH + 6000) + '" fill="#0B2229"/><rect x="-600" y="-600" width="' + (VW + 1200) + '" height="' + (VH + 1200) + '" fill="url(#wmsea)"/><g class="wm-cam" id="wmCam">';
     for (let r = -6; r < VH / 100 + 6; r++) for (let c = -4; c < VW / 280 + 4; c++) h += '<path class="wm-wave" style="animation-delay:-' + ((r * 6 + c) % 7) + 's" d="M' + (60 + c * 280 + (r % 2) * 140) + ',' + (60 + r * 100) + 'q20,-12 40,0t40,0"/>';
     h += '<path class="wm-route" d="M' + BZ.WORLDS.map(w => X(w) + ',' + Y(w)).join(' L') + '"/>';
@@ -90,11 +133,15 @@
       const lw = Math.max(label.length * 13, sub.length * 9) + 44;
       h += '<g class="wm-flag" transform="translate(0 150)' + (tall ? ' scale(1.35)' : '') + '"><rect x="' + (-lw / 2) + '" y="0" width="' + lw + '" height="64" rx="18"/><text text-anchor="middle" y="28">' + esc(label) + '</text><text class="sub" text-anchor="middle" y="50">' + esc(sub) + '</text></g></g>';
     });
+    const last = BZ.WORLDS[BZ.WORLDS.length - 1];
+    h += '<path class="wm-route wm-route-demon" d="M' + X(last) + ',' + Y(last) + ' Q' + ((X(last) + DX()) / 2 + 60) + ',' + ((Y(last) + DY()) / 2 + 40) + ' ' + DX() + ',' + DY() + '"/>' + demonHtml();
     h += '<g id="wmBee" style="display:none"><ellipse cx="-6" cy="-12" rx="9" ry="13" fill="#F5F3EF" opacity="0.9"/><ellipse cx="6" cy="-12" rx="8" ry="12" fill="#F5F3EF" opacity="0.9"/><ellipse cx="0" cy="0" rx="20" ry="14" fill="#F2C14E"/><rect x="-8" y="-14" width="5" height="28" fill="#20252B"/><rect x="3" y="-14" width="5" height="28" fill="#20252B"/><circle cx="20" cy="-2" r="9" fill="#20252B"/></g>';
     for (let k = 0; k < 5; k++) h += '<ellipse class="wm-cloud" style="animation-delay:-' + (k * 12) + 's;animation-duration:' + (50 + k * 8) + 's" cx="0" cy="' + (90 + k * (VH / 5.3)) + '" rx="' + (160 + k * 20) + '" ry="40"/>';
     h += '</g>';
     svg.innerHTML = h;
     svg.querySelectorAll('.wm-isle').forEach(g => g.addEventListener('click', e => { e.stopPropagation(); select(+g.dataset.i); }));
+    const dm = svg.querySelector('.wm-demon');
+    if (dm) dm.addEventListener('click', e => { e.stopPropagation(); demonSelect(); });
     key = stateKey(s);
     camTo(sel, sel === null ? 1 : 1.45, true);
     chip();
@@ -137,6 +184,8 @@
     if (busy) return;
     sel = i;
     ov.querySelectorAll('.wm-isle').forEach(g => { const k = +g.dataset.i; g.classList.toggle('sel', k === i); g.classList.toggle('dim', i !== null && k !== i); });
+    const dm = ov.querySelector('.wm-demon');
+    if (dm) dm.classList.toggle('dim', i !== null);
     ov.querySelector('.wm-hint').style.opacity = i === null ? 1 : 0;
     camTo(i, i === null ? 1 : 1.45);
     const card = ov.querySelector('.wm-card');

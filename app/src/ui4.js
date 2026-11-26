@@ -85,7 +85,7 @@
     const e = BZ.ESSENCES[world] || BZ.ESSENCES[0];
     const col = x.id === 'ess' ? e.color : x.color;
     const label = x.id === 'ess' ? t('rr_ess', { v: F.int(x.v), e: P.essName(world) }) : t('rr_' + x.id, { v: F.int(x.v) });
-    return '<div class="rr-t' + (x.id === 'stone' ? ' st' : '') + '" style="--rc:' + col + '"><span>' + ic(x.id === 'ess' ? e.icon : x.icon) + '</span><small>' + esc(label) + '</small></div>';
+    return '<div class="rr-t' + (x.id === 'stone' ? ' st' : '') + '" style="--rc:' + col + '"><span>' + (x.id === 'legend' || x.id === 'mystic' ? BZ.eggSvg(x.id, 30) : ic(x.id === 'ess' ? e.icon : x.icon)) + '</span><small>' + esc(label) + '</small></div>';
   }
   UI.rubyRoll = function (r, done) {
     const N = 46, WIN = 40;

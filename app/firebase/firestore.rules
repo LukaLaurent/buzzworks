@@ -21,31 +21,6 @@ service cloud.firestore {
       allow create: if isAdmin();
     }
 
-    match /chatmeta/{uid} {
-      allow read: if signedIn() && request.auth.uid == uid;
-      allow create, update: if signedIn() && request.auth.uid == uid && !isBanned()
-        && request.resource.data.keys().hasOnly(['last'])
-        && request.resource.data.last == request.time
-        && (resource == null || request.time > resource.data.last + duration.value(4, 's'));
-    }
-
-    match /chat/{id} {
-      function msgOk(d) {
-        return d.keys().hasOnly(['uid', 'n', 'l', 'txt', 'at'])
-          && d.uid == request.auth.uid
-          && d.txt is string && d.txt.size() > 0 && d.txt.size() <= 200
-          && !d.txt.matches('(?si).*(<|>|https?:|www[.]|javascript:|data:|discord[.]gg|bit[.]ly|t[.]me/).*')
-          && d.n is string && d.n.size() > 0 && d.n.size() <= 18
-          && !d.n.matches('(?si).*(<|>|https?:|www[.]).*')
-          && d.l is int && d.l >= 1 && d.l < 100000
-          && d.at == request.time;
-      }
-      allow read: if signedIn();
-      allow create: if signedIn() && !isBanned() && msgOk(request.resource.data)
-        && getAfter(/databases/$(database)/documents/chatmeta/$(request.auth.uid)).data.last == request.time;
-      allow delete: if signedIn() && (resource.data.uid == request.auth.uid || isAdmin());
-    }
-
     match /boss/{day}/scores/{uid} {
       function slotStart() {
         let p = day.split('-');

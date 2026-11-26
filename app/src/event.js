@@ -4,7 +4,7 @@
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
   BZ.addStrings({
-    tab_event: 'Event', tab_community: 'Community',
+    tab_event: 'Event',
     ev_title: 'Boss fight', ev_d: 'Fight the boss with your honey! You get 10 minutes in a brand new hive, the same for every player: bees, cores, skins, levels and essence give no bonus. Every drop of honey you make hits the boss. A new boss comes every 4 hours, you get one try against each, and the best hives win legendary and mystic eggs when it leaves.',
     ev_fight: 'Fight the boss', ev_done: 'Already fought this boss', ev_in: 'Fight in progress', ev_resume: 'Back to the fight',
     ev_lvl: 'Level {n}', ev_dmg: 'Damage', ev_rank: 'Rank', ev_board: 'Ranking for this boss', ev_board_empty: 'Nobody fought this boss yet. Be the first!', ev_you: 'You',
@@ -12,12 +12,12 @@
     ev_signin: 'Sign in with Google to fight the boss and join the ranking.', ev_leave: 'Leave', ev_leave_t: 'Leave the fight?', ev_leave_d: 'Your damage is kept, but you cannot fight this boss again.',
     ev_go_t: '{b} appears!', ev_go_d: 'A fresh hive for 10 minutes. Make as much honey as you can: every drop hits the boss.', ev_over_t: 'The fight is over!', ev_over_d: 'You dealt {v} damage and reached level {l}. Your ranking reward arrives when the boss leaves.',
     ev_res_t: 'Last boss: rank {r}', ev_res_d: 'You finished {r} out of {n} hives against {b}.', ev_blocked: 'Not available during the boss fight', ev_hp: '{v} HP left',
-    ev_mine: 'Your best against this boss', ev_instant: 'Fight reward', ev_ends: 'Next boss in {t}',
+    ev_mine: 'Your best against this boss', ev_instant: 'Fight reward', ev_ends: 'Next boss in {t}', ev_bub_go: 'Fight!', ev_bub_t: '{b} is here! Tap to fight', ev_bub_soon: 'Next boss in {t}',
     hb_mystic: 'Mystic', ticket_mystic: 'Mystic eggs', r_mystic: '+{v} mystic eggs', mystic_t: 'Mystic egg', mystic_d: 'Always hatches a mythic bee. Won against the boss or, very rarely, from a red lucky bee.',
     hb_legend: 'Legendary', ticket_legend: 'Legendary eggs', r_legend: '+{v} legendary eggs', legend_t: 'Legendary egg', legend_d: 'Always hatches a legendary bee. Won against the boss or from a red lucky bee.',
     rr_luck: 'Lucky hatch {v} min', rr_xp2: 'Double XP {v} min', rr_lg2: 'League rush {v} min', rr_legend: 'Legendary egg', rr_mystic: 'Mystic egg'
   }, {
-    tab_event: 'Événement', tab_community: 'Communauté',
+    tab_event: 'Événement',
     ev_title: 'Combat de boss', ev_d: 'Affrontez le boss avec votre miel ! Vous avez 10 minutes dans une ruche toute neuve, la même pour tous les joueurs : abeilles, noyaux, décors, niveaux et essence ne donnent aucun bonus. Chaque goutte de miel frappe le boss. Un nouveau boss arrive toutes les 4 heures, vous avez un essai contre chacun, et les meilleures ruches gagnent des œufs légendaires et mystiques à son départ.',
     ev_fight: 'Affronter le boss', ev_done: 'Déjà combattu contre ce boss', ev_in: 'Combat en cours', ev_resume: 'Retour au combat',
     ev_lvl: 'Niveau {n}', ev_dmg: 'Dégâts', ev_rank: 'Rang', ev_board: 'Classement contre ce boss', ev_board_empty: 'Personne n’a encore affronté ce boss. Soyez le premier !', ev_you: 'Vous',
@@ -25,7 +25,7 @@
     ev_signin: 'Connectez-vous avec Google pour affronter le boss et entrer dans le classement.', ev_leave: 'Quitter', ev_leave_t: 'Quitter le combat ?', ev_leave_d: 'Vos dégâts sont gardés, mais vous ne pourrez plus affronter ce boss.',
     ev_go_t: '{b} apparaît !', ev_go_d: 'Une ruche neuve pendant 10 minutes. Produisez un maximum de miel : chaque goutte frappe le boss.', ev_over_t: 'Le combat est terminé !', ev_over_d: 'Vous avez infligé {v} dégâts et atteint le niveau {l}. Votre récompense de classement arrive au départ du boss.',
     ev_res_t: 'Dernier boss : rang {r}', ev_res_d: 'Vous finissez {r} sur {n} ruches contre {b}.', ev_blocked: 'Indisponible pendant le combat de boss', ev_hp: 'Encore {v} PV',
-    ev_mine: 'Votre meilleur score contre ce boss', ev_instant: 'Récompense de combat', ev_ends: 'Prochain boss dans {t}',
+    ev_mine: 'Votre meilleur score contre ce boss', ev_instant: 'Récompense de combat', ev_ends: 'Prochain boss dans {t}', ev_bub_go: 'Combat !', ev_bub_t: '{b} est là ! Touchez pour combattre', ev_bub_soon: 'Prochain boss dans {t}',
     hb_mystic: 'Mystique', ticket_mystic: 'Œufs mystiques', r_mystic: '+{v} œufs mystiques', mystic_t: 'Œuf mystique', mystic_d: 'Donne toujours une abeille mythique. À gagner contre le boss ou, très rarement, avec une abeille dorée rouge.',
     hb_legend: 'Légendaire', ticket_legend: 'Œufs légendaires', r_legend: '+{v} œufs légendaires', legend_t: 'Œuf légendaire', legend_d: 'Donne toujours une abeille légendaire. À gagner contre le boss ou avec une abeille dorée rouge.',
     rr_luck: 'Éclosion chanceuse {v} min', rr_xp2: 'XP double {v} min', rr_lg2: 'Ruée de ligue {v} min', rr_legend: 'Œuf légendaire', rr_mystic: 'Œuf mystique'
@@ -225,6 +225,39 @@
     el.querySelector('.ev-quit').textContent = t('ev_leave');
   }
 
+  Ev.SOON_MS = 60 * 60000;
+  function bubble() {
+    const g = G();
+    let el = document.getElementById('evBub');
+    const s = g && g.main && real();
+    const show = s && !g.battle && BZ.Cloud && BZ.Cloud.configured() && P.unlocked(s, 'event') && !(BZ.Online && BZ.Online.banned);
+    const ready = show && Ev.canPlay(s);
+    const left = Ev.dayEnd() - now();
+    const soon = show && !ready && left <= Ev.SOON_MS;
+    if (!ready && !soon) { if (el) el.remove(); return; }
+    const stage = document.getElementById('stage');
+    if (!stage) return;
+    if (!el) {
+      el = document.createElement('button');
+      el.id = 'evBub';
+      el.innerHTML = '<span class="ev-bub-ring"></span><span class="ev-bub-pic"></span><b class="ev-bub-tag"></b>';
+      el.onclick = e => { e.stopPropagation(); BZ.Audio.play('click'); UI.show('event'); };
+      stage.appendChild(el);
+    }
+    const boss = Ev.boss(ready ? Ev.day() : Ev.day(Ev.dayEnd()));
+    const tag = ready ? t('ev_bub_go') : F.time(left / 1000);
+    const key = boss.id + '|' + ready + '|' + tag + '|' + BZ.lang;
+    if (el._k === key) return;
+    el._k = key;
+    el.className = 'ev-bub ' + (ready ? 'ready' : 'soon');
+    el.style.setProperty('--bc', boss.c[0]);
+    if (el._b !== boss.id) { el._b = boss.id; el.querySelector('.ev-bub-pic').innerHTML = Ev.bossSvg(boss, 52); }
+    el.querySelector('.ev-bub-tag').textContent = tag;
+    el.title = ready ? t('ev_bub_t', { b: n(boss.name) }) : t('ev_bub_soon', { t: F.time(left / 1000) });
+    el.setAttribute('aria-label', el.title);
+  }
+  Ev.bubble = bubble;
+
   function reward(rank, total) {
     for (const x of BZ.BOSS_REWARDS) {
       if (x.max && rank <= x.max) return x.r;
@@ -278,8 +311,10 @@
       if (now() >= g.battle.end) { Ev.leave(); return; }
       if (now() - Ev.lastPush > PUSH_MS) { Ev.lastPush = now(); const sc = Ev.score(g.main); record(g.battle.real, g.battle.day, sc); push(g.battle.day, Ev.state(g.battle.real).best, g.battle.real); }
       bar();
+      bubble();
       return;
     }
+    bubble();
     if (cloudOk()) {
       if (Ev.pending) { const d = Ev.pending; Ev.pending = null; const s = real(); if (Ev.state(s).day === d) push(d, Ev.state(s).best, s); }
       if (Math.floor(now() / 1000) % 10 === 0) Ev.claim();

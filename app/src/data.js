@@ -1,7 +1,7 @@
 (function (root) {
   const BZ = root.BZ = root.BZ || {};
 
-  BZ.VERSION = '3.0.0';
+  BZ.VERSION = '3.1.0';
 
   BZ.PRODUCERS = [
     { id: 'worker', cost: 15, prod: 0.15, name: { en: 'Worker bee', fr: 'Abeille ouvrière' } },
@@ -249,6 +249,12 @@
   BZ.LEAGUE_QUEST_COUNT = 4;
   BZ.LEAGUE_QUEST_GROW = 0.2;
   BZ.CHANGELOG = [
+    { v: '3.1.0', items: [
+      { icon: 'boss', en: 'A boss bubble now floats over your hive when a boss is ready, or shows the countdown when the next one is close. Tap it to fight.', fr: 'Une bulle de boss flotte maintenant sur votre ruche quand un boss est prêt, ou affiche le compte à rebours quand le prochain approche. Touchez-la pour combattre.' },
+      { icon: 'gift', en: 'Legendary and mystic eggs got their own shiny egg look.', fr: 'Les œufs légendaires et mystiques ont maintenant leur propre look d’œuf brillant.' },
+      { icon: 'globe', en: 'Something dark is rising on the world map. Take a look!', fr: 'Quelque chose de sombre se lève sur la carte du monde. Allez voir !' },
+      { icon: 'info', en: 'The community chat is closed.', fr: 'La discussion de la communauté est fermée.' }
+    ] },
     { v: '3.0.0', items: [
       { icon: 'boss', en: 'Boss fights in the new Event tab: a new boss every 4 hours, 10 minutes in a fresh hive, the same for everyone, to hit it with your honey. The best hives win legendary and mystic eggs.', fr: 'Combats de boss dans le nouvel onglet Événement : un nouveau boss toutes les 4 heures, 10 minutes dans une ruche neuve, la même pour tous, pour le frapper avec votre miel. Les meilleures ruches gagnent des œufs légendaires et mystiques.' },
       { icon: 'gift', en: 'Legendary eggs always hatch a legendary bee and mystic eggs a mythic one. Red lucky bees can drop them too.', fr: 'Les œufs légendaires donnent toujours une abeille légendaire et les œufs mystiques une mythique. Les abeilles dorées rouges peuvent aussi en donner.' },
@@ -494,8 +500,8 @@
     { id: 'luck', w: 5, v: 30, icon: 'gift', color: '#C79BF2', boost: 'luck' },
     { id: 'xp2', w: 5, v: 30, icon: 'star', color: '#7FB8F0', boost: 'xp2' },
     { id: 'lg2', w: 4, v: 30, icon: 'league', color: '#E0A526', boost: 'lg2' },
-    { id: 'legend', w: 2, v: 1, icon: 'gift', color: '#E0A526' },
-    { id: 'mystic', w: 0.5, v: 1, icon: 'gift', color: '#B24CF0' }
+    { id: 'legend', w: 2, v: 1, icon: 'gift', color: '#7A4A08' },
+    { id: 'mystic', w: 0.5, v: 1, icon: 'gift', color: '#3A1858' }
   ];
   BZ.PRIME_GROWTH = 2;
   BZ.SELL_MIN = 5;

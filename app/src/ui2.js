@@ -86,8 +86,8 @@
     if (r.egg) return '<span class="rw tk-egg">' + ic('ticket') + 'x' + r.egg + '</span>';
     if (r.royal) return '<span class="rw tk-royal">' + ic('ticket') + 'x' + r.royal + '</span>';
     if (r.core) return '<span class="rw tk-core">' + ic('ticket') + 'x' + r.core + '</span>';
-    if (r.mystic) return '<span class="rw tk-mystic" title="' + esc(t('ticket_mystic')) + '">' + ic('gift') + 'x' + r.mystic + '</span>';
-    if (r.legend) return '<span class="rw tk-legend" title="' + esc(t('ticket_legend')) + '">' + ic('gift') + 'x' + r.legend + '</span>';
+    if (r.mystic) return '<span class="rw tk-mystic" title="' + esc(t('ticket_mystic')) + '">' + BZ.eggSvg('mystic', 18) + 'x' + r.mystic + '</span>';
+    if (r.legend) return '<span class="rw tk-legend" title="' + esc(t('ticket_legend')) + '">' + BZ.eggSvg('legend', 18) + 'x' + r.legend + '</span>';
     if (r.part) return '<span class="rw part">' + ic('palette') + 'x' + r.part + '</span>';
     if (r.boost) { const bb = BZ.BOOST_BY_ID[r.boost] || { mult: 2, dur: 1800 }; return '<span class="rw bst">' + ic(bb.icon || 'bolt') + (bb.mult ? 'x' + bb.mult : esc(n(bb.name))) + '  ' + Math.round(bb.dur / 60) + ' min</span>'; }
     if (r.skin) return '<span class="rw rwskin">' + ic('palette') + n(BZ.SKIN_BY_ID[r.skin].name) + '</span>';
@@ -182,7 +182,7 @@
   };
 
   function ticketBar(s, keys) {
-    return '<div class="tk-bar">' + keys.map(k => '<span class="tk ' + TICKET_COLOR[k] + '">' + ic('ticket') + '<b class="num">' + F.int(s.tickets[k] || 0) + '</b><small>' + t('ticket_' + k) + '</small></span>').join('') + '</div>';
+    return '<div class="tk-bar">' + keys.map(k => '<span class="tk ' + TICKET_COLOR[k] + '">' + (k === 'legend' || k === 'mystic' ? BZ.eggSvg(k, 24) : ic('ticket')) + '<b class="num">' + F.int(s.tickets[k] || 0) + '</b><small>' + t('ticket_' + k) + '</small></span>').join('') + '</div>';
   }
 
   function bannerFoot(s, bn) {
@@ -211,7 +211,7 @@
     let h = '<div class="card hatch"><div class="sec-title"><h3>' + t('hatch') + '</h3><div class="seg"><button data-act="hatchtab" data-arg="std" class="' + (bn === 'std' ? 'on' : '') + '">' + t('hb_std') + '</button><button data-act="hatchtab" data-arg="royal" class="' + (bn === 'royal' ? 'on' : '') + '">' + t('hb_royal') + '</button>' + extra.map(k => '<button data-act="hatchtab" data-arg="' + k + '" class="' + (bn === k ? 'on' : '') + '">' + t('hb_' + k) + '</button>').join('') + '</div></div>';
     h += ticketBar(s, ['egg', 'royal'].concat(extra));
     if (bn === 'mystic' || bn === 'legend') {
-      h += '<div class="banner ' + bn + '"><div class="bart">' + ic('gift') + '</div><div class="btxt"><span class="badge lim">' + ic('sparkle') + t('hb_' + bn) + '</span><b>' + t(bn + '_t') + '</b><small>' + t(bn + '_d') + '</small></div></div>';
+      h += '<div class="banner ' + bn + '"><div class="bart">' + BZ.eggSvg(bn, 72) + '</div><div class="btxt"><span class="badge lim">' + ic('sparkle') + t('hb_' + bn) + '</span><b>' + t(bn + '_t') + '</b><small>' + t(bn + '_d') + '</small></div></div>';
     } else if (bn === 'royal') {
       const feat = BZ.BEE_BY_ID[P.featured()];
       const featE = BZ.BEE_BY_ID[P.featuredEpic()];
@@ -432,7 +432,6 @@
     flags.worlds = P.canOpenWorld(s, P.nextWorld(s));
     flags.league = !!(BZ.Cloud && BZ.Cloud.signedIn()) && BZ.Meta.lqList(G.realMain()).some(q => !q.claimed && BZ.Meta.questDone(q));
     flags.event = !!(BZ.Event && BZ.Event.dot());
-    flags.community = !!(BZ.Community && BZ.Community.dot());
     for (const k in flags) if (!P.unlocked(s, k)) flags[k] = false;
   };
 

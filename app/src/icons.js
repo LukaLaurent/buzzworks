@@ -92,6 +92,25 @@
   };
   BZ.ICONS = I;
 
+  BZ.eggSvg = function (kind, size) {
+    const id = 'eg' + Math.random().toString(36).slice(2, 8);
+    const m = kind === 'mystic';
+    const stops = m ? [[0, '#9FF6FF'], [0.35, '#7C8CFF'], [0.65, '#B24CF0'], [1, '#F0509E']] : [[0, '#FFF4C2'], [0.45, '#F7C548'], [1, '#C07A10']];
+    const shell = 'M20 2C10.5 2 3 16.5 3 29a17 17 0 0 0 34 0C37 16.5 29.5 2 20 2z';
+    let h = '<svg class="egg-svg ' + (m ? 'egg-myst' : 'egg-leg') + '" viewBox="0 0 40 48" width="' + Math.round(size * 40 / 48) + '" height="' + size + '" aria-hidden="true"><defs><linearGradient id="' + id + '" x1="0.1" y1="0" x2="0.9" y2="1">' + stops.map(x => '<stop offset="' + x[0] + '" stop-color="' + x[1] + '"/>').join('') + '</linearGradient><clipPath id="' + id + 'c"><path d="' + shell + '"/></clipPath></defs>';
+    h += '<path d="' + shell + '" fill="url(#' + id + ')" stroke="' + (m ? '#5B2A8C' : '#8A560A') + '" stroke-opacity="0.55" stroke-width="1.5"/>';
+    h += '<g clip-path="url(#' + id + 'c)">';
+    if (m) {
+      h += '<path d="M0 30C8 24 14 36 22 30S34 24 42 28" stroke="#FFFFFF" stroke-opacity="0.6" stroke-width="3" fill="none"/><path d="M0 38C8 33 14 43 22 38S34 33 42 36" stroke="#F5B8E8" stroke-opacity="0.7" stroke-width="2" fill="none"/>';
+      h += '<circle cx="27" cy="18" r="1.6" fill="#fff"/><circle cx="12" cy="40" r="1.2" fill="#fff" opacity="0.8"/><circle cx="30" cy="40" r="1" fill="#fff" opacity="0.7"/>';
+    } else {
+      h += '<path d="M1 27l4.75-4 4.75 4 4.75-4 4.75 4 4.75-4 4.75 4 4.75-4 4.75 4" stroke="#FFF6D6" stroke-width="2.6" fill="none" stroke-linejoin="round" opacity="0.9"/><path d="M1 34h38" stroke="#A86A0C" stroke-opacity="0.35" stroke-width="1.5"/>';
+    }
+    h += '<ellipse cx="13" cy="17" rx="3.6" ry="7" fill="#fff" opacity="0.6" transform="rotate(-18 13 17)"/></g>';
+    if (m) h += '<path class="egg-spark" d="M35 4l1.2 3.2L39.5 8.4l-3.3 1.2L35 13l-1.2-3.4L30.5 8.4l3.3-1.2z" fill="#fff"/><path class="egg-spark b" d="M5 36l.9 2.3 2.4.9-2.4.9L5 42.5l-.9-2.4-2.4-.9 2.4-.9z" fill="#fff"/>';
+    return h + '</svg>';
+  };
+
   BZ.appIconSvg = function (size) {
     const id = 'bzc' + Math.random().toString(36).slice(2, 6);
     return '<svg viewBox="0 0 512 512" width="' + size + '" height="' + size + '" aria-hidden="true"><rect width="512" height="512" rx="112" fill="#F28C28"/>' +

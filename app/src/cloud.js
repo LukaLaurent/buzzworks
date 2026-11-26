@@ -58,21 +58,6 @@
     async takeGift(id) {
       await fb.fs.deleteDoc(fb.fs.doc(fb.D, 'gifts', user.uid, 'items', id));
     },
-    chat: {
-      send(txt, n, l) {
-        const f = fb.fs, b = f.writeBatch(fb.D), ts = f.serverTimestamp();
-        b.set(f.doc(f.collection(fb.D, 'chat')), { uid: user.uid, n, l, txt, at: ts });
-        b.set(f.doc(fb.D, 'chatmeta', user.uid), { last: ts });
-        return b.commit();
-      },
-      remove: id => fb.fs.deleteDoc(fb.fs.doc(fb.D, 'chat', id)),
-      listen(cb) {
-        const f = fb.fs;
-        return f.onSnapshot(f.query(f.collection(fb.D, 'chat'), f.orderBy('at', 'desc'), f.limit(60)), snap => {
-          cb(snap.docs.map(d => { const x = d.data({ serverTimestamps: 'estimate' }); return { id: d.id, uid: x.uid, n: x.n, l: x.l, txt: x.txt, at: x.at && x.at.toMillis ? x.at.toMillis() : Date.now() }; }).reverse());
-        }, e => { if (BZ.Log) BZ.Log.error('chat: ' + (e && e.message)); });
-      }
-    },
     boss: {
       setScore: (day, e) => fb.fs.setDoc(fb.fs.doc(fb.D, 'boss', day, 'scores', user.uid), Object.assign({}, e, { at: Date.now() })),
       async top(day, k) {
